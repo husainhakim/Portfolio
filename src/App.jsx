@@ -2,6 +2,7 @@ import { useState, useCallback } from 'react';
 import { AnimatePresence, motion } from 'framer-motion';
 import BootSequence from './components/BootSequence.jsx';
 import Terminal from './components/Terminal.jsx';
+import SeoContent from './components/SeoContent.jsx';
 
 export default function App() {
   const [booted, setBooted] = useState(false);
@@ -17,6 +18,8 @@ export default function App() {
 
   return (
     <div style={{ width: '100%', height: '100%' }}>
+      {/* Visually hidden semantic HTML for SEO — always in DOM for crawlers */}
+      <SeoContent />
       <AnimatePresence mode="wait">
         {!booted ? (
           <motion.div
