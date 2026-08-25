@@ -1,49 +1,330 @@
+/* ==========================================================================
+   HUSAIN HAKIM — CYBERSECURITY WORKSPACE / DESIGN SYSTEM TOKENS
+   Offensive Security Workstation • Sharp • High Contrast • Brutalist
+   ========================================================================== */
+
 :root {
-  --background: #ffffff;
-  --foreground: #171717;
+  /* Light Theme (Engineering Technical Blueprint / Workstation) */
+  --bg-app: #f4f3ef;
+  --bg-surface: #ffffff;
+  --bg-panel: #ebe9e1;
+  --bg-panel-hover: #e0ddd3;
+  --bg-active: #d5d1c5;
+  --bg-subtle: #f8f7f4;
+
+  --text-primary: #121316;
+  --text-secondary: #4a505b;
+  --text-muted: #747b88;
+  --text-inverse: #ffffff;
+
+  --border-subtle: #dbd7cb;
+  --border-default: #c9c4b5;
+  --border-strong: #9e9783;
+
+  --accent-primary: #851c2c;
+  --accent-hover: #681521;
+  --accent-surface: #faebed;
+  --accent-border: #e8a8b1;
+  --accent-text: #851c2c;
+
+  --status-success: #15733c;
+  --status-success-bg: #e6f6ec;
+  --status-warning: #9e6400;
+  --status-warning-bg: #fff5db;
+  --status-info: #065ec2;
+  --status-info-bg: #e9f2fd;
+
+  --font-sans: -apple-system, BlinkMacSystemFont, "Inter", "Segoe UI", Roboto, sans-serif;
+  --font-mono: "JetBrains Mono", "SF Mono", Menlo, Monaco, Consolas, "Liberation Mono", monospace;
+
+  /* Sharp Corners for Precision Technical Feel */
+  --radius-sm: 0px;
+  --radius-md: 2px;
+  --radius-lg: 3px;
+  --radius-xl: 4px;
+
+  /* Hard 1px Borders Instead of Soft Blurry Shadows */
+  --shadow-subtle: none;
+  --shadow-card: none;
+  --shadow-modal: 0 0 0 1px var(--border-strong), 0 12px 32px rgba(0, 0, 0, 0.25);
+
+  --toolbar-height: 54px;
+  --breadcrumb-height: 40px;
+  --statusbar-height: 26px;
 }
 
-@media (prefers-color-scheme: dark) {
-  :root {
-    --background: #0a0a0a;
-    --foreground: #ededed;
-  }
+/* Dark Theme (Deep Charcoal / Terminal Workstation with Maroon/Red Accents) */
+[data-theme="dark"] {
+  --bg-app: #0a0b0d;
+  --bg-surface: #101215;
+  --bg-panel: #16181d;
+  --bg-panel-hover: #1e2127;
+  --bg-active: #272c34;
+  --bg-subtle: #0d0e11;
+
+  --text-primary: #e6e8ec;
+  --text-secondary: #9da3af;
+  --text-muted: #626875;
+  --text-inverse: #0a0b0d;
+
+  --border-subtle: #1e2229;
+  --border-default: #2a2f39;
+  --border-strong: #3f4756;
+
+  --accent-primary: #a82439;
+  --accent-hover: #c92e47;
+  --accent-surface: #241115;
+  --accent-border: #521922;
+  --accent-text: #e04a62;
+
+  --status-success: #2ea043;
+  --status-success-bg: #0d2615;
+  --status-warning: #d29922;
+  --status-warning-bg: #2b1d06;
+  --status-info: #58a6ff;
+  --status-info-bg: #091e38;
+
+  --shadow-subtle: none;
+  --shadow-card: none;
+  --shadow-modal: 0 0 0 1px var(--accent-primary), 0 16px 40px rgba(0, 0, 0, 0.85);
 }
 
-html {
-  height: 100%;
+/* ==========================================================================
+   WINDOWS 11 EXPLORER RESKIN OVERRIDES (GUI MODE ONLY)
+   ========================================================================== */
+:root .explorer-theme, [data-theme="light"] .explorer-theme {
+  --bg-app: #f3f3f3;
+  --bg-surface: #ffffff;
+  --bg-panel: #f3f3f3;
+  --bg-panel-hover: #eaeaea;
+  --bg-active: #e5e5e5;
+  --bg-subtle: #fafafa;
+
+  --border-default: #e5e5e5;
+  --border-subtle: #e5e5e5;
+  --border-strong: #cccccc;
+
+  --text-primary: #1a1a1a;
+  --text-secondary: #4a4a4a;
+  --text-muted: #6e6e6e;
+
+  /* Windows Blue Accent overrides */
+  --accent-surface: rgba(0, 103, 192, 0.08); 
+  --accent-primary: #0067C0;
+  --accent-hover: #005096;
+}
+
+[data-theme="dark"] .explorer-theme {
+  --bg-app: #2c2c2c;
+  --bg-surface: #202020;
+  --bg-panel: #2c2c2c;
+  --bg-panel-hover: #353535;
+  --bg-active: #333333;
+  --bg-subtle: #242424;
+
+  --border-default: #3a3a3a;
+  --border-subtle: #3a3a3a;
+  --border-strong: #444444;
+
+  --text-primary: #ffffff;
+  --text-secondary: #cccccc;
+  --text-muted: #a0a0a0;
+
+  /* Windows Blue Accent overrides */
+  --accent-surface: rgba(76, 168, 255, 0.15); 
+  --accent-primary: #4CA8FF;
+  --accent-hover: #1990FF;
+}
+
+/* Base Resets */
+*,
+*::before,
+*::after {
+  box-sizing: border-box;
+  margin: 0;
+  padding: 0;
 }
 
 html,
 body {
-  max-width: 100vw;
-  overflow-x: hidden;
-}
-
-body {
-  min-height: 100%;
-  display: flex;
-  flex-direction: column;
-  color: var(--foreground);
-  background: var(--background);
-  font-family: Arial, Helvetica, sans-serif;
+  height: 100%;
+  width: 100%;
+  background-color: var(--bg-app);
+  color: var(--text-primary);
+  font-family: var(--font-sans);
+  font-size: 13.5px;
+  line-height: 1.5;
   -webkit-font-smoothing: antialiased;
   -moz-osx-font-smoothing: grayscale;
+  overflow: hidden;
 }
 
-* {
-  box-sizing: border-box;
-  padding: 0;
-  margin: 0;
+/* Technical Grid Pattern Background */
+body::before {
+  content: "";
+  position: fixed;
+  top: 0;
+  left: 0;
+  right: 0;
+  bottom: 0;
+  background-image: radial-gradient(var(--border-subtle) 1px, transparent 1px);
+  background-size: 24px 24px;
+  opacity: 0.45;
+  pointer-events: none;
+  z-index: 0;
 }
 
+/* Custom Scrollbars */
+::-webkit-scrollbar {
+  width: 5px;
+  height: 5px;
+}
+
+::-webkit-scrollbar-track {
+  background: var(--bg-app);
+}
+
+::-webkit-scrollbar-thumb {
+  background: var(--border-default);
+  border-radius: 0;
+}
+
+::-webkit-scrollbar-thumb:hover {
+  background: var(--accent-primary);
+}
+
+/* Selection */
+::selection {
+  background: var(--accent-primary);
+  color: #ffffff;
+}
+
+/* Code & Monospace styling */
+code,
+pre,
+kbd,
+samp {
+  font-family: var(--font-mono);
+  font-size: 0.9em;
+}
+
+/* Clean Button Resets */
+button {
+  font-family: inherit;
+  font-size: inherit;
+  border: none;
+  background: none;
+  cursor: pointer;
+  color: inherit;
+  touch-action: manipulation;
+}
+
+/* Links */
 a {
   color: inherit;
   text-decoration: none;
 }
 
-@media (prefers-color-scheme: dark) {
-  html {
-    color-scheme: dark;
+/* Accessibility Focus States */
+button:focus-visible,
+a:focus-visible,
+input:focus-visible,
+textarea:focus-visible {
+  outline: 2px solid var(--accent-text);
+  outline-offset: 1px;
+}
+
+/* Global App Shell Layout */
+.app-shell {
+  display: flex;
+  flex-direction: column;
+  height: 100vh;
+  width: 100vw;
+  background: var(--bg-app);
+  overflow: hidden;
+  position: relative;
+  z-index: 1;
+}
+
+.workspace-main {
+  display: flex;
+  flex: 1;
+  overflow: hidden;
+  position: relative;
+}
+
+/* Sharp Technical File Badges */
+.badge {
+  display: inline-flex;
+  align-items: center;
+  gap: 4px;
+  padding: 1px 6px;
+  border-radius: var(--radius-sm);
+  font-family: var(--font-mono);
+  font-size: 10.5px;
+  font-weight: 600;
+  line-height: 1.3;
+  text-transform: uppercase;
+  letter-spacing: 0.04em;
+}
+
+.badge-project {
+  background: var(--status-info-bg);
+  color: var(--status-info);
+  border: 1px solid var(--status-info);
+}
+
+.badge-writeup {
+  background: var(--accent-surface);
+  color: var(--accent-text);
+  border: 1px solid var(--accent-border);
+}
+
+.badge-blog {
+  background: var(--status-warning-bg);
+  color: var(--status-warning);
+  border: 1px solid var(--status-warning);
+}
+
+.badge-skills {
+  background: var(--bg-panel);
+  color: var(--text-primary);
+  border: 1px solid var(--border-default);
+}
+
+.badge-pdf {
+  background: var(--accent-surface);
+  color: var(--accent-text);
+  border: 1px solid var(--accent-border);
+}
+
+.badge-default {
+  background: var(--bg-panel);
+  color: var(--text-secondary);
+  border: 1px solid var(--border-default);
+}
+
+/* Animations */
+@keyframes fadeIn {
+  from {
+    opacity: 0;
+    transform: translateY(2px);
+  }
+  to {
+    opacity: 1;
+    transform: translateY(0);
+  }
+}
+
+.fade-in {
+  animation: fadeIn 0.15s ease-out forwards;
+}
+
+/* Mobile Responsiveness */
+@media (max-width: 768px) {
+  :root {
+    --toolbar-height: 50px;
+    --breadcrumb-height: 38px;
+    --statusbar-height: 24px;
   }
 }

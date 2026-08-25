@@ -1,0 +1,249 @@
+/* Terminal.module.css - Brutalist & Sharp CLI Styles */
+
+.terminalContainer {
+  display: flex;
+  flex-direction: column;
+  height: calc(100vh - var(--toolbar-height));
+  width: 100%;
+  background: var(--bg-app);
+  font-family: var(--font-mono);
+  overflow: hidden;
+  cursor: text;
+  border-top: 1px solid var(--border-default);
+}
+
+.terminalFullScreen {
+  position: fixed;
+  top: 0;
+  left: 0;
+  right: 0;
+  bottom: 0;
+  height: 100vh;
+  z-index: 100;
+}
+
+/* Window Header Bar */
+.terminalHeader {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  height: 34px;
+  padding: 0 14px;
+  background: var(--bg-surface);
+  border-bottom: 1px solid var(--border-default);
+  user-select: none;
+  flex-shrink: 0;
+}
+
+.headerLeft {
+  display: flex;
+  align-items: center;
+  gap: 12px;
+}
+
+.windowDots {
+  display: flex;
+  align-items: center;
+  gap: 5px;
+}
+
+.dotRed,
+.dotYellow,
+.dotGreen {
+  width: 8px;
+  height: 8px;
+  border-radius: 0;
+}
+
+.dotRed {
+  background: #e04a62;
+}
+
+.dotYellow {
+  background: #d29922;
+}
+
+.dotGreen {
+  background: #2ea043;
+}
+
+.sessionTitle {
+  display: flex;
+  align-items: center;
+  gap: 6px;
+  font-size: 11.5px;
+  font-weight: 700;
+  color: var(--text-primary);
+}
+
+.headerTerminalIcon {
+  color: var(--accent-text);
+}
+
+.headerActions {
+  display: flex;
+  align-items: center;
+  gap: 6px;
+}
+
+.headerActionBtn {
+  display: inline-flex;
+  align-items: center;
+  gap: 4px;
+  padding: 2px 6px;
+  font-size: 10.5px;
+  font-family: var(--font-mono);
+  color: var(--text-secondary);
+  background: var(--bg-panel);
+  border: 1px solid var(--border-default);
+  transition: all 0.1s ease;
+}
+
+.headerActionBtn:hover {
+  background: var(--bg-panel-hover);
+  color: var(--text-primary);
+  border-color: var(--border-strong);
+}
+
+/* Terminal Body Stream */
+.terminalBody {
+  flex: 1;
+  padding: 14px 18px;
+  overflow-y: auto;
+  display: flex;
+  flex-direction: column;
+  gap: 10px;
+  background: var(--bg-app);
+}
+
+.historyBlock {
+  display: flex;
+  flex-direction: column;
+  gap: 3px;
+}
+
+.promptLine {
+  display: flex;
+  align-items: center;
+  flex-wrap: wrap;
+  gap: 5px;
+  font-size: 12.5px;
+  line-height: 1.4;
+}
+
+.promptUser {
+  color: var(--status-success);
+  font-weight: 700;
+}
+
+.promptColon {
+  color: var(--text-muted);
+}
+
+.promptPath {
+  color: var(--accent-text);
+  font-weight: 700;
+}
+
+.promptDollar {
+  color: var(--text-muted);
+}
+
+.promptCommand {
+  color: var(--text-primary);
+  font-weight: 600;
+}
+
+.commandOutput {
+  font-family: var(--font-mono);
+  font-size: 12px;
+  line-height: 1.45;
+  color: var(--text-secondary);
+  white-space: pre-wrap;
+  word-break: break-word;
+  padding-left: 2px;
+}
+
+.outputError {
+  color: var(--accent-text) !important;
+  font-weight: 600;
+}
+
+/* Active Prompt & Input */
+.activeInputLine {
+  display: flex;
+  align-items: center;
+  flex-wrap: wrap;
+  gap: 5px;
+  font-size: 12.5px;
+  line-height: 1.4;
+}
+
+.inputWrapper {
+  flex: 1;
+  min-width: 120px;
+  display: flex;
+  align-items: center;
+}
+
+.terminalInput {
+  width: 100%;
+  background: transparent;
+  border: none;
+  font-family: var(--font-mono);
+  font-size: 12.5px;
+  color: var(--text-primary);
+  outline: none;
+  caret-color: var(--accent-text);
+  padding: 0;
+  margin: 0;
+}
+
+/* Mobile Quick Action Touch Bar */
+.mobileQuickBar {
+  display: flex;
+  align-items: center;
+  gap: 4px;
+  padding: 6px 10px;
+  background: var(--bg-surface);
+  border-top: 1px solid var(--border-default);
+  overflow-x: auto;
+  white-space: nowrap;
+  flex-shrink: 0;
+}
+
+.quickBtn {
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  padding: 4px 10px;
+  font-family: var(--font-mono);
+  font-size: 11.5px;
+  font-weight: 700;
+  color: var(--text-primary);
+  background: var(--bg-panel);
+  border: 1px solid var(--border-default);
+  transition: all 0.1s ease;
+  min-height: 32px;
+}
+
+.quickBtn:active {
+  background: var(--bg-active);
+}
+
+.quickBtnHighlight {
+  background: var(--accent-surface);
+  color: var(--accent-text);
+  border-color: var(--accent-border);
+}
+
+@media (max-width: 768px) {
+  .terminalBody {
+    padding: 10px 12px;
+  }
+
+  .quickBtn {
+    padding: 6px 12px;
+    min-height: 38px;
+  }
+}

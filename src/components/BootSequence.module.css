@@ -1,0 +1,112 @@
+/* BootSequence.module.css */
+
+.bootOverlay {
+  position: fixed;
+  top: 0;
+  left: 0;
+  right: 0;
+  bottom: 0;
+  background: var(--bg-app);
+  z-index: 9999;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  padding: 24px;
+  font-family: var(--font-mono);
+  color: var(--text-primary);
+  cursor: pointer;
+  overflow: hidden;
+  transition: opacity 0.35s ease-out, transform 0.35s ease-out;
+}
+
+.bootFadeOut {
+  opacity: 0;
+  transform: scale(1.02);
+  pointer-events: none;
+}
+
+.bootScanline {
+  position: absolute;
+  top: 0;
+  left: 0;
+  right: 0;
+  bottom: 0;
+  background: linear-gradient(
+    rgba(255, 255, 255, 0) 50%,
+    rgba(0, 0, 0, 0.03) 50%
+  );
+  background-size: 100% 4px;
+  pointer-events: none;
+  z-index: 2;
+  opacity: 0.5;
+}
+
+.bootContainer {
+  width: 100%;
+  max-width: 780px;
+  background: var(--bg-surface);
+  border: 1px solid var(--border-default);
+  box-shadow: 0 4px 24px rgba(0, 0, 0, 0.05);
+  padding: 20px;
+  position: relative;
+  z-index: 3;
+}
+
+.bootHeader {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  border-bottom: 1px solid var(--border-default);
+  padding-bottom: 10px;
+  margin-bottom: 14px;
+  font-size: 11px;
+}
+
+.bootLogo {
+  color: var(--accent-primary);
+  font-weight: 700;
+  letter-spacing: 0.1em;
+}
+
+.bootSkipHint {
+  color: var(--text-secondary);
+  font-size: 10.5px;
+  letter-spacing: 0.05em;
+}
+
+.bootLog {
+  display: flex;
+  flex-direction: column;
+  gap: 6px;
+  font-size: 12.5px;
+  line-height: 1.45;
+  min-height: 220px;
+}
+
+.bootLine {
+  color: var(--text-secondary);
+  word-break: break-all;
+}
+
+.bootLine:last-child {
+  color: var(--text-primary);
+  font-weight: 600;
+}
+
+.bootCursor {
+  display: inline-block;
+  width: 8px;
+  height: 14px;
+  background: var(--accent-primary);
+  margin-top: 4px;
+  animation: blink 0.8s infinite;
+}
+
+@keyframes blink {
+  0%, 100% {
+    opacity: 1;
+  }
+  50% {
+    opacity: 0;
+  }
+}

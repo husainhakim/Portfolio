@@ -1,0 +1,181 @@
+        {/* ROW 2: EXPERIENCE (Span 6, Swapped into Writeups place) & LEARNING (Span 6) */}
+        {experienceNode && (
+          <div
+            tabIndex={0}
+            onClick={() => handleNodeClick(experienceNode)}
+            onDoubleClick={() => handleNodeDoubleClick(experienceNode)}
+            onKeyDown={(e) => handleKeyDown(e, experienceNode)}
+            className={`${styles.bentoTile} ${styles.bentoTileRow2} ${
+              selectedNode?.id === experienceNode.id ? styles.gridItemSelected : ""
+            }`}
+            role="button"
+            aria-label="Experience Directory"
+          >
+            <div className={styles.bentoHeader}>
+              <div className={styles.bentoTitleGroup}>
+                <div className={styles.bentoIconBox}>
+                  <Briefcase size={18} className={styles.expIcon} />
+                </div>
+                <div>
+                  <span className={styles.bentoTagline}>PROFESSIONAL EXPERIENCE &amp; IMPACT</span>
+                  <h3 className={styles.bentoTitle}>experience/</h3>
+                </div>
+              </div>
+              <span className="badge badge-experience">LETSUPGRADE (10M)</span>
+            </div>
+
+            <p className={styles.bentoDesc}>
+              Backend Developer at LetsUpgrade maintaining 500+ REST APIs across 10M+ documents and leading technical hackathons.
+            </p>
+
+            <div className={styles.bentoSubList}>
+              <div
+                onClick={(e) => {
+                  e.stopPropagation();
+                  navigate("/home/husain/experience");
+                }}
+                className={styles.bentoSubItem}
+              >
+                <div className={styles.bentoSubItemHeader}>
+                  <span className={styles.bentoSubTitle}>Backend Engineer @ LetsUpgrade Edtech</span>
+                  <span className={styles.bentoSubMeta}>95% Compute Cost Cut</span>
+                </div>
+              </div>
+              <div
+                onClick={(e) => {
+                  e.stopPropagation();
+                  navigate("/home/husain/experience");
+                }}
+                className={styles.bentoSubItem}
+              >
+                <div className={styles.bentoSubItemHeader}>
+                  <span className={styles.bentoSubTitle}>Hackathon Lead &amp; Mentor @ ITM Buildathon</span>
+                  <span className={styles.bentoSubMeta}>₹6,85,000+ Prize Pool</span>
+                </div>
+              </div>
+            </div>
+
+            <div className={styles.bentoFooter}>
+              <span className={styles.bentoPerms}>{experienceNode.permissions}</span>
+              <span className={styles.bentoMiniLink}>Explore career impact &rarr;</span>
+            </div>
+          </div>
+        )}
+
+        {learningNode && (
+          <div
+            tabIndex={0}
+            onClick={() => handleNodeClick(learningNode)}
+            onDoubleClick={() => handleNodeDoubleClick(learningNode)}
+            onKeyDown={(e) => handleKeyDown(e, learningNode)}
+            className={`${styles.bentoTile} ${styles.bentoTileRow2} ${
+              selectedNode?.id === learningNode.id ? styles.gridItemSelected : ""
+            }`}
+            role="button"
+            aria-label="Learning Roadmap"
+          >
+            <div className={styles.bentoHeader}>
+              <div className={styles.bentoTitleGroup}>
+                <div className={styles.bentoIconBox}>
+                  <Compass size={18} className={styles.learningIcon} />
+                </div>
+                <div>
+                  <span className={styles.bentoTagline}>OFFENSIVE TRAJECTORY</span>
+                  <h3 className={styles.bentoTitle}>learning/</h3>
+                </div>
+              </div>
+              <span className="badge badge-learning">Phase 5/10</span>
+            </div>
+
+            <p className={styles.bentoDesc}>
+              Rigorous 10-phase roadmap: Foundations &rarr; Linux Internals &rarr; Networking &rarr; Web Security &rarr; Active Directory.
+            </p>
+
+            {/* Visual Roadmap Stepper Preview */}
+            <div className={styles.bentoRoadmapStepper}>
+              <div className={`${styles.roadmapPill} ${styles.roadmapPillDone}`}>1. Foundations</div>
+              <div className={`${styles.roadmapPill} ${styles.roadmapPillDone}`}>2. Linux</div>
+              <div className={`${styles.roadmapPill} ${styles.roadmapPillDone}`}>3. Networking</div>
+              <div className={`${styles.roadmapPill} ${styles.roadmapPillActive}`}>5. Enumeration</div>
+              <div className={`${styles.roadmapPill} ${styles.roadmapPillNext}`}>9. Active Directory</div>
+            </div>
+
+            <div className={styles.bentoFooter}>
+              <span className={styles.bentoPerms}>{learningNode.permissions}</span>
+              <span className={styles.bentoMiniLink}>View complete roadmap &rarr;</span>
+            </div>
+          </div>
+        )}
+
+        {/* ROW 3: PROJECTS (Span 3, Swapped into About place), WRITEUPS (Span 3, Swapped into Experience place), BLOGS (Span 3), CONTACT (Span 3) */}
+        {projectsNode && (
+          <div
+            tabIndex={0}
+            onClick={() => handleNodeClick(projectsNode)}
+            onDoubleClick={() => handleNodeDoubleClick(projectsNode)}
+            onKeyDown={(e) => handleKeyDown(e, projectsNode)}
+            className={`${styles.bentoTile} ${styles.bentoTileRow3} ${
+              selectedNode?.id === projectsNode.id ? styles.gridItemSelected : ""
+            }`}
+            role="button"
+            aria-label="Projects Directory"
+          >
+            <div className={styles.bentoHeader}>
+              <div className={styles.bentoTitleGroup}>
+                <div className={styles.bentoIconBox}>
+                  <Code size={18} className={styles.projectIcon} />
+                </div>
+                <div>
+                  <span className={styles.bentoTagline}>SECURITY TOOLS</span>
+                  <h3 className={styles.bentoTitle}>projects/</h3>
+                </div>
+              </div>
+              <span className="badge badge-project">3 Tools</span>
+            </div>
+
+            <p className={styles.bentoDesc}>
+              Password Audit, Network Device Scanner, and File Signature Detector.
+            </p>
+
+            <div className={styles.bentoFooter}>
+              <span className={styles.bentoPerms}>{projectsNode.permissions}</span>
+              <span className={styles.bentoMiniLink}>Explore tools &rarr;</span>
+            </div>
+          </div>
+        )}
+
+        {writeupsNode && (
+          <div
+            tabIndex={0}
+            onClick={() => handleNodeClick(writeupsNode)}
+            onDoubleClick={() => handleNodeDoubleClick(writeupsNode)}
+            onKeyDown={(e) => handleKeyDown(e, writeupsNode)}
+            className={`${styles.bentoTile} ${styles.bentoTileRow3} ${
+              selectedNode?.id === writeupsNode.id ? styles.gridItemSelected : ""
+            }`}
+            role="button"
+            aria-label="Writeups Directory"
+          >
+            <div className={styles.bentoHeader}>
+              <div className={styles.bentoTitleGroup}>
+                <div className={styles.bentoIconBox}>
+                  <Shield size={18} className={styles.writeupIcon} />
+                </div>
+                <div>
+                  <span className={styles.bentoTagline}>LAB RESEARCH</span>
+                  <h3 className={styles.bentoTitle}>writeups/</h3>
+                </div>
+              </div>
+              <span className="badge badge-writeup">4 Labs</span>
+            </div>
+
+            <p className={styles.bentoDesc}>
+              SUID PATH hijack, Gratuitous ARP spoof detection, and JWT signature bypass.
+            </p>
+
+            <div className={styles.bentoFooter}>
+              <span className={styles.bentoPerms}>{writeupsNode.permissions}</span>
+              <span className={styles.bentoMiniLink}>Read writeups &rarr;</span>
+            </div>
+          </div>
+        )}

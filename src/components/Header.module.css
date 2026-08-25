@@ -1,0 +1,252 @@
+/* Header.module.css - Brutalist & Sharp HUD Header */
+
+.header {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: 14px;
+  min-height: var(--toolbar-height);
+  height: auto;
+  /* Allow header to expand */
+  padding: 12px 16px;
+  /* Increased padding */
+  background: var(--bg-surface);
+  border-bottom: 1px solid var(--border-default);
+  z-index: 40;
+  flex-shrink: 0;
+  box-shadow: 0 1px 0 rgba(0, 0, 0, 0.1);
+}
+
+.brandGroup {
+  display: flex;
+  align-items: center;
+}
+
+.brandButton {
+  display: flex;
+  align-items: center;
+  gap: 12px;
+  text-align: left;
+  padding: 6px;
+  border-radius: var(--radius-md);
+  transition: background 0.12s ease;
+}
+
+.brandButton:hover {
+  background: var(--bg-panel);
+}
+
+.brandAvatar {
+  width: 48px;
+  height: 48px;
+  border-radius: 50%;
+  overflow: hidden;
+  border: 2px solid var(--border-subtle);
+  flex-shrink: 0;
+}
+
+.avatarImage {
+  object-fit: cover;
+  width: 100%;
+  height: 100%;
+}
+
+.brandText {
+  display: flex;
+  flex-direction: column;
+  gap: 4px;
+}
+
+.brandNameLarge {
+  font-size: 20px;
+  font-weight: 800;
+  letter-spacing: -0.02em;
+  color: var(--text-primary);
+  line-height: 1.1;
+}
+
+.brandSubLarge {
+  font-size: 12px;
+  color: var(--text-muted);
+  font-family: var(--font-mono);
+}
+
+/* Search Bar */
+.searchContainer {
+  position: relative;
+  display: flex;
+  align-items: center;
+  max-width: 380px;
+  flex: 1;
+  background: var(--bg-panel);
+  border: 1px solid var(--border-default);
+  padding: 0 8px;
+  transition: all 0.12s ease;
+}
+
+.searchContainer:focus-within {
+  border-color: var(--accent-primary);
+  background: var(--bg-surface);
+  outline: 1px solid var(--accent-primary);
+}
+
+.searchIcon {
+  color: var(--text-muted);
+  flex-shrink: 0;
+  margin-right: 6px;
+}
+
+.searchInput {
+  width: 100%;
+  height: 28px;
+  background: transparent;
+  border: none;
+  font-size: 12px;
+  color: var(--text-primary);
+  font-family: var(--font-mono);
+  outline: none;
+}
+
+.searchInput::placeholder {
+  color: var(--text-muted);
+  font-family: var(--font-sans);
+}
+
+.searchClear {
+  font-size: 15px;
+  color: var(--text-muted);
+  padding: 0 4px;
+}
+
+.searchClear:hover {
+  color: var(--text-primary);
+}
+
+/* Actions */
+.actionsGroup {
+  display: flex;
+  align-items: center;
+  gap: 8px;
+}
+
+/* HERO MODE SWITCHER HUD */
+.heroModeSwitch {
+  display: inline-flex;
+  align-items: center;
+  gap: 2px;
+  background: var(--bg-panel);
+  border: 1px solid var(--border-strong);
+  padding: 2px;
+}
+
+.modeSwitchLabel {
+  font-family: var(--font-mono);
+  font-size: 10px;
+  font-weight: 700;
+  color: var(--text-muted);
+  padding: 0 6px;
+  letter-spacing: 0.05em;
+}
+
+.heroModeBtn {
+  display: inline-flex;
+  align-items: center;
+  gap: 5px;
+  padding: 4px 10px;
+  font-size: 11.5px;
+  font-family: var(--font-mono);
+  font-weight: 700;
+  color: var(--text-secondary);
+  border: 1px solid transparent;
+  transition: all 0.12s ease;
+}
+
+.heroModeBtn:hover {
+  color: var(--text-primary);
+  background: var(--bg-panel-hover);
+}
+
+.heroModeBtnActive {
+  background: var(--text-primary) !important;
+  color: var(--text-inverse) !important;
+  border-color: var(--text-primary) !important;
+}
+
+.heroModeBtnActiveCli {
+  background: var(--accent-primary) !important;
+  color: #ffffff !important;
+  border-color: var(--accent-primary) !important;
+  box-shadow: 0 0 8px rgba(168, 36, 57, 0.4);
+}
+
+.hotkeyTag {
+  font-family: var(--font-mono);
+  font-size: 9.5px;
+  color: var(--text-muted);
+  padding: 1px 4px;
+  background: var(--bg-app);
+  border: 1px solid var(--border-subtle);
+  margin-left: 2px;
+}
+
+.iconActionButton {
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  width: 28px;
+  height: 28px;
+  background: var(--bg-panel);
+  border: 1px solid var(--border-default);
+  color: var(--text-secondary);
+  transition: all 0.12s ease;
+}
+
+.iconActionButton:hover {
+  background: var(--bg-panel-hover);
+  color: var(--text-primary);
+  border-color: var(--border-strong);
+}
+
+.resumeButton {
+  display: inline-flex;
+  align-items: center;
+  gap: 5px;
+  padding: 4px 10px;
+  font-size: 11.5px;
+  font-family: var(--font-mono);
+  font-weight: 700;
+  color: var(--accent-text);
+  background: var(--accent-surface);
+  border: 1px solid var(--accent-border);
+  transition: all 0.12s ease;
+}
+
+.resumeButton:hover {
+  background: var(--accent-primary);
+  color: #ffffff;
+  border-color: var(--accent-primary);
+}
+
+/* Mobile Responsive */
+@media (max-width: 768px) {
+  .header {
+    padding: 0 10px;
+    gap: 8px;
+  }
+
+  .brandSub {
+    display: none;
+  }
+
+  .searchContainer {
+    display: none;
+  }
+
+  .hotkeyTag {
+    display: none;
+  }
+
+  .modeSwitchLabel {
+    display: none;
+  }
+}
