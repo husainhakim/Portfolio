@@ -8,7 +8,8 @@ export type FileType =
   | "contact"
   | "pdf"
   | "json"
-  | "script";
+  | "script"
+  | "vault";
 
 export interface BaseFSNode {
   id: string;
