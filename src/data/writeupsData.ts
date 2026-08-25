@@ -26,7 +26,7 @@ export interface WriteupItem {
       output?: string;
     }[];
     postExploitation: string;
-    mitigation: string;
+    mitigation: string[];
     rootCause: string;
     lessonsLearned: string[];
   };

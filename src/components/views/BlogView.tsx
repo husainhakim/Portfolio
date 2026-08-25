@@ -66,7 +66,7 @@ export function BlogView() {
             <div 
               key={blog.id} 
               className={styles.blogCard} 
-              onClick={() => navigate(`/home/husain/blogs/${blog.name || blog.slug + '.md'}`)}
+              onClick={() => navigate(`/home/husain/blogs/${blog.slug + '.md'}`)}
               style={{ cursor: 'pointer' }}
             >
               <div className={styles.blogCardHeader}>
