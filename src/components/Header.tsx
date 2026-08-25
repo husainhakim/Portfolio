@@ -20,7 +20,7 @@ import styles from "./Header.module.css";
 
 export function Header() {
   const { mode, toggleMode, searchQuery, setSearchQuery, navigate } = useFilesystem();
-  const { theme, toggleTheme } = useTheme();
+  const { theme, toggleTheme, mounted } = useTheme();
 
   // Global hotkey: Alt+T or Ctrl+` to toggle GUI/CLI mode
   useEffect(() => {
@@ -89,10 +89,10 @@ export function Header() {
         <button
           onClick={toggleTheme}
           className={styles.iconActionButton}
-          title={`Switch to ${theme === "dark" ? "Light" : "Dark"} Mode`}
+          title={`Switch to ${!mounted || theme === "light" ? "Dark" : "Light"} Mode`}
           aria-label="Toggle Theme"
         >
-          {theme === "dark" ? <Sun size={15} /> : <Moon size={15} />}
+          {!mounted || theme === "light" ? <Moon size={15} /> : <Sun size={15} />}
         </button>
 
         {/* Resume Quick Access */}
