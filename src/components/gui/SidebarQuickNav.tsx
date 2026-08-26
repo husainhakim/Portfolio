@@ -30,11 +30,16 @@ const SHORTCUTS: NavShortcut[] = [
   { label: "resume.pdf", path: "/home/husain/resume.pdf", isPdf: true },
 ];
 
-export function SidebarQuickNav() {
+interface SidebarQuickNavProps {
+  isOpen?: boolean;
+  onClose?: () => void;
+}
+
+export function SidebarQuickNav({ isOpen, onClose }: SidebarQuickNavProps) {
   const { currentPath, navigate, openFile } = useFilesystem();
 
   return (
-    <aside className={styles.sidebar}>
+    <aside className={`${styles.sidebar} ${isOpen ? styles.sidebarOpen : ""}`}>
       {/* Top Section */}
       <div className={styles.sidebarSection}>
         <div className={styles.sidebarNavList}>

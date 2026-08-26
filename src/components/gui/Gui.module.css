@@ -1535,9 +1535,62 @@
   }
 }
 
+.mobileMenuBtn {
+  display: none;
+}
+
+.mobileSidebarOverlay {
+  display: none;
+}
 @media (max-width: 768px) {
+  .mobileMenuBtn {
+    display: inline-flex;
+    min-width: 44px;
+    min-height: 44px;
+  }
+
+  .mobileSidebarOverlay {
+    display: block;
+    position: fixed;
+    top: 0;
+    left: 0;
+    right: 0;
+    bottom: 0;
+    background: rgba(0, 0, 0, 0.5);
+    backdrop-filter: blur(2px);
+    z-index: 999;
+  }
+
   .sidebar {
-    display: none;
+    position: fixed;
+    top: 0;
+    left: 0;
+    height: 100%;
+    z-index: 1000;
+    transform: translateX(-100%);
+    transition: transform 0.25s cubic-bezier(0.16, 1, 0.3, 1);
+    box-shadow: 4px 0 16px rgba(0,0,0,0.2);
+  }
+
+  .sidebarOpen {
+    transform: translateX(0);
+  }
+
+  .sidebarNavItem {
+    min-height: 44px;
+  }
+
+  .navBtn {
+    min-width: 44px;
+    min-height: 44px;
+  }
+
+  .qaTile {
+    flex: 1 1 100%;
+  }
+
+  .qaTabBtn {
+    min-height: 44px;
   }
 
   .contentArea {
@@ -1555,6 +1608,11 @@
   .fileListRow {
     grid-template-columns: 1fr auto;
     gap: 6px;
+    min-height: 44px;
+  }
+
+  .recentListRow {
+    min-height: 44px;
   }
 
   .colPerms,
@@ -1573,6 +1631,33 @@
 
   .statusRight {
     display: none;
+  }
+
+  .previewPanel {
+    position: fixed;
+    bottom: 0;
+    left: 0;
+    width: 100%;
+    height: auto;
+    max-height: 85vh;
+    border-top: 1px solid var(--border-strong);
+    border-radius: 16px 16px 0 0;
+    border-left: none;
+    z-index: 2000;
+    box-shadow: 0 -4px 24px rgba(0, 0, 0, 0.4);
+    animation: slideUp 0.25s cubic-bezier(0.16, 1, 0.3, 1);
+  }
+
+  .previewCloseBtn {
+    min-width: 44px;
+    min-height: 44px;
+    top: 8px;
+    right: 8px;
+  }
+
+  @keyframes slideUp {
+    from { transform: translateY(100%); }
+    to { transform: translateY(0); }
   }
 }
 

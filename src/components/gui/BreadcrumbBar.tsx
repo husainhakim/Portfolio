@@ -11,10 +11,15 @@ import {
   Home,
   Search,
   RotateCcw,
+  Menu,
 } from "lucide-react";
 import styles from "./Gui.module.css";
 
-export function BreadcrumbBar() {
+interface BreadcrumbBarProps {
+  onToggleSidebar?: () => void;
+}
+
+export function BreadcrumbBar({ onToggleSidebar }: BreadcrumbBarProps) {
   const {
     currentPath,
     navigate,
@@ -34,6 +39,14 @@ export function BreadcrumbBar() {
     <div className={styles.breadcrumbBar}>
       {/* Navigation Buttons (Back, Forward, Up) */}
       <div className={styles.navControls}>
+        <button
+          onClick={onToggleSidebar}
+          className={`${styles.navBtn} ${styles.mobileMenuBtn}`}
+          title="Toggle Sidebar"
+          aria-label="Toggle Sidebar"
+        >
+          <Menu size={16} />
+        </button>
         <button
           onClick={goBack}
           disabled={!canGoBack}

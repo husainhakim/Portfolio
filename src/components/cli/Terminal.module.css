@@ -3,7 +3,7 @@
 .terminalContainer {
   display: flex;
   flex-direction: column;
-  height: calc(100vh - var(--toolbar-height));
+  height: calc(100dvh - var(--toolbar-height));
   width: 100%;
   background: var(--bg-app);
   font-family: var(--font-mono);
@@ -18,7 +18,7 @@
   left: 0;
   right: 0;
   bottom: 0;
-  height: 100vh;
+  height: 100dvh;
   z-index: 100;
 }
 
@@ -244,6 +244,7 @@
 
   .quickBtn {
     padding: 6px 12px;
-    min-height: 38px;
+    min-height: 44px;
+    min-width: 44px;
   }
 }

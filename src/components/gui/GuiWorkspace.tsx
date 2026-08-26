@@ -11,10 +11,12 @@ import { StatusBar } from "./StatusBar";
 import { FSNode } from "@/data/filesystemData";
 import { BlogView } from "@/components/views/BlogView";
 import { WriteupsListView } from "@/components/views/WriteupsListView";
+import { PreviewPanel } from "./PreviewPanel";
 import styles from "./Gui.module.css";
 
 export function GuiWorkspace() {
   const { currentNode, setSelectedNode } = useFilesystem();
+  const [isSidebarOpen, setIsSidebarOpen] = React.useState(false);
 
   const childrenNodes: FSNode[] =
     currentNode && currentNode.type === "directory" 
@@ -36,11 +38,20 @@ export function GuiWorkspace() {
       <RibbonToolbar />
 
       {/* Top Breadcrumb Bar */}
-      <BreadcrumbBar />
+      <BreadcrumbBar onToggleSidebar={() => setIsSidebarOpen(!isSidebarOpen)} />
+
+      {/* Mobile Sidebar Overlay */}
+      {isSidebarOpen && (
+        <div 
+          className={styles.mobileSidebarOverlay} 
+          onClick={() => setIsSidebarOpen(false)}
+          aria-label="Close sidebar"
+        />
+      )}
 
       {/* Main Content Area: Sidebar + Directory Listing + Preview Panel */}
       <div className={styles.mainLayout}>
-        <SidebarQuickNav />
+        <SidebarQuickNav isOpen={isSidebarOpen} onClose={() => setIsSidebarOpen(false)} />
         <main className={styles.contentArea}>
           {currentNode?.path === "/home/husain/blogs" ? (
             <BlogView />
@@ -50,6 +61,7 @@ export function GuiWorkspace() {
             <DirectoryGrid nodes={childrenNodes} />
           )}
         </main>
+        <PreviewPanel />
       </div>
 
       {/* Persistent File Viewer Modal / Drawer */}
