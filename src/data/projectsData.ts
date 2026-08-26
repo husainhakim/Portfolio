@@ -212,4 +212,51 @@ $ python3 start.py --no-browser`,
     ],
     writeupPath: "/home/husain/writeups/quickref.md",
   },
+  {
+    id: "repochecker",
+    slug: "repochecker",
+    name: "RepoChecker",
+    tagline: "A local-only, read-only CLI that checks for secrets, sensitive files, and hygiene issues before you push to GitHub.",
+    status: "Completed",
+    category: "Forensics & Analysis",
+    securityConcepts: [
+      "Secret Detection",
+      "Git Forensics",
+      "Repository Hygiene",
+      "Local-only Processing",
+    ],
+    technologies: ["Python 3.10+", "CLI", "Regex"],
+    githubUrl: "https://github.com/husainhakim/RepoChecker",
+    date: "2024",
+    summary:
+      "RepoChecker is a local-only, read-only CLI tool designed to catch accidentally committed secrets, sensitive files, broken .gitignore rules, and untracked work before pushing to GitHub.",
+    problemStatement:
+      "Developers frequently push repositories containing accidentally committed secrets, sensitive files, or broken .gitignore rules. These mistakes are easy to make and embarrassing or costly to fix after the fact. RepoChecker catches these realistic, high-impact mistakes locally before they reach a remote repository.",
+    architectureDetails: [
+      "Local-only: Never makes network requests. No telemetry, no cloud, no GitHub API.",
+      "Read-only: Never modifies files or git state. Only reads and reports.",
+      "Git tracking awareness: Distinguishes between files that exist, are ignored, and are tracked.",
+      "Deterministic matching: Uses conservative pattern matching and git's own index data without AI or cloud inference.",
+    ],
+    keyFeatures: [
+      "Detects hardcoded API keys, passwords, and private key material.",
+      "Flags sensitive files like .env or credentials.json that are tracked by Git.",
+      "Identifies files that exist but lack a .gitignore rule.",
+      "Recognises conventional test directories and patterns.",
+    ],
+    cliUsageExample: `# Check the current directory
+$ repochecker
+
+# Check a specific project
+$ repochecker ./my-project`,
+    lessonsLearned: [
+      "Gained experience parsing git index and working tree state.",
+      "Implemented conservative regex patterns for secret detection to minimize false positives.",
+      "Designed a secure, local-only CLI tool that never exposes raw secret values.",
+    ],
+    futureRoadmap: [
+      "Integrate RepoChecker as a Git hook (pre-push or pre-commit).",
+      "Actively prevent committing or pushing code with critical issues without explicit override.",
+    ],
+  },
 ];
