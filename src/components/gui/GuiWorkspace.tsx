@@ -11,7 +11,6 @@ import { StatusBar } from "./StatusBar";
 import { FSNode } from "@/data/filesystemData";
 import { BlogView } from "@/components/views/BlogView";
 import { WriteupsListView } from "@/components/views/WriteupsListView";
-import { PreviewPanel } from "./PreviewPanel";
 import styles from "./Gui.module.css";
 
 export function GuiWorkspace() {
@@ -61,7 +60,6 @@ export function GuiWorkspace() {
             <DirectoryGrid nodes={childrenNodes} />
           )}
         </main>
-        <PreviewPanel />
       </div>
 
       {/* Persistent File Viewer Modal / Drawer */}

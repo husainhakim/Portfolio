@@ -147,5 +147,85 @@ The polar-coordinate radar visualization was fun but not rigorously validated. M
 ## The Actual Takeaway
 
 This project taught me that "scan a network" sounds like one problem but is actually four or five loosely related ones stacked together — physical layer discovery, hardware identity resolution, privacy-aware MAC handling, concurrent state management, and real-time visualization. Each of those had its own wrong-turn-then-correction moment, and the parts I'm most confident in now (WAL mode, the MAC-as-primary-key decision, the ARP-cache-warming approach) are the ones I got wrong first and had to actually understand before fixing.`
+  },
+  {
+    id: "quickref-writeup",
+    slug: "quickref",
+    category: "linux",
+    categoryLabel: "CLI Tooling & Python",
+    title: "QuickRef: Technical Postmortem",
+    difficulty: "Informational",
+    targetSystem: "Linux / macOS Terminal",
+    date: "2026-08-25",
+    readTime: "5 min read",
+    tags: ["PYTHON", "CLI", "ANSI", "PACKAGING"],
+    summary: "How I built a zero-dependency terminal command reference tool, why raw ANSI beats every pretty-printing library, and what Python packaging actually teaches you about import resolution.",
+    tableOfContents: [
+      "The Problem: Context-Switching Kills Flow",
+      "Why Not Just Use tldr?",
+      "The Real Challenge: Making a Terminal Readable",
+      "Raw ANSI vs. Libraries Like Rich",
+      "The Packaging Problem Nobody Warns You About",
+      "The JSON Data Layer Decision",
+      "What I'd Do Differently",
+      "The Actual Takeaway"
+    ],
+    markdownContent: `## The Problem: Context-Switching Kills Flow
+
+There's a specific kind of frustration that accumulates when you're deep in a terminal session — you're mid-command, halfway through piping something together — and you forget the exact flag syntax for \`chmod\`, or which \`netstat\` option shows listening ports. So you stop. You open a browser. You type the query. You wait for Google to load. You scan a Stack Overflow page, ignore three ads, find the answer in a comment, and then try to carry that context back into what you were doing.
+
+It sounds minor. After the fifth or sixth time in a session, it's not. That dead time and context-shift is real, and I wanted to eliminate it entirely.
+
+## Why Not Just Use tldr?
+
+\`tldr\` is a good tool. But it's built for general coverage rather than the specific things I was actively learning. When I was going through Linux fundamentals, networking basics, and Git workflows simultaneously, I wanted a reference that matched my current knowledge gaps — not a pre-packaged summary built for an imagined generic user.
+
+More importantly, I wanted to understand what I was looking up. The QuickRef data layer is hand-authored. Writing each command entry myself means I actually have to know what every field means — flags, use-cases, examples. It's a study tool as much as a reference tool, and \`tldr\` can't be that because I didn't build it.
+
+## The Real Challenge: Making a Terminal Readable
+
+The lookup logic itself is not interesting — it's a dictionary key match against a JSON file. The interesting problem was the output. When you dump structured data to a terminal naively, you get a wall of noise. Everything the same color, no visual hierarchy, no way to scan it at a glance.
+
+The goal was output that could be read in under three seconds. Name at the top. Description. Flags scannable in a column. Examples visually separated from explanations. That meant building a real formatter, not just \`print()\`-ing fields in order.
+
+## Raw ANSI vs. Libraries Like Rich
+
+The obvious move here is to import \`rich\` or \`colorama\` and use their formatting primitives. I specifically chose not to do that, for two reasons.
+
+First, the dependency story. QuickRef's whole value is that it runs anywhere, immediately, after a \`pip install\`. Adding a dependency means adding a thing that can be missing, or out of date, or version-conflicting with something else in the environment. The standard library only approach eliminates an entire class of "it worked on my machine" problems.
+
+Second, I wanted to understand what those libraries are actually doing. ANSI escape codes are not complicated — they're just specific byte sequences the terminal interprets as formatting instructions: \`\\033[1m\` for bold, \`\\033[0m\` to reset, \`\\033[32m\` for green. Writing them directly means I control exactly what happens and why. I built a small set of helper functions — \`bold()\`, \`dim()\`, \`accent()\`, \`code()\` — that wrap strings in the right escape sequences, and that's the entire "formatting library."
+
+The harder part was whitespace. Padding columns so they line up. Choosing when to add blank lines and when not to. Getting indentation levels right so the visual hierarchy is obvious without being loud. That's not code — that's taste, and it required more iteration than the actual string formatting.
+
+## The Packaging Problem Nobody Warns You About
+
+This was the most genuinely surprising part of the project. Getting \`quickref\` to run as a global command — not \`python quickref.py\`, but just \`quickref\` from anywhere in the filesystem — sounds like it should be a one-liner. It's not.
+
+The problem is how Python resolves paths to package data. During development, when you run the script directly from the project folder, \`__file__\` gives you a path that's relative to your current directory, and \`commands.json\` is sitting right next to the script. Everything works.
+
+After \`pip install\`, the script is installed to something like \`/usr/local/bin/quickref\` and the JSON data is sitting in a completely different location inside \`site-packages\`. If your code loads the data file with a path relative to the working directory — \`open("commands.json")\` — it breaks immediately because the working directory is wherever the user happens to be when they type \`quickref\`, not where the package was installed.
+
+The fix is \`importlib.resources\` (or \`pkg_resources\` in older Python). You declare the JSON as package data in \`setup.cfg\`, tell setuptools to include it in the installed package, and load it using \`importlib.resources.files(__package__).joinpath("commands.json").read_text()\`. That resolves the path relative to the installed package, not the working directory.
+
+That's a small fix. But getting there meant understanding the difference between *developing* a Python package and *installing* one — a distinction that's completely invisible until you get it wrong.
+
+## The JSON Data Layer Decision
+
+Storing commands as JSON rather than in a database or a Python dict was deliberate. JSON is human-readable, which means the data layer is also the authoring interface. Adding a new command means opening \`commands.json\` and writing a new object. No schema migrations. No ORM. No \`INSERT INTO\`. The data and the format are both trivially auditable.
+
+The tradeoff is that search is naive — it's a linear scan over every entry for a substring match. For 50–100 commands, this is instant. If the dataset ever grew to thousands of entries, I'd need to rethink it. For the scope this tool is designed for, the tradeoff is completely correct.
+
+## What I'd Do Differently
+
+The search is too literal. If you type \`quickref search "file permissions"\`, you only get results where "file permissions" appears as a substring in the entry. Concept-level search — where "permissions" returns \`chmod\`, \`chown\`, \`umask\`, and \`ls -l\` because they're semantically related — is much more useful and not much harder to build with a pre-tagged taxonomy. That's the obvious next iteration.
+
+The data authoring is also more friction than it needs to be. I wrote every command entry by hand, which was fine as a study exercise but doesn't scale well if I want to add a whole new domain quickly. A small CLI tool to scaffold new entries — prompting for name, description, flags, examples — would make the data layer much easier to extend.
+
+## The Actual Takeaway
+
+QuickRef ended up teaching me more about Python's module system and packaging than I expected when I started. The lookup logic took an afternoon. The formatter took a day of iteration. But the packaging problem — getting it to actually work as a proper installed CLI tool rather than a script you run from its own directory — that one required me to properly understand how Python resolves imports and data files at runtime.
+
+The lesson underneath all of it: **the boring infrastructure problems are usually where the real learning is.** The formatter is what you see. The packaging is what makes it actually work.`
   }
 ];

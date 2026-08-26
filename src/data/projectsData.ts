@@ -168,4 +168,48 @@ $ python3 start.py --no-browser`,
       "Introduce advanced zxcvbn-style probabilistic guessing models.",
     ],
   },
+  {
+    id: "quickref",
+    slug: "quickref",
+    name: "QuickRef",
+    tagline: "Offline, terminal-first command reference tool built to eliminate context-switching",
+    status: "Completed",
+    category: "Backend Systems",
+    securityConcepts: [
+      "Offline Knowledge Base",
+      "Terminal UI Formatting",
+      "CLI Tooling",
+      "Python Packaging",
+    ],
+    technologies: ["Python", "JSON", "ANSI Escape Codes", "Setuptools"],
+    githubUrl: "https://github.com/husainhakim/QuickRef",
+    date: "2024",
+    summary:
+      "QuickRef is an offline, terminal-first command reference tool built to eliminate context-switching while learning Linux, networking, Git, and cybersecurity. It delivers fast, clean, structured command lookups directly in the terminal.",
+    problemStatement:
+      "While learning Linux and networking fundamentals, I kept losing focus every time I had to leave the terminal to look up command syntax. man pages are too dense for a quick refresher, and existing tools like tldr aren't tailored to how I actually learn. So I built my own — a fully offline personal knowledge base I could query instantly without breaking flow.",
+    architectureDetails: [
+      "Data Layer: JSON-based data layer for entirely offline, zero latency lookups.",
+      "Core Logic: Built with standard library Python (no heavy dependencies) to keep it lightweight.",
+      "Formatting: Custom ANSI-based terminal formatter avoiding libraries like rich, hand-tuning whitespace and color hierarchy for scannability.",
+      "Packaging: Uses setuptools and entry_points to install as a global CLI command.",
+    ],
+    keyFeatures: [
+      "Instant Lookups: 'quickref chmod' returns concise, structured command info in seconds.",
+      "Built-in Search: 'quickref search \"permissions\"' finds commands by concept, not just name.",
+      "Offline-First: Zero network calls, zero latency, works entirely from a local JSON dataset.",
+      "Globally Installed CLI: Runs as quickref from anywhere on the system.",
+    ],
+    lessonsLearned: [
+      "Mastered custom terminal formatting using raw ANSI escape codes to create readable, scannable terminal outputs without external libraries.",
+      "Learned how Python resolves package data paths at install time versus relying on the current working directory.",
+      "Gained hands-on experience with proper Python packaging (setuptools, entry_points) to distribute global CLI tools.",
+    ],
+    futureRoadmap: [
+      "Add support for custom user-defined command aliases.",
+      "Implement a sync mechanism for sharing custom datasets across multiple machines.",
+      "Create an interactive TUI (Terminal User Interface) mode for browsing commands.",
+    ],
+    writeupPath: "/home/husain/writeups/quickref.md",
+  },
 ];

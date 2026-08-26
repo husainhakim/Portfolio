@@ -107,7 +107,15 @@ export function BlogView() {
                   </a>
                 </div>
               )}
+
+              <div className={styles.blogCardFooter} style={{ borderTop: "1px dashed var(--border-color)", marginTop: "16px", paddingTop: "12px" }}>
+                <div style={{ display: 'flex', alignItems: 'center', gap: '8px', color: 'var(--text-primary)', fontSize: '12px', fontWeight: '500' }}>
+                  <span>Read Blog</span>
+                  <ArrowUpRight size={14} />
+                </div>
+              </div>
             </div>
+
           ))
         ) : (
           <div className={styles.emptyState}>
