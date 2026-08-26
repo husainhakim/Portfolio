@@ -3,9 +3,9 @@
 .guiWorkspace {
   display: flex;
   flex-direction: column;
-  height: auto;
+  height: 100%;
   width: 100%;
-  overflow: visible;
+  overflow: hidden;
   background: var(--bg-app);
 }
 
@@ -163,6 +163,8 @@
   padding: 0 12px;
   gap: 12px;
   flex-shrink: 0;
+  overflow-x: auto;
+  white-space: nowrap;
 }
 
 .ribbonGroup {
@@ -235,7 +237,8 @@
 .mainLayout {
   display: flex;
   flex: 1;
-  overflow: visible;
+  overflow: hidden;
+  height: 100%;
   position: relative;
   align-items: stretch; /* Keep stretch so the border-right extends to the bottom */
 }
@@ -460,7 +463,8 @@
 .contentArea {
   flex: 1;
   padding: 16px 20px 24px 20px; /* Fixed small bottom padding */
-  overflow: visible;
+  overflow-y: auto;
+  overflow-x: hidden;
   background: var(--bg-app);
 }
 
@@ -1561,7 +1565,7 @@
     z-index: 999;
   }
 
-  .sidebar {
+  .mainLayout .sidebar {
     position: fixed;
     top: 0;
     left: 0;
@@ -1572,7 +1576,7 @@
     box-shadow: 4px 0 16px rgba(0,0,0,0.2);
   }
 
-  .sidebarOpen {
+  .mainLayout .sidebarOpen {
     transform: translateX(0);
   }
 
@@ -1633,7 +1637,7 @@
     display: none;
   }
 
-  .previewPanel {
+  .mainLayout .previewPanel {
     position: fixed;
     bottom: 0;
     left: 0;
