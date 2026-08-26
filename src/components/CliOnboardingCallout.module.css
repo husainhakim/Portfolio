@@ -1,0 +1,150 @@
+/* CliOnboardingCallout.module.css
+   First-visit callout that drops below the GUI/CLI mode switcher.
+   Dismissed by interacting with the switch or clicking X.
+   Never shown again once hasSeenCliHint = "1". */
+
+/* Entrance keyframes */
+@keyframes calloutEnter {
+  from {
+    opacity: 0;
+    transform: translateY(-6px);
+  }
+  to {
+    opacity: 1;
+    transform: translateY(0);
+  }
+}
+
+@media (prefers-reduced-motion: reduce) {
+  @keyframes calloutEnter {
+    from { opacity: 0; }
+    to   { opacity: 1; }
+  }
+}
+
+/* Wrapper: absolutely positioned below the mode-switch anchor */
+.calloutWrapper {
+  position: absolute;
+  top: calc(100% + 10px);
+  right: 0;
+  z-index: 200;
+  animation: calloutEnter 0.22s ease-out both;
+  pointer-events: auto;
+}
+
+/* Arrow pointing UP toward the mode switcher */
+.calloutArrow {
+  position: absolute;
+  top: -7px;
+  right: 52px;
+  width: 0;
+  height: 0;
+  border-left: 7px solid transparent;
+  border-right: 7px solid transparent;
+  border-bottom: 7px solid var(--accent-primary);
+}
+
+/* Callout card */
+.callout {
+  position: relative;
+  display: flex;
+  align-items: flex-start;
+  gap: 10px;
+  padding: 11px 14px;
+  min-width: 240px;
+  max-width: min(320px, calc(100vw - 24px));
+  background: var(--bg-surface);
+  border: 1.5px solid var(--accent-primary);
+  box-shadow:
+    0 0 0 1px var(--accent-border),
+    0 6px 24px rgba(0, 0, 0, 0.18);
+}
+
+/* Icon column */
+.calloutIcon {
+  flex-shrink: 0;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  width: 28px;
+  height: 28px;
+  background: var(--accent-surface);
+  border: 1px solid var(--accent-border);
+  color: var(--accent-text);
+  margin-top: 1px;
+}
+
+/* Text column */
+.calloutBody {
+  flex: 1;
+  min-width: 0;
+}
+
+.calloutHeadline {
+  font-family: var(--font-mono);
+  font-size: 11.5px;
+  font-weight: 700;
+  color: var(--text-primary);
+  line-height: 1.3;
+  letter-spacing: 0.01em;
+  margin-bottom: 3px;
+}
+
+.calloutSub {
+  font-family: var(--font-sans);
+  font-size: 11px;
+  color: var(--text-secondary);
+  line-height: 1.45;
+}
+
+/* Dismiss button */
+.calloutDismiss {
+  flex-shrink: 0;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  width: 20px;
+  height: 20px;
+  color: var(--text-muted);
+  border-radius: var(--radius-sm);
+  transition: color 0.1s, background 0.1s;
+  margin-top: -2px;
+  margin-right: -4px;
+}
+
+.calloutDismiss:hover {
+  color: var(--text-primary);
+  background: var(--bg-panel);
+}
+
+.calloutDismiss:focus-visible {
+  outline: 2px solid var(--accent-text);
+  outline-offset: 1px;
+}
+
+/* Mode switcher highlight ring shown while callout is active */
+.modeSwitchHighlight {
+  outline: 2px solid var(--accent-primary);
+  outline-offset: 3px;
+}
+
+/* Mobile: shift callout so it doesn't clip viewport edge */
+@media (max-width: 600px) {
+  .calloutWrapper {
+    right: auto;
+    left: 50%;
+    transform: translateX(-50%);
+    animation: calloutEnterMobile 0.22s ease-out both;
+  }
+
+  .calloutArrow {
+    right: auto;
+    left: 50%;
+    transform: translateX(-50%);
+  }
+}
+
+@keyframes calloutEnterMobile {
+  from { opacity: 0; transform: translateX(-50%) translateY(-6px); }
+  to   { opacity: 1; transform: translateX(-50%) translateY(0); }
+}
