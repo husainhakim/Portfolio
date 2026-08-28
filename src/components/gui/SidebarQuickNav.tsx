@@ -6,7 +6,8 @@ import {
   Folder,
   HardDrive,
   Cloud,
-  Pin
+  Pin,
+  User
 } from "lucide-react";
 import { Win11Folder, Win11Pdf } from "./Win11Icons";
 import { findNodeByPath } from "@/data/filesystemData";
@@ -17,10 +18,11 @@ interface NavShortcut {
   path: string;
   colorTheme?: "yellow" | "blue" | "blueGray" | "teal" | "warm" | "brown";
   isPdf?: boolean;
+  isUser?: boolean;
 }
 
 const SHORTCUTS: NavShortcut[] = [
-  { label: "about", path: "/home/husain/about", colorTheme: "blue" },
+  { label: "about.md", path: "/home/husain/about.md", isUser: true },
   { label: "projects", path: "/home/husain/projects", colorTheme: "blueGray" },
   { label: "writeups", path: "/home/husain/writeups", colorTheme: "teal" },
   { label: "blogs", path: "/home/husain/blogs", colorTheme: "warm" },
@@ -92,6 +94,8 @@ export function SidebarQuickNav({ isOpen, onClose }: SidebarQuickNavProps) {
                 <div className={styles.sidebarNavLeft}>
                   {item.isPdf ? (
                     <Win11Pdf size={16} className={styles.sidebarNavIcon} />
+                  ) : item.isUser ? (
+                    <User size={16} color="#3b82f6" className={styles.sidebarNavIcon} />
                   ) : (
                     <Win11Folder size={16} colorTheme={item.colorTheme} className={styles.sidebarNavIcon} />
                   )}

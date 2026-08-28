@@ -11,6 +11,7 @@ import {
   getParentPath,
   normalizePath,
 } from "@/data/filesystemData";
+import { useRouter, usePathname } from "next/navigation";
 
 type WorkspaceMode = "gui" | "cli";
 type ViewLayout = "grid" | "list";
@@ -46,20 +47,36 @@ interface FilesystemContextType {
 const FilesystemContext = createContext<FilesystemContextType | undefined>(undefined);
 
 export function FilesystemProvider({ children }: { children: React.ReactNode }) {
+  const router = useRouter();
+  const pathname = usePathname();
+
   const [mode, setMode] = useState<WorkspaceMode>("gui");
-  const [currentPath, setCurrentPath] = useState<string>(ROOT_PATH);
   const [selectedNode, setSelectedNode] = useState<FSNode | null>(null);
   const [openedFile, setOpenedFile] = useState<FSFile | null>(null);
   const [viewLayout, setViewLayout] = useState<ViewLayout>("grid");
   const [searchQuery, setSearchQuery] = useState<string>("");
   const [sortOption, setSortOption] = useState<SortOption>("default");
 
-  // Navigation History Stack
-  const [history, setHistory] = useState<string[]>([ROOT_PATH]);
-  const [historyIndex, setHistoryIndex] = useState<number>(0);
+  // Derive virtual path from URL pathname
+  const virtualPath = pathname === "/" ? ROOT_PATH : normalizePath(pathname);
+  const resolvedNode = findNodeByPath(virtualPath, VIRTUAL_FS);
 
-  // Sync current node with currentPath
+  // If the URL points to a file, current path is the parent directory
+  const currentPath = resolvedNode?.type === "file" ? getParentPath(virtualPath) : virtualPath;
   const currentNode = findNodeByPath(currentPath, VIRTUAL_FS);
+
+  // Sync openedFile with URL
+  useEffect(() => {
+    if (resolvedNode?.type === "file") {
+      setOpenedFile(resolvedNode as FSFile);
+      setSelectedNode(resolvedNode);
+    } else {
+      setOpenedFile(null);
+      // We don't want to clear selectedNode completely on every directory change 
+      // if they just selected something, but usually URL change means a new location.
+      setSelectedNode(null);
+    }
+  }, [virtualPath, resolvedNode]);
 
   const navigate = useCallback(
     (targetPath: string): boolean => {
@@ -70,51 +87,22 @@ export function FilesystemProvider({ children }: { children: React.ReactNode }) 
         return false;
       }
 
-      if (node.type === "file") {
-        // If it's a file, open the file viewer and keep path at the file's parent or path
-        setOpenedFile(node);
-        setSelectedNode(node);
-      } else {
-        // Directory navigation
-        setCurrentPath(normalized);
-        setSelectedNode(null);
-        setOpenedFile(null);
-
-        // Update history if different from current history position
-        if (normalized !== history[historyIndex]) {
-          const newHistory = history.slice(0, historyIndex + 1);
-          newHistory.push(normalized);
-          setHistory(newHistory);
-          setHistoryIndex(newHistory.length - 1);
-        }
-      }
-
+      // If they are navigating to ROOT_PATH, map it back to "/" to keep URL clean, or just use the exact path
+      const urlPath = normalized === ROOT_PATH ? "/" : normalized;
+      router.push(urlPath);
+      
       return true;
     },
-    [history, historyIndex]
+    [router]
   );
 
   const goBack = useCallback(() => {
-    if (historyIndex > 0) {
-      const prevIndex = historyIndex - 1;
-      const prevPath = history[prevIndex];
-      setHistoryIndex(prevIndex);
-      setCurrentPath(prevPath);
-      setSelectedNode(null);
-      setOpenedFile(null);
-    }
-  }, [history, historyIndex]);
+    router.back();
+  }, [router]);
 
   const goForward = useCallback(() => {
-    if (historyIndex < history.length - 1) {
-      const nextIndex = historyIndex + 1;
-      const nextPath = history[nextIndex];
-      setHistoryIndex(nextIndex);
-      setCurrentPath(nextPath);
-      setSelectedNode(null);
-      setOpenedFile(null);
-    }
-  }, [history, historyIndex]);
+    router.forward();
+  }, [router]);
 
   const goUp = useCallback(() => {
     if (currentPath !== ROOT_PATH) {
@@ -124,21 +112,25 @@ export function FilesystemProvider({ children }: { children: React.ReactNode }) 
   }, [currentPath, navigate]);
 
   const openFile = useCallback((file: FSFile) => {
-    setOpenedFile(file);
-    setSelectedNode(file);
-  }, []);
+    navigate(file.path);
+  }, [navigate]);
 
   const closeFile = useCallback(() => {
-    setOpenedFile(null);
-  }, []);
+    // Navigate to the parent directory to close the file
+    navigate(currentPath);
+  }, [navigate, currentPath]);
 
   const toggleMode = useCallback(() => {
     setMode((prev) => (prev === "gui" ? "cli" : "gui"));
   }, []);
 
-  const canGoBack = historyIndex > 0;
-  const canGoForward = historyIndex < history.length - 1;
+  // Browser handles history, so these are simplifications
+  const canGoBack = true; // We can't easily know if browser has back history in Next.js without listening to window events, so we assume true for UI
+  const canGoForward = true;
   const canGoUp = currentPath !== ROOT_PATH;
+  
+  // We no longer strictly track history array in context
+  const history: string[] = [currentPath];
 
   return (
     <FilesystemContext.Provider
