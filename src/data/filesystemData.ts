@@ -81,31 +81,20 @@ export const VIRTUAL_FS: FSDirectory = {
       ],
     },
 
-    // 📁 about/
+    // 📄 about.md
     {
-      id: "about-dir",
-      name: "about",
-      path: "/home/husain/about",
-      type: "directory",
-      permissions: "drwxr-xr-x",
+      id: "about-file",
+      name: "about.md",
+      path: "/home/husain/about.md",
+      type: "file",
+      fileType: "markdown",
+      permissions: "-rw-r--r--",
       owner: "husain",
       group: "staff",
-      updatedAt: "2025-02-18",
+      size: 1420,
+      updatedAt: "2026-08-23",
       description: "Personal background, education, and technical mindset",
-      children: [
-        {
-          id: "about-profile",
-          name: "profile.md",
-          path: "/home/husain/about/profile.md",
-          type: "file",
-          fileType: "markdown",
-          permissions: "-rw-r--r--",
-          owner: "husain",
-          group: "staff",
-          size: 1420,
-          updatedAt: "2026-08-23",
-          description: "Who I am, focus areas, and offensive security interests",
-          content: `# Husain Hakim
+      content: `# Husain Hakim
 **Cybersecurity Student | Offensive Security & Tool Development**
 
 Dedicated to ethical hacking, offensive security, and technical systems research. I specialize in bridging the gap between low-level systems programming and modern application security.
@@ -125,9 +114,6 @@ Dedicated to ethical hacking, offensive security, and technical systems research
 
 ## Current Focus
 Currently focused on building bespoke security tools (like CYBER // SONAR and File Type Identifiers) that don't rely on existing frameworks, emphasizing zero-dependency architectures and deep-dive technical postmortems to truly understand the underlying protocols.`,
-        },
-
-      ],
     },
 
     // 📁 projects/

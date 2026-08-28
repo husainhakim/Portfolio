@@ -3,6 +3,7 @@
 import React, { useEffect, useState } from "react";
 import ReactMarkdown from "react-markdown";
 import { BlogItem } from "@/data/blogsData";
+import { findNodeByPath, FSFile } from "@/data/filesystemData";
 import { useFilesystem } from "@/context/FilesystemContext";
 import {
   Calendar,
@@ -19,7 +20,7 @@ interface BlogDetailViewProps {
 }
 
 export function BlogDetailView({ blog }: BlogDetailViewProps) {
-  const { navigate } = useFilesystem();
+  const { navigate, openFile } = useFilesystem();
   const [scrollProgress, setScrollProgress] = useState(0);
 
   // Dynamic read time calculation
@@ -123,7 +124,12 @@ export function BlogDetailView({ blog }: BlogDetailViewProps) {
             </div>
             <button 
               className={styles.primaryActionButton}
-              onClick={() => navigate("/home/husain/about")}
+              onClick={() => {
+                const aboutNode = findNodeByPath("/home/husain/about.md");
+                if (aboutNode && aboutNode.type === "file") {
+                  openFile(aboutNode as FSFile);
+                }
+              }}
             >
               <User size={14} />
               <span>View Profile</span>

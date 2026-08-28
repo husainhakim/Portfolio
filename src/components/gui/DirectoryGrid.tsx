@@ -99,7 +99,7 @@ export function DirectoryGrid({ nodes }: DirectoryGridProps) {
 
   if (!isMounted) return null;
 
-  const quickAccessNames = ["about", "projects", "writeups", "resume.pdf"];
+  const quickAccessNames = ["about.md", "projects", "writeups", "resume.pdf"];
   const quickAccessNodes = isRoot && !searchQuery
     ? quickAccessNames.map(name => nodes.find(n => n.name === name)).filter(Boolean) as FSNode[]
     : [];
@@ -159,6 +159,7 @@ export function DirectoryGrid({ nodes }: DirectoryGridProps) {
     }
 
     const file = node as FSFile;
+    if (node.name === "about.md") return <User size={size} className={className} color="#3b82f6" />;
     if (file.fileType === "pdf") return <Win11Pdf size={size} className={className} />;
     if (file.fileType === "contact") return <Mail size={size} className={className} color="var(--accent-primary)" />;
     if (file.fileType === "skills") return <Wrench size={size} className={className} color="#e5a000" />;
@@ -180,6 +181,7 @@ export function DirectoryGrid({ nodes }: DirectoryGridProps) {
     }
 
     const file = node as FSFile;
+    if (node.name === "about.md") return styles.aboutIcon;
     if (file.fileType === "pdf") return styles.pdfIcon;
     if (file.fileType === "project") return styles.projectIcon;
     if (file.fileType === "writeup") return styles.writeupIcon;
