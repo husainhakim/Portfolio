@@ -36,6 +36,7 @@ import {
 } from "lucide-react";
 import styles from "./Gui.module.css";
 import { Win11Folder, Win11Pdf } from "./Win11Icons";
+import { FileOnboardingCallout, FILE_HINT_KEY } from "@/components/FileOnboardingCallout";
 
 interface DirectoryGridProps {
   nodes: FSNode[];
@@ -132,6 +133,9 @@ export function DirectoryGrid({ nodes }: DirectoryGridProps) {
   };
 
   const handleNodeDoubleClick = (node: FSNode) => {
+    try {
+      localStorage.setItem(FILE_HINT_KEY, "1");
+    } catch (_) {}
     if (node.type === "directory") {
       navigate(node.path);
     } else {
@@ -278,6 +282,9 @@ export function DirectoryGrid({ nodes }: DirectoryGridProps) {
   if (viewLayout === "grid") {
     return (
       <div className={styles.gridContainer}>
+        {/* Onboarding hint for double-clicking files and folders */}
+        <FileOnboardingCallout />
+
         {isRoot && !searchQuery && quickAccessNodes.length > 0 && (
           <div className={styles.sectionContainer}>
             <div
@@ -365,6 +372,9 @@ export function DirectoryGrid({ nodes }: DirectoryGridProps) {
   // List Layout (Sharp technical table format)
   return (
     <div className={styles.listContainer}>
+      {/* Onboarding hint for double-clicking files and folders */}
+      <FileOnboardingCallout />
+
       {isRoot && !searchQuery && quickAccessNodes.length > 0 && (
         <div className={styles.sectionContainer}>
           <div
