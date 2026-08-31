@@ -464,7 +464,7 @@ ${list.join("\n\n")}`,
         window.open("/resume.pdf", "_blank");
       }
       return {
-        text: `Opening official resume: /resume.pdf (96 KB)...
+        text: `Opening official resume: /resume.pdf (280 KB)...
 Link: /resume.pdf`,
       };
     }

@@ -50,33 +50,40 @@ export function FilesystemProvider({ children }: { children: React.ReactNode }) 
   const router = useRouter();
   const pathname = usePathname();
 
-  const [mode, setMode] = useState<WorkspaceMode>("gui");
+  const [mode, setModeState] = useState<WorkspaceMode>("gui");
+  const [cliPath, setCliPath] = useState<string>(ROOT_PATH);
   const [selectedNode, setSelectedNode] = useState<FSNode | null>(null);
   const [openedFile, setOpenedFile] = useState<FSFile | null>(null);
   const [viewLayout, setViewLayout] = useState<ViewLayout>("grid");
   const [searchQuery, setSearchQuery] = useState<string>("");
   const [sortOption, setSortOption] = useState<SortOption>("default");
 
-  // Derive virtual path from URL pathname
-  const virtualPath = pathname === "/" ? ROOT_PATH : normalizePath(pathname);
-  const resolvedNode = findNodeByPath(virtualPath, VIRTUAL_FS);
+  const modeRef = React.useRef<WorkspaceMode>(mode);
+  modeRef.current = mode;
 
-  // If the URL points to a file, current path is the parent directory
-  const currentPath = resolvedNode?.type === "file" ? getParentPath(virtualPath) : virtualPath;
+  // Derive virtual path from URL pathname for GUI mode
+  const guiVirtualPath = pathname === "/" ? ROOT_PATH : normalizePath(pathname);
+  const guiResolvedNode = findNodeByPath(guiVirtualPath, VIRTUAL_FS);
+  const guiCurrentPath = guiResolvedNode?.type === "file" ? getParentPath(guiVirtualPath) : guiVirtualPath;
+
+  // Active path and node depending on workspace mode
+  const currentPath = mode === "cli" ? cliPath : guiCurrentPath;
   const currentNode = findNodeByPath(currentPath, VIRTUAL_FS);
 
-  // Sync openedFile with URL
+  // Sync openedFile with URL in GUI mode
   useEffect(() => {
-    if (resolvedNode?.type === "file") {
-      setOpenedFile(resolvedNode as FSFile);
-      setSelectedNode(resolvedNode);
+    if (mode === "gui") {
+      if (guiResolvedNode?.type === "file") {
+        setOpenedFile(guiResolvedNode as FSFile);
+        setSelectedNode(guiResolvedNode);
+      } else {
+        setOpenedFile(null);
+        setSelectedNode(null);
+      }
     } else {
       setOpenedFile(null);
-      // We don't want to clear selectedNode completely on every directory change 
-      // if they just selected something, but usually URL change means a new location.
-      setSelectedNode(null);
     }
-  }, [virtualPath, resolvedNode]);
+  }, [mode, guiVirtualPath, guiResolvedNode]);
 
   const navigate = useCallback(
     (targetPath: string): boolean => {
@@ -87,7 +94,14 @@ export function FilesystemProvider({ children }: { children: React.ReactNode }) 
         return false;
       }
 
-      // If they are navigating to ROOT_PATH, map it back to "/" to keep URL clean, or just use the exact path
+      // If currently in CLI mode, NEVER change the browser URL
+      if (modeRef.current === "cli") {
+        const destPath = node.type === "file" ? getParentPath(normalized) : normalized;
+        setCliPath(destPath);
+        return true;
+      }
+
+      // If they are navigating to ROOT_PATH in GUI mode, map it back to "/" to keep URL clean
       const urlPath = normalized === ROOT_PATH ? "/" : normalized;
       router.push(urlPath);
       
@@ -95,6 +109,31 @@ export function FilesystemProvider({ children }: { children: React.ReactNode }) 
     },
     [router]
   );
+
+  const setMode = useCallback((newMode: WorkspaceMode) => {
+    setModeState(newMode);
+    modeRef.current = newMode;
+    if (newMode === "cli") {
+      setCliPath(guiCurrentPath);
+      router.push("/");
+    } else {
+      const urlPath = cliPath === ROOT_PATH ? "/" : cliPath;
+      router.push(urlPath);
+    }
+  }, [guiCurrentPath, cliPath, router]);
+
+  const toggleMode = useCallback(() => {
+    const nextMode = modeRef.current === "gui" ? "cli" : "gui";
+    setModeState(nextMode);
+    modeRef.current = nextMode;
+    if (nextMode === "cli") {
+      setCliPath(guiCurrentPath);
+      router.push("/");
+    } else {
+      const urlPath = cliPath === ROOT_PATH ? "/" : cliPath;
+      router.push(urlPath);
+    }
+  }, [guiCurrentPath, cliPath, router]);
 
   const goBack = useCallback(() => {
     router.back();
@@ -116,20 +155,14 @@ export function FilesystemProvider({ children }: { children: React.ReactNode }) 
   }, [navigate]);
 
   const closeFile = useCallback(() => {
-    // Navigate to the parent directory to close the file
     navigate(currentPath);
   }, [navigate, currentPath]);
 
-  const toggleMode = useCallback(() => {
-    setMode((prev) => (prev === "gui" ? "cli" : "gui"));
-  }, []);
-
   // Browser handles history, so these are simplifications
-  const canGoBack = true; // We can't easily know if browser has back history in Next.js without listening to window events, so we assume true for UI
+  const canGoBack = true;
   const canGoForward = true;
   const canGoUp = currentPath !== ROOT_PATH;
   
-  // We no longer strictly track history array in context
   const history: string[] = [currentPath];
 
   return (

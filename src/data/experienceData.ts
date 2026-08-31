@@ -19,7 +19,7 @@ export interface ExperienceItem {
 export const EXPERIENCE_DATA: ExperienceItem[] = [
   {
     id: "letsupgrade-backend",
-    role: "Backend Engineer",
+    role: "Backend Developer",
     organization: "LetsUpgrade Edtech Pvt Ltd",
     type: "Full-Time / Internship",
     period: "Sept 2025 – July 2026",
@@ -31,14 +31,15 @@ export const EXPERIENCE_DATA: ExperienceItem[] = [
       "MongoDB Atlas",
       "Distributed Event Architecture",
       "RESTful APIs",
-      "Redis",
+      "FastAPI",
+      "Django",
       "Postman",
     ],
     summary:
-      "Core backend engineer responsible for architecting scalable microservices, re-engineering database trigger infrastructure into resilient event-driven workers, and maintaining production services supporting high-throughput educational workflows.",
+      "Core backend developer responsible for architecting scalable microservices, re-engineering database trigger infrastructure into resilient event-driven workers, and maintaining production services supporting high-throughput educational workflows.",
     responsibilities: [
-      "Architected and deployed event-driven Node.js worker services to replace legacy database-level triggers, dramatically streamlining system observability and operational reliability.",
-      "Designed, developed, and deployed over 150+ core REST endpoints for the company, ensuring scalable backend architecture and reliable API lifecycles.",
+      "Migrated 30+ MongoDB Atlas Triggers to Node.js event-driven services, reducing infrastructure costs by up to 95% while improving scalability and maintainability.",
+      "Developed and maintained backend services for a platform with 300+ REST APIs and 10M+ MongoDB documents, delivering production features and working with large-scale data systems.",
       "Collaborated cross-functionally with product managers and frontend teams to translate technical requirements into robust database schemas and high-performance API endpoints.",
       "Implemented stringent server-side payload validation, sanitized database queries, and tuned indexing strategies to eliminate query bottlenecks.",
       "Authored comprehensive API documentation and Postman collections to ensure smooth client and mobile client integration.",
@@ -50,9 +51,9 @@ export const EXPERIENCE_DATA: ExperienceItem[] = [
           "Successfully migrated 30+ MongoDB Atlas triggers into decoupled Node.js event listeners, mitigating cloud trigger execution overhead and reducing infrastructure compute expenses.",
       },
       {
-        metric: "150+ APIs Authored",
+        metric: "300+ REST APIs & 10M+ Docs",
         description:
-          "Wrote and deployed over 150 RESTful APIs from scratch for the company, cultivating deep expertise in scalable architecture, API lifecycle management, and secure endpoint design.",
+          "Developed and maintained backend services for a platform with 300+ REST APIs and 10M+ MongoDB documents, delivering production features and working with large-scale data systems.",
       },
       {
         metric: "Client Architecture Meetings",

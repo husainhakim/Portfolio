@@ -85,16 +85,16 @@ export function PreviewPanel() {
             <div className={styles.previewHeaderCentered}>
               <FileText size={48} className={styles.previewBigIcon} />
               <h3>resume.pdf</h3>
-              <span className={styles.previewTag}>96.0 KB</span>
+              <span className={styles.previewTag}>280.2 KB</span>
             </div>
             <p className={styles.previewDesc}>
-              Official CV detailing offensive security focus, 10 months backend engineering at LetsUpgrade, B.Tech CSE at ITM Skills University (2023–2027), and technical leadership.
+              Official CV detailing cybersecurity focus, backend engineering at LetsUpgrade (Sept 2025 – July 2026), B.Tech in Computer Science at ITM Skills University, security tooling, and competitive programming.
             </p>
             
             <div className={styles.previewGrid}>
               <div className={styles.previewGridItem}>
                 <span className={styles.pgLabel}>Role</span>
-                <span className={styles.pgValue}>Backend Engineer</span>
+                <span className={styles.pgValue}>Backend Developer</span>
               </div>
               <div className={styles.previewGridItem}>
                 <span className={styles.pgLabel}>Impact</span>
@@ -102,7 +102,7 @@ export function PreviewPanel() {
               </div>
               <div className={styles.previewGridItem}>
                 <span className={styles.pgLabel}>Scale</span>
-                <span className={styles.pgValue}>500+ APIs</span>
+                <span className={styles.pgValue}>300+ APIs / 10M+ Docs</span>
               </div>
             </div>
           </div>

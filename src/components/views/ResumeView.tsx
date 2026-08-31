@@ -24,13 +24,13 @@ export function ResumeView() {
           <div className={styles.badgeRow}>
             <span className="badge badge-pdf">Official Resume</span>
             <span className="badge badge-default">PDF Document</span>
-            <span className={styles.monoTag}>96.0 KB</span>
+            <span className={styles.monoTag}>280.2 KB</span>
           </div>
 
           <div className={styles.buttonGroupRow}>
             <a
               href="/resume.pdf"
-              download="Husain_Hakim_Resume.pdf"
+              download="HusainHakim_Resume.pdf"
               className={styles.primaryActionButton}
             >
               <Download size={14} />
@@ -51,7 +51,7 @@ export function ResumeView() {
 
         <h1 className={styles.projectTitle}>Husain Hakim — Technical Resume</h1>
         <p className={styles.projectTagline}>
-          Official CV detailing offensive security learning, backend engineering at LetsUpgrade, university education at ITM Skills University, technical tool builds, and verified accomplishments.
+          Official CV detailing offensive security learning, web application security & vulnerability discovery, backend engineering at LetsUpgrade, university education at ITM Skills University, and security tooling projects.
         </p>
       </div>
 
@@ -65,7 +65,7 @@ export function ResumeView() {
           <div className={styles.pdfViewerMeta}>
             <span>Format: Application/PDF</span>
             <span>•</span>
-            <span>Size: 96.0 KB</span>
+            <span>Size: 280.2 KB</span>
           </div>
         </div>
 
@@ -84,7 +84,7 @@ export function ResumeView() {
               <p>Your browser may have blocked iframe previewing.</p>
               <a
                 href="/resume.pdf"
-                download="Husain_Hakim_Resume.pdf"
+                download="HusainHakim_Resume.pdf"
                 className={styles.primaryActionButton}
                 style={{ marginTop: "16px" }}
               >
@@ -117,7 +117,7 @@ export function ResumeView() {
           </div>
           <div className={styles.metadataItem}>
             <span className={styles.metadataLabel}>File Size</span>
-            <span className={styles.metadataValue}>96,041 bytes (96.0 KB)</span>
+            <span className={styles.metadataValue}>280,224 bytes (280.2 KB)</span>
           </div>
         </div>
       </div>
