@@ -36,7 +36,7 @@ import {
 } from "lucide-react";
 import styles from "./Gui.module.css";
 import { Win11Folder, Win11Pdf } from "./Win11Icons";
-import { FileOnboardingCallout, FILE_HINT_KEY } from "@/components/FileOnboardingCallout";
+import { AboutTutorialBadge, ABOUT_TUTORIAL_KEY } from "./AboutTutorialBadge";
 
 interface DirectoryGridProps {
   nodes: FSNode[];
@@ -46,9 +46,16 @@ export function DirectoryGrid({ nodes }: DirectoryGridProps) {
   const [isMounted, setIsMounted] = React.useState(false);
   const [isQuickAccessOpen, setIsQuickAccessOpen] = React.useState(true);
   const [isRecentOpen, setIsRecentOpen] = React.useState(true);
+  const [hasSeenTutorial, setHasSeenTutorial] = React.useState<boolean>(true);
 
   React.useEffect(() => {
     setIsMounted(true);
+    try {
+      const seen = localStorage.getItem(ABOUT_TUTORIAL_KEY);
+      if (!seen) {
+        setHasSeenTutorial(false);
+      }
+    } catch (_) {}
   }, []);
 
   const {
@@ -105,6 +112,8 @@ export function DirectoryGrid({ nodes }: DirectoryGridProps) {
     ? quickAccessNames.map(name => nodes.find(n => n.name === name)).filter(Boolean) as FSNode[]
     : [];
 
+  const isQaShowingAbout = isRoot && !searchQuery && isQuickAccessOpen && quickAccessNodes.some(n => n.name === "about.md");
+
   const getRecentItems = () => {
     if (!isRoot || searchQuery) return [];
 
@@ -134,7 +143,8 @@ export function DirectoryGrid({ nodes }: DirectoryGridProps) {
 
   const handleNodeDoubleClick = (node: FSNode) => {
     try {
-      localStorage.setItem(FILE_HINT_KEY, "1");
+      localStorage.setItem(ABOUT_TUTORIAL_KEY, "1");
+      setHasSeenTutorial(true);
     } catch (_) {}
     if (node.type === "directory") {
       navigate(node.path);
@@ -216,6 +226,7 @@ export function DirectoryGrid({ nodes }: DirectoryGridProps) {
   // Shared function to render a node in Quick Access / Recent layout
   const renderQuickAccessNode = (node: FSNode) => {
     const isSelected = selectedNode?.id === node.id;
+    const isAboutTutorialTarget = node.name === "about.md" && !hasSeenTutorial;
     const iconClass = getNodeIconClass(node);
 
     return (
@@ -225,10 +236,16 @@ export function DirectoryGrid({ nodes }: DirectoryGridProps) {
         onClick={() => handleNodeClick(node)}
         onDoubleClick={() => handleNodeDoubleClick(node)}
         onKeyDown={(e) => handleKeyDown(e, node)}
-        className={`${styles.gridItemCard} ${styles.qaTile} ${isSelected ? styles.gridItemSelected : ""}`}
+        className={`${styles.gridItemCard} ${styles.qaTile} ${isSelected ? styles.gridItemSelected : ""} ${isAboutTutorialTarget ? "tutorialTargetNode" : ""}`}
         role="button"
         aria-label={`${node.type === "directory" ? "Directory" : "File"}: ${node.name}`}
       >
+        {isAboutTutorialTarget && (
+          <AboutTutorialBadge
+            variant="quick-access"
+            onDismiss={() => setHasSeenTutorial(true)}
+          />
+        )}
         <Pin size={12} className={styles.pinIcon} />
         <div className={styles.qaTileTop}>
           <div className={`${styles.listRowIcon} ${iconClass}`}>
@@ -282,9 +299,6 @@ export function DirectoryGrid({ nodes }: DirectoryGridProps) {
   if (viewLayout === "grid") {
     return (
       <div className={styles.gridContainer}>
-        {/* Onboarding hint for double-clicking files and folders */}
-        <FileOnboardingCallout />
-
         {isRoot && !searchQuery && quickAccessNodes.length > 0 && (
           <div className={styles.sectionContainer}>
             <div
@@ -295,7 +309,7 @@ export function DirectoryGrid({ nodes }: DirectoryGridProps) {
               <span className={styles.sectionTitle}>Quick Access</span>
             </div>
             {isQuickAccessOpen && (
-              <div className={styles.qaGrid}>
+              <div className={`${styles.qaGrid} ${!hasSeenTutorial ? styles.qaGridTutorialActive : ""}`}>
                 {quickAccessNodes.map(renderQuickAccessNode)}
               </div>
             )}
@@ -327,9 +341,10 @@ export function DirectoryGrid({ nodes }: DirectoryGridProps) {
           </div>
         )}
 
-        <div className={styles.fileGrid}>
+        <div className={`${styles.fileGrid} ${!isQaShowingAbout && !hasSeenTutorial ? styles.fileGridTutorialActive : ""}`}>
           {filteredNodes.map((node) => {
             const isSelected = selectedNode?.id === node.id;
+            const isAboutTutorialTarget = !isQaShowingAbout && node.name === "about.md" && !hasSeenTutorial;
             const iconClass = getNodeIconClass(node);
 
             return (
@@ -339,10 +354,16 @@ export function DirectoryGrid({ nodes }: DirectoryGridProps) {
                 onClick={() => handleNodeClick(node)}
                 onDoubleClick={() => handleNodeDoubleClick(node)}
                 onKeyDown={(e) => handleKeyDown(e, node)}
-                className={`${styles.gridItemCard} ${isSelected ? styles.gridItemSelected : ""}`}
+                className={`${styles.gridItemCard} ${isSelected ? styles.gridItemSelected : ""} ${isAboutTutorialTarget ? "tutorialTargetNode" : ""}`}
                 role="button"
                 aria-label={`${node.type === "directory" ? "Directory" : "File"}: ${node.name}`}
               >
+                {isAboutTutorialTarget && (
+                  <AboutTutorialBadge
+                    variant="grid"
+                    onDismiss={() => setHasSeenTutorial(true)}
+                  />
+                )}
                 <div className={styles.gridItemTop}>
                   <div className={`${styles.gridItemIcon} ${iconClass}`}>
                     {getNodeIconElement(node, 48)}
@@ -372,9 +393,6 @@ export function DirectoryGrid({ nodes }: DirectoryGridProps) {
   // List Layout (Sharp technical table format)
   return (
     <div className={styles.listContainer}>
-      {/* Onboarding hint for double-clicking files and folders */}
-      <FileOnboardingCallout />
-
       {isRoot && !searchQuery && quickAccessNodes.length > 0 && (
         <div className={styles.sectionContainer}>
           <div
@@ -385,7 +403,7 @@ export function DirectoryGrid({ nodes }: DirectoryGridProps) {
             <span className={styles.sectionTitle}>Quick Access</span>
           </div>
           {isQuickAccessOpen && (
-            <div className={styles.qaGrid}>
+            <div className={`${styles.qaGrid} ${!hasSeenTutorial ? styles.qaGridTutorialActive : ""}`}>
               {quickAccessNodes.map(renderQuickAccessNode)}
             </div>
           )}

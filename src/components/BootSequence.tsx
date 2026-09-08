@@ -27,7 +27,12 @@ export function BootSequence({ onComplete }: BootSequenceProps) {
 
   useEffect(() => {
     // Check if user already booted this session
-    if (sessionStorage.getItem("vfs_booted") === "true") {
+    try {
+      if (sessionStorage.getItem("vfs_booted") === "true") {
+        onComplete();
+        return;
+      }
+    } catch (_) {
       onComplete();
       return;
     }
@@ -51,7 +56,9 @@ export function BootSequence({ onComplete }: BootSequenceProps) {
 
     const endTimeout = setTimeout(() => {
       setIsDone(true);
-      sessionStorage.setItem("vfs_booted", "true");
+      try {
+        sessionStorage.setItem("vfs_booted", "true");
+      } catch (_) {}
       setTimeout(() => {
         if (typeof onComplete === 'function') {
           onComplete();
@@ -63,7 +70,9 @@ export function BootSequence({ onComplete }: BootSequenceProps) {
     const handleSkip = () => {
       clearAllTimeouts();
       setIsDone(true);
-      sessionStorage.setItem("vfs_booted", "true");
+      try {
+        sessionStorage.setItem("vfs_booted", "true");
+      } catch (_) {}
       if (typeof onComplete === 'function') {
         onComplete();
       }
@@ -75,13 +84,15 @@ export function BootSequence({ onComplete }: BootSequenceProps) {
       clearAllTimeouts();
       window.removeEventListener("keydown", handleSkip);
     };
-  }, []);
+  }, [onComplete]);
 
   return (
     <div
       className={`${styles.bootOverlay} ${isDone ? styles.bootFadeOut : ""}`}
       onClick={() => {
-        sessionStorage.setItem("vfs_booted", "true");
+        try {
+          sessionStorage.setItem("vfs_booted", "true");
+        } catch (_) {}
         onComplete();
       }}
     >

@@ -1,0 +1,289 @@
+/* AboutTutorialBadge.module.css
+   High-Visibility Arcade / RPG Quest HUD for about.md */
+
+@keyframes bubbleFloat {
+  0%, 100% {
+    transform: translateY(0);
+  }
+  50% {
+    transform: translateY(-6px);
+  }
+}
+
+@keyframes arrowBounce {
+  0%, 100% {
+    transform: translateY(0);
+  }
+  50% {
+    transform: translateY(5px);
+  }
+}
+
+@keyframes cyberGlow {
+  0%, 100% {
+    box-shadow: 0 10px 30px rgba(0, 0, 0, 0.5), 0 0 16px rgba(0, 150, 255, 0.4), inset 0 0 10px rgba(0, 150, 255, 0.15);
+    border-color: #0096ff;
+  }
+  50% {
+    box-shadow: 0 14px 38px rgba(0, 0, 0, 0.6), 0 0 26px rgba(0, 210, 255, 0.7), inset 0 0 14px rgba(0, 210, 255, 0.25);
+    border-color: #00d2ff;
+  }
+}
+
+@keyframes popIn {
+  0% {
+    opacity: 0;
+    transform: translateY(14px) scale(0.88);
+  }
+  70% {
+    transform: translateY(-4px) scale(1.02);
+  }
+  100% {
+    opacity: 1;
+    transform: translateY(0) scale(1);
+  }
+}
+
+@keyframes popOut {
+  from {
+    opacity: 1;
+    transform: scale(1);
+  }
+  to {
+    opacity: 0;
+    transform: scale(0.85) translateY(-10px);
+  }
+}
+
+.tutorialWrapper {
+  position: absolute;
+  z-index: 50;
+  pointer-events: auto;
+  animation: popIn 0.35s cubic-bezier(0.175, 0.885, 0.32, 1.275) both;
+  user-select: none;
+}
+
+/* Position above the card with enough clearance for the bouncing arrow */
+.qaPos {
+  bottom: calc(100% + 14px);
+  left: 50%;
+  transform: translateX(-50%);
+}
+
+.gridPos {
+  bottom: calc(100% + 14px);
+  left: 50%;
+  transform: translateX(-50%);
+}
+
+.dismissing {
+  animation: popOut 0.25s cubic-bezier(0.4, 0, 0.2, 1) forwards !important;
+}
+
+.speechBubble {
+  position: relative;
+  display: flex;
+  flex-direction: column;
+  background: linear-gradient(135deg, #09111e 0%, #0f1d33 100%);
+  border: 1.5px solid #0096ff;
+  border-radius: 8px;
+  padding: 10px 14px;
+  width: max-content;
+  max-width: 290px;
+  animation: bubbleFloat 3s ease-in-out infinite, cyberGlow 2.5s infinite ease-in-out;
+  box-shadow: 0 10px 30px rgba(0, 0, 0, 0.45), 0 0 18px rgba(0, 150, 255, 0.4);
+  backdrop-filter: blur(12px);
+}
+
+.bubbleHeader {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: 8px;
+  margin-bottom: 6px;
+}
+
+.questTag {
+  display: flex;
+  align-items: center;
+  gap: 5px;
+  background: #0078d4;
+  background: linear-gradient(90deg, #0078d4 0%, #00a2ff 100%);
+  color: #ffffff;
+  padding: 2.5px 8px;
+  border-radius: 4px;
+  font-family: var(--font-mono);
+  font-size: 10.5px;
+  font-weight: 800;
+  letter-spacing: 0.08em;
+  text-transform: uppercase;
+  box-shadow: 0 2px 6px rgba(0, 120, 212, 0.4);
+}
+
+.pixelIcon {
+  font-size: 11px;
+}
+
+.questTitle {
+  line-height: 1;
+}
+
+.startBadge {
+  font-family: var(--font-mono);
+  font-size: 10px;
+  font-weight: 700;
+  color: #38bdf8;
+  letter-spacing: 0.06em;
+  text-transform: uppercase;
+}
+
+.closeBtn {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  width: 20px;
+  height: 20px;
+  background: rgba(255, 255, 255, 0.08);
+  border: 1px solid rgba(255, 255, 255, 0.15);
+  border-radius: 50%;
+  color: #94a3b8;
+  cursor: pointer;
+  padding: 0;
+  transition: all 0.15s ease;
+  margin-left: auto;
+}
+
+.closeBtn:hover {
+  background: rgba(239, 68, 68, 0.25);
+  border-color: #ef4444;
+  color: #ffffff;
+}
+
+.bubbleBody {
+  margin-bottom: 6px;
+}
+
+.actionText {
+  margin: 0;
+  font-family: var(--font-sans);
+  font-size: 12.5px;
+  color: #e2e8f0;
+  line-height: 1.4;
+}
+
+.actionText strong {
+  color: #38bdf8;
+  font-weight: 700;
+}
+
+.fileHighlight {
+  display: inline-block;
+  font-family: var(--font-mono);
+  font-size: 11.5px;
+  font-weight: 700;
+  color: #ffffff;
+  background: rgba(0, 120, 212, 0.35);
+  border: 1px solid #38bdf8;
+  padding: 0 4px;
+  border-radius: 3px;
+  margin: 0 2px;
+}
+
+.bubbleFooter {
+  display: flex;
+  align-items: center;
+  padding-top: 5px;
+  border-top: 1px solid rgba(255, 255, 255, 0.1);
+}
+
+.shortcutHint {
+  display: flex;
+  align-items: center;
+  gap: 5px;
+  font-family: var(--font-mono);
+  font-size: 11px;
+  color: #94a3b8;
+}
+
+.clickIcon {
+  color: #38bdf8;
+}
+
+.kbd {
+  display: inline-block;
+  padding: 1px 5px;
+  font-family: var(--font-mono);
+  font-size: 10px;
+  font-weight: 700;
+  color: #e2e8f0;
+  background: rgba(255, 255, 255, 0.1);
+  border: 1px solid rgba(255, 255, 255, 0.25);
+  border-radius: 3px;
+  box-shadow: 0 1px 0 rgba(0, 0, 0, 0.4);
+}
+
+.arrowContainer {
+  position: absolute;
+  bottom: -14px;
+  left: 50%;
+  transform: translateX(-50%);
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  pointer-events: none;
+}
+
+.pixelArrow {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  color: #00d2ff;
+  animation: arrowBounce 1.2s ease-in-out infinite;
+  filter: drop-shadow(0 3px 6px rgba(0, 210, 255, 0.6));
+}
+
+/* Target card glow beacon */
+:global(.tutorialTargetNode) {
+  position: relative;
+  border-color: #0078d4 !important;
+  box-shadow: 0 0 0 2px rgba(0, 120, 212, 0.6), 0 0 20px rgba(0, 120, 212, 0.35) !important;
+  animation: targetBeaconPulse 2.5s infinite ease-in-out !important;
+}
+
+:global([data-theme="dark"] .tutorialTargetNode),
+:global(.explorer-theme) [data-theme="dark"] :global(.tutorialTargetNode) {
+  border-color: #38bdf8 !important;
+  box-shadow: 0 0 0 2px rgba(56, 189, 248, 0.7), 0 0 24px rgba(56, 189, 248, 0.45) !important;
+  animation: darkTargetBeaconPulse 2.5s infinite ease-in-out !important;
+}
+
+@keyframes targetBeaconPulse {
+  0%, 100% {
+    box-shadow: 0 0 0 2px rgba(0, 120, 212, 0.6), 0 0 16px rgba(0, 120, 212, 0.3);
+  }
+  50% {
+    box-shadow: 0 0 0 4px rgba(0, 120, 212, 0.3), 0 0 26px rgba(0, 120, 212, 0.55);
+  }
+}
+
+@keyframes darkTargetBeaconPulse {
+  0%, 100% {
+    box-shadow: 0 0 0 2px rgba(56, 189, 248, 0.7), 0 0 18px rgba(56, 189, 248, 0.35);
+  }
+  50% {
+    box-shadow: 0 0 0 4px rgba(56, 189, 248, 0.35), 0 0 30px rgba(56, 189, 248, 0.6);
+  }
+}
+
+@media (max-width: 640px) {
+  .speechBubble {
+    max-width: 250px;
+    padding: 8px 10px;
+  }
+  .actionText {
+    font-size: 11.5px;
+  }
+  .shortcutHint {
+    font-size: 10px;
+  }
+}

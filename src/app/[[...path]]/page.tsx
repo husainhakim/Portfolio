@@ -17,8 +17,12 @@ export default function WorkspacePage() {
 
   useEffect(() => {
     // Check if session already booted
-    const hasBooted = sessionStorage.getItem("vfs_booted");
-    if (hasBooted) {
+    try {
+      const hasBooted = sessionStorage.getItem("vfs_booted");
+      if (hasBooted) {
+        setBootCompleted(true);
+      }
+    } catch (_) {
       setBootCompleted(true);
     }
   }, []);

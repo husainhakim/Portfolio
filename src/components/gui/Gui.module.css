@@ -977,6 +977,17 @@
   display: flex;
   flex-wrap: wrap;
   gap: 12px;
+  transition: margin-top 0.25s ease;
+}
+
+.qaGridTutorialActive {
+  margin-top: 75px;
+  position: relative;
+}
+
+.fileGridTutorialActive {
+  margin-top: 75px;
+  position: relative;
 }
 
 .qaTile {
