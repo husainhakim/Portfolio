@@ -104,7 +104,7 @@ export function FilesystemProvider({ children }: { children: React.ReactNode }) 
       // If they are navigating to ROOT_PATH in GUI mode, map it back to "/" to keep URL clean
       const urlPath = normalized === ROOT_PATH ? "/" : normalized;
       router.push(urlPath);
-      
+
       return true;
     },
     [router]
@@ -162,7 +162,7 @@ export function FilesystemProvider({ children }: { children: React.ReactNode }) 
   const canGoBack = true;
   const canGoForward = true;
   const canGoUp = currentPath !== ROOT_PATH;
-  
+
   const history: string[] = [currentPath];
 
   return (

@@ -227,5 +227,139 @@ The data authoring is also more friction than it needs to be. I wrote every comm
 QuickRef ended up teaching me more about Python's module system and packaging than I expected when I started. The lookup logic took an afternoon. The formatter took a day of iteration. But the packaging problem — getting it to actually work as a proper installed CLI tool rather than a script you run from its own directory — that one required me to properly understand how Python resolves imports and data files at runtime.
 
 The lesson underneath all of it: **the boring infrastructure problems are usually where the real learning is.** The formatter is what you see. The packaging is what makes it actually work.`
+  },
+  {
+    id: "intrusion-detection-writeup",
+    slug: "intrusion-detection-system",
+    category: "web",
+    categoryLabel: "Web Security & Intrusion Detection",
+    title: "Honeypot + IDS + Main Server: Technical Postmortem",
+    difficulty: "Medium",
+    targetSystem: "Node.js / Express Web Environment",
+    date: "2026-08-25",
+    readTime: "5 min read",
+    tags: ["NODE.JS", "EXPRESS", "HONEYPOT", "IDS", "SQL INJECTION", "XSS", "LOG ANALYSIS"],
+    summary: "A comprehensive technical deep dive into designing a multi-tier honeypot, real-time log-tailing IDS, and contrasting vulnerable vs. hardened web services.",
+    tableOfContents: [
+      "The Goal: Dual-Perspective Security Lab",
+      "Architecture: Honeypot vs. Hardened Server",
+      "Vulnerability Mechanics: SQLi, Weak Auth, & Stored XSS",
+      "The Hardened Tier: Parameterization & Subtle Flaws",
+      "Real-Time Log Tailing and Sliding-Window Alerting",
+      "Offensive Simulation: Fast vs. Slow Evasion",
+      "What I'd Do Differently",
+      "The Actual Takeaway"
+    ],
+    markdownContent: `## The Goal: Dual-Perspective Security Lab
+
+Most introductory cybersecurity tutorials teach vulnerabilities in isolation. You learn how SQL injection works against a standalone script, or you study how an Intrusion Detection System (IDS) flags traffic in a packet capture. But in real-world security engineering, offensive maneuvers and defensive telemetry are two sides of the same coin.
+
+I built this simulation to bridge that exact gap: running a deliberately flawed **Honeypot** alongside a hardened **Main Server**, coordinated through a shared telemetry tracker and continuously audited by an active **Intrusion Detection System (IDS)** on a single machine.
+
+## Architecture: Honeypot vs. Hardened Server
+
+The architecture consists of three distinct service layers and an automated testing suite:
+
+1. **Honeypot (\`honeypot.js\`):** Acts as an intentionally attractive, fragile target exposed to attackers. It houses classic web vulnerabilities to draw reconnaissance away from core assets and capture exploit payloads in real-time.
+2. **Main Server (\`main.js\` on port 4000):** Represents the production application. It incorporates defensive coding standards—secure authentication, password hashing, and parameterized database queries. However, it conceals one subtle **Reflected XSS** vulnerability in its \`/search\` endpoint to reward deeper investigative enumeration.
+3. **Shared Tracker & Log Stream (\`tracker.js\` -> \`activity.log\`):** Intercepts every inbound HTTP request across services, attaches an anonymous session identifier, and streams structured access logs.
+4. **Intrusion Detection System (\`ids.js\`):** Asynchronously tails the shared \`activity.log\`, ingests event streams, maintains session attempt buckets, and raises high-priority alerts when brute-force thresholds are breached.
+5. **Attack Simulator (\`attack.js\`):** A CLI testing client designed to validate detection boundaries under both aggressive (\`--fast\`) and evasive (\`--slow\`) operational profiles.
+
+To keep the system lightweight and entirely zero-dependency, I used **\`sql.js\`**—a pure WebAssembly port of SQLite. This allowed realistic database execution and syntax evaluation without requiring external database server daemons.
+
+## Vulnerability Mechanics: SQLi, Weak Auth, & Stored XSS
+
+The Honeypot deliberately models three widespread web vulnerability classes:
+
+### 1. SQL Injection via Query Concatenation
+The authentication endpoint concatenates raw user input directly into an SQL string:
+\`\`\`javascript
+// honeypot.js - Intentionally vulnerable authentication
+const query = "SELECT * FROM users WHERE username = '" + username + "' AND password = '" + password + "'";
+const result = db.exec(query);
+\`\`\`
+Submitting standard injection payloads such as \`admin' --\` or \`' OR '1'='1\` closes the string delimiter, bypasses password verification entirely, and returns the first administrative record.
+
+### 2. Weak Admin Credentials
+Default credentials (\`admin\` / \`admin123\`) were populated in the SQLite table. This simulates low-hanging fruit commonly probed by automated credential stuffing bots.
+
+### 3. Stored Cross-Site Scripting (XSS)
+The guestbook feature accepts user feedback and writes it to the database, subsequently rendering it directly into the HTML response without sanitization or HTML entity escaping:
+\`\`\`html
+<!-- Rendered without sanitization -->
+<div>Author: <%- entry.author %></div>
+<div>Comment: <%- entry.comment %></div>
+\`\`\`
+Any submitted JavaScript payload (e.g. \`<script>alert(document.cookie)</script>\`) executes in the context of every user viewing the guestbook.
+
+## The Hardened Tier: Parameterization & Subtle Flaws
+
+In contrast, the **Main Server** on port 4000 demonstrates how these flaws are systematically mitigated:
+
+- **Parameterized Queries:** SQL statements use placeholder parameters (\`SELECT * FROM users WHERE username = ? AND password = ?\`), completely decoupling user input from SQL execution logic and rendering injection attempts inert.
+- **Defensive Authentication:** Passwords are verified against cryptographic hashes rather than plaintext database entries.
+
+However, secure code in production is rarely 100% flaw-free. To mirror real application audits, I intentionally planted a hidden **Reflected XSS** vulnerability within the \`/search\` query parameter. While the authentication and persistence layers are hardened, querying \`/search?q=<payload>\` reflects unescaped characters back into the DOM, reinforcing the reality that securing one layer does not guarantee full application immunity.
+
+## Real-Time Log Tailing and Sliding-Window Alerting
+
+The IDS operates as a standalone daemon that tails \`activity.log\` using file streaming. Every request captured by \`tracker.js\` logs a structured entry:
+\`\`\`
+[2024-11-10T14:32:01.120Z] [SESSION: a9f81d3c] POST /login -> 401 UNAUTHORIZED
+\`\`\`
+
+The IDS parses incoming log lines in real-time, grouping login attempts by session ID within a **10-second sliding time window**:
+
+\`\`\`javascript
+// ids.js - Sliding-window rate calculation
+const WINDOW_MS = 10000; // 10 seconds
+const THRESHOLD = 5;     // 5 attempts
+
+function recordLoginAttempt(sessionId, timestamp) {
+  const now = Date.now();
+  if (!sessions[sessionId]) {
+    sessions[sessionId] = [];
+  }
+  
+  // Filter out attempts older than the sliding window
+  sessions[sessionId] = sessions[sessionId].filter(t => now - t <= WINDOW_MS);
+  sessions[sessionId].push(now);
+
+  if (sessions[sessionId].length >= THRESHOLD) {
+    raiseAlert({
+      severity: "CRITICAL",
+      type: "BRUTE_FORCE_DETECTED",
+      sessionId: sessionId,
+      attempts: sessions[sessionId].length,
+      window: "10s"
+    });
+  }
+}
+\`\`\`
+
+## Offensive Simulation: Fast vs. Slow Evasion
+
+To validate the IDS, I built \`attack.js\` with two distinct execution modes:
+
+- **Aggressive Mode (\`--fast\`):** Fires 10 consecutive login attempts within ~500ms. The IDS detects the sudden spike within seconds and outputs a high-severity alert to the terminal:
+  \`\`\`
+  [ALERT] [CRITICAL] Rapid login burst detected from session a9f81d3c (10 attempts in 0.5s). Threshold exceeded.
+  \`\`\`
+- **Stealth Evasion Mode (\`--slow\`):** Introduces a 2.5-second sleep interval between requests. Because only ~4 attempts occur within any 10-second window, the attack slips completely under the rate threshold while still eventually executing the brute-force dictionary attack.
+
+This comparison visually demonstrates the inherent limitation of simple threshold-based rate limiting and why modern SIEM/SOC operations require behavioral analysis and cumulative scoring.
+
+## What I'd Do Differently
+
+1. **Log File Rotation & File Descriptors:** Reading a continuously written log file via simple file polling works well for local simulations, but handling log rotation (\`logrotate\`, inode recreation) requires \`fs.watch\` with proper fallbacks.
+2. **Session Identification Robustness:** Using cookie-based session tokens is sufficient for demonstrating session-grouped attacks, but in a real offensive engagement, attackers can easily discard cookies per request. Incorporating IP address tracking and client TLS/HTTP fingerprinting would make the IDS resilient against cookie-dropping attacks.
+3. **Automated Response Actions:** Currently, the IDS generates console alerts. Integrating active countermeasures—such as generating dynamic \`iptables\` / firewall rules or blacklisting tokens via an in-memory Redis cache—would turn this detection lab into an active Intrusion Prevention System (IPS).
+
+## The Actual Takeaway
+
+Building both sides of the application—the target and the detector—reinforced that **detection engineering is fundamentally an exercise in understanding attacker incentives and constraints.** 
+
+Writing vulnerable code showed me exactly how easily dangerous assumptions enter production software; writing the IDS showed me how tricky it is to catch an attacker who knows your detection thresholds and is patient enough to work around them.`
   }
 ];
