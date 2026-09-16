@@ -4,7 +4,6 @@ import React, { useState } from "react";
 import { PROFILE_DATA } from "@/data/profileData";
 import {
   Mail,
-  Globe,
   Copy,
   Check,
   Send,
@@ -135,28 +134,6 @@ export function ContactView() {
               >
                 <ExternalLink size={13} />
                 <span>Open X Profile</span>
-              </a>
-            </div>
-          </div>
-        </div>
-
-        {/* Portfolio Live Domain */}
-        <div className={styles.contactCard}>
-          <div className={styles.contactCardIcon}>
-            <Globe size={22} />
-          </div>
-          <div className={styles.contactCardBody}>
-            <span className={styles.contactCardLabel}>Live Portfolio Workspace</span>
-            <div className={styles.contactCardValue}>{PROFILE_DATA.portfolio}</div>
-            <div className={styles.contactCardActions}>
-              <a
-                href={PROFILE_DATA.portfolio}
-                target="_blank"
-                rel="noopener noreferrer"
-                className={styles.contactActionSecondary}
-              >
-                <ExternalLink size={13} />
-                <span>Visit Domain</span>
               </a>
             </div>
           </div>

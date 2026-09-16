@@ -26,9 +26,9 @@ const SHORTCUTS: NavShortcut[] = [
   { label: "projects", path: "/home/husain/projects", colorTheme: "teal" },
   { label: "writeups", path: "/home/husain/writeups", colorTheme: "blue" },
   { label: "blogs", path: "/home/husain/blogs", colorTheme: "blueGray" },
-  { label: "skills", path: "/home/husain/skills.md", colorTheme: "yellow" },
+  { label: "skills.md", path: "/home/husain/skills.md", colorTheme: "yellow" },
   { label: "experience", path: "/home/husain/experience", colorTheme: "warm" },
-  { label: "contact", path: "/home/husain/contact-info.md", colorTheme: "brown" },
+  { label: "contact-info.md", path: "/home/husain/contact-info.md", colorTheme: "brown" },
   { label: "resume.pdf", path: "/home/husain/resume.pdf", isPdf: true },
 ];
 

@@ -391,8 +391,7 @@ Currently focused on building bespoke security tools (like CYBER // SONAR and Fi
 - **Email**: husain.m.hakim.533@gmail.com
 - **GitHub**: https://github.com/husainhakim
 - **LinkedIn**: https://www.linkedin.com/in/husainhakim/
-- **X (Twitter)**: https://x.com/Husain533
-- **Portfolio**: https://husainhakim.vercel.app`,
+- **X (Twitter)**: https://x.com/Husain533`,
     },
 
     // 📄 resume.pdf
