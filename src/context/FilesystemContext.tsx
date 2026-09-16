@@ -3,7 +3,6 @@
 import React, { createContext, useContext, useState, useEffect, useCallback } from "react";
 import {
   FSNode,
-  FSDirectory,
   FSFile,
   ROOT_PATH,
   VIRTUAL_FS,
@@ -59,7 +58,9 @@ export function FilesystemProvider({ children }: { children: React.ReactNode }) 
   const [sortOption, setSortOption] = useState<SortOption>("default");
 
   const modeRef = React.useRef<WorkspaceMode>(mode);
-  modeRef.current = mode;
+  useEffect(() => {
+    modeRef.current = mode;
+  }, [mode]);
 
   // Derive virtual path from URL pathname for GUI mode
   const guiVirtualPath = pathname === "/" ? ROOT_PATH : normalizePath(pathname);
@@ -83,7 +84,7 @@ export function FilesystemProvider({ children }: { children: React.ReactNode }) 
     } else {
       setOpenedFile(null);
     }
-  }, [mode, guiVirtualPath, guiResolvedNode]);
+  }, [mode, guiVirtualPath]);
 
   const navigate = useCallback(
     (targetPath: string): boolean => {
@@ -155,8 +156,19 @@ export function FilesystemProvider({ children }: { children: React.ReactNode }) 
   }, [navigate]);
 
   const closeFile = useCallback(() => {
-    navigate(currentPath);
-  }, [navigate, currentPath]);
+    setOpenedFile(null);
+    setSelectedNode(null);
+    if (openedFile) {
+      const parent = getParentPath(openedFile.path);
+      const target =
+        parent === "/home/husain/vault" || parent === ROOT_PATH || parent === "/vault"
+          ? ROOT_PATH
+          : parent;
+      navigate(target);
+    } else {
+      navigate(ROOT_PATH);
+    }
+  }, [navigate, openedFile]);
 
   // Browser handles history, so these are simplifications
   const canGoBack = true;

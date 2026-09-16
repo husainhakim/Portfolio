@@ -1,6 +1,6 @@
 "use client";
 
-import React, { useState, useEffect } from "react";
+import React, { useState, useEffect, useRef } from "react";
 import styles from "./BootSequence.module.css";
 
 interface BootSequenceProps {
@@ -8,41 +8,41 @@ interface BootSequenceProps {
 }
 
 const BOOT_LINES = [
-  { text: "[    0.000000] Linux kernel 6.8.0-sec-research x86_64 initialized", delay: 80 },
-  { text: "[    0.042180] CPU0: AMD EPYC Security Processor (4 cores, 4.20 GHz)", delay: 140 },
-  { text: "[    0.110450] Initializing memory encryption & secure isolation...", delay: 200 },
-  { text: "[    0.245010] [OK] Mounted virtual root VFS at /home/husain", delay: 300 },
-  { text: "[    0.412030] [OK] Loaded toolchains: scapy, libpcap, zxcvbn-v2, binwalk", delay: 440 },
-  { text: "[    0.620000] [OK] Initializing offensive security lab environment...", delay: 600 },
-  { text: "[    0.850000] [OK] Authenticated operator: husain (uid=1000, gid=1000)", delay: 800 },
-  { text: "[    1.050000] [OK] Virtual filesystem synchronized with CLI & GUI buses.", delay: 1000 },
-  { text: "[    1.250000] > Starting Husain Hakim Cybersecurity Workspace...", delay: 1200 },
+  { text: "[    0.000000] Linux kernel 6.8.0-sec-research x86_64 initialized", delay: 60 },
+  { text: "[    0.042180] CPU0: AMD EPYC Security Processor (4 cores, 4.20 GHz)", delay: 120 },
+  { text: "[    0.110450] Initializing memory encryption & secure isolation...", delay: 180 },
+  { text: "[    0.245010] [OK] Mounted virtual root VFS at /home/husain", delay: 240 },
+  { text: "[    0.412030] [OK] Loaded toolchains: scapy, libpcap, zxcvbn-v2, binwalk", delay: 320 },
+  { text: "[    0.620000] [OK] Initializing offensive security lab environment...", delay: 420 },
+  { text: "[    0.850000] [OK] Authenticated operator: husain (uid=1000, gid=1000)", delay: 540 },
+  { text: "[    1.050000] [OK] Virtual filesystem synchronized with CLI & GUI buses.", delay: 680 },
+  { text: "[    1.250000] > Starting Husain Hakim Cybersecurity Workspace...", delay: 820 },
 ];
 
 export function BootSequence({ onComplete }: BootSequenceProps) {
   const [displayedLines, setDisplayedLines] = useState<string[]>([]);
   const [isDone, setIsDone] = useState(false);
+  const onCompleteRef = useRef(onComplete);
+  onCompleteRef.current = onComplete;
 
-  const timeoutsRef = React.useRef<NodeJS.Timeout[]>([]);
+  const timeoutsRef = useRef<NodeJS.Timeout[]>([]);
 
   useEffect(() => {
     // Check if user already booted this session
     try {
       if (sessionStorage.getItem("vfs_booted") === "true") {
-        onComplete();
+        onCompleteRef.current();
         return;
       }
     } catch (_) {
-      onComplete();
+      onCompleteRef.current();
       return;
     }
 
     const clearAllTimeouts = () => {
-      timeoutsRef.current.forEach(t => clearTimeout(t));
+      timeoutsRef.current.forEach((t) => clearTimeout(t));
       timeoutsRef.current = [];
     };
-
-    clearAllTimeouts();
 
     BOOT_LINES.forEach((line) => {
       const t = setTimeout(() => {
@@ -60,11 +60,9 @@ export function BootSequence({ onComplete }: BootSequenceProps) {
         sessionStorage.setItem("vfs_booted", "true");
       } catch (_) {}
       setTimeout(() => {
-        if (typeof onComplete === 'function') {
-          onComplete();
-        }
-      }, 350);
-    }, 1550);
+        onCompleteRef.current();
+      }, 200);
+    }, 1100);
     timeoutsRef.current.push(endTimeout);
 
     const handleSkip = () => {
@@ -73,9 +71,7 @@ export function BootSequence({ onComplete }: BootSequenceProps) {
       try {
         sessionStorage.setItem("vfs_booted", "true");
       } catch (_) {}
-      if (typeof onComplete === 'function') {
-        onComplete();
-      }
+      onCompleteRef.current();
     };
 
     window.addEventListener("keydown", handleSkip);
@@ -84,17 +80,19 @@ export function BootSequence({ onComplete }: BootSequenceProps) {
       clearAllTimeouts();
       window.removeEventListener("keydown", handleSkip);
     };
-  }, [onComplete]);
+  }, []);
+
+  const handleClick = () => {
+    try {
+      sessionStorage.setItem("vfs_booted", "true");
+    } catch (_) {}
+    onCompleteRef.current();
+  };
 
   return (
     <div
       className={`${styles.bootOverlay} ${isDone ? styles.bootFadeOut : ""}`}
-      onClick={() => {
-        try {
-          sessionStorage.setItem("vfs_booted", "true");
-        } catch (_) {}
-        onComplete();
-      }}
+      onClick={handleClick}
     >
       <div className={styles.bootScanline} />
       <div className={styles.bootContainer}>

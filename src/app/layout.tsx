@@ -4,6 +4,7 @@ import { ThemeProvider } from "@/context/ThemeContext";
 import { FilesystemProvider } from "@/context/FilesystemContext";
 import { Header } from "@/components/Header";
 import { PROFILE_DATA } from "@/data/profileData";
+import { SITE_URL, SITE_CONFIG } from "@/lib/siteConfig";
 
 export const viewport: Viewport = {
   themeColor: [
@@ -16,53 +17,61 @@ export const viewport: Viewport = {
 };
 
 export const metadata: Metadata = {
-  metadataBase: new URL("https://husainhakim.vercel.app"),
-  title: `${PROFILE_DATA.name} — ${PROFILE_DATA.title}`,
-  description:
-    "Cybersecurity workspace and technical portfolio of Husain Hakim. Featuring offensive security tooling, network reconnaissance, SUID privilege escalation research, backend architecture, and verified lab writeups.",
-  keywords: [
-    "Husain Hakim",
-    "Cybersecurity",
-    "Offensive Security",
-    "Ethical Hacking",
-    "Penetration Testing",
-    "Network Security",
-    "Privilege Escalation",
-    "Password Audit",
-    "Network Scanner",
-    "File Signature Detector",
-    "Backend Developer",
-    "ITM Skills University",
-  ],
-  authors: [{ name: PROFILE_DATA.name, url: PROFILE_DATA.portfolio }],
+  metadataBase: new URL(SITE_URL),
+  title: {
+    default: `${PROFILE_DATA.name} — ${PROFILE_DATA.title}`,
+    template: `%s | ${PROFILE_DATA.name}`,
+  },
+  description: SITE_CONFIG.description,
+  keywords: SITE_CONFIG.keywords,
+  authors: [{ name: PROFILE_DATA.name, url: SITE_URL }],
   creator: PROFILE_DATA.name,
+  publisher: PROFILE_DATA.name,
+  formatDetection: {
+    email: false,
+    address: false,
+    telephone: false,
+  },
+  alternates: {
+    canonical: SITE_URL,
+  },
   openGraph: {
     type: "website",
     locale: "en_US",
-    url: PROFILE_DATA.portfolio,
+    url: SITE_URL,
     title: `${PROFILE_DATA.name} — ${PROFILE_DATA.title}`,
-    description:
-      "Interactive cybersecurity workspace & offensive security portfolio. Virtual filesystem explorer and integrated CLI terminal.",
-    siteName: `${PROFILE_DATA.name} Portfolio`,
+    description: SITE_CONFIG.description,
+    siteName: `${PROFILE_DATA.name} — Offensive Security Workspace`,
     images: [
       {
-        url: "/husain.jpg",
-        width: 800,
-        height: 800,
-        alt: PROFILE_DATA.name,
+        url: "/opengraph-image",
+        width: 1200,
+        height: 630,
+        alt: `${PROFILE_DATA.name} — Offensive Security Workspace`,
       },
     ],
   },
   twitter: {
-    card: "summary",
+    card: "summary_large_image",
     title: `${PROFILE_DATA.name} — ${PROFILE_DATA.title}`,
-    description:
-      "Cybersecurity student dedicated to offensive security, penetration testing research, and systems engineering.",
-    images: ["/husain.jpg"],
+    description: SITE_CONFIG.description,
+    creator: "@Husain533",
+    images: ["/opengraph-image"],
   },
   robots: {
     index: true,
     follow: true,
+    googleBot: {
+      index: true,
+      follow: true,
+      "max-video-preview": -1,
+      "max-image-preview": "large",
+      "max-snippet": -1,
+    },
+  },
+  icons: {
+    icon: "/icon",
+    apple: "/apple-icon",
   },
 };
 
@@ -71,24 +80,91 @@ export default function RootLayout({
 }: Readonly<{
   children: React.ReactNode;
 }>) {
-  const jsonLd = {
+  const personJsonLd = {
     "@context": "https://schema.org",
     "@type": "Person",
+    "@id": `${SITE_URL}/#person`,
     name: PROFILE_DATA.name,
-    jobTitle: "Cybersecurity Student & Backend Engineer",
+    jobTitle: "Cybersecurity Student & Offensive Security Researcher",
     description: PROFILE_DATA.summary,
-    url: PROFILE_DATA.portfolio,
-    sameAs: [PROFILE_DATA.github, PROFILE_DATA.linkedin],
+    url: SITE_URL,
+    image: `${SITE_URL}/husain.jpg`,
+    email: `mailto:${PROFILE_DATA.email}`,
+    sameAs: [
+      PROFILE_DATA.github,
+      PROFILE_DATA.linkedin,
+      PROFILE_DATA.x,
+    ],
+    address: {
+      "@type": "PostalAddress",
+      addressLocality: SITE_CONFIG.location.city,
+      addressRegion: SITE_CONFIG.location.region,
+      addressCountry: SITE_CONFIG.location.country,
+    },
     alumniOf: [
       {
         "@type": "EducationalOrganization",
         name: "ITM Skills University",
+        url: "https://www.itmuniversity.org",
       },
       {
         "@type": "EducationalOrganization",
-        name: "SIES College",
+        name: "SIES College of Arts, Science & Commerce",
       },
     ],
+    knowsAbout: [
+      "Offensive Security",
+      "Ethical Hacking",
+      "Penetration Testing",
+      "Network Protocol Dissection",
+      "Linux Privilege Escalation",
+      "Software Systems Security",
+      "Reverse Engineering",
+    ],
+  };
+
+  const localBusinessJsonLd = {
+    "@context": "https://schema.org",
+    "@type": "ProfessionalService",
+    "@id": `${SITE_URL}/#service`,
+    name: "Husain Hakim — Cybersecurity & Vulnerability Research Consulting",
+    description:
+      "Offensive security research, penetration testing, network reconnaissance, and security audit services based in Mumbai, India.",
+    url: SITE_URL,
+    image: `${SITE_URL}/husain.jpg`,
+    telephone: "+91-9999999999",
+    priceRange: "$$",
+    address: {
+      "@type": "PostalAddress",
+      addressLocality: "Mumbai",
+      addressRegion: "Maharashtra",
+      addressCountry: "IN",
+    },
+    geo: {
+      "@type": "GeoCoordinates",
+      latitude: "19.0760",
+      longitude: "72.8777",
+    },
+    areaServed: {
+      "@type": "Place",
+      name: "Worldwide",
+    },
+    founder: {
+      "@type": "Person",
+      name: PROFILE_DATA.name,
+    },
+  };
+
+  const websiteJsonLd = {
+    "@context": "https://schema.org",
+    "@type": "WebSite",
+    "@id": `${SITE_URL}/#website`,
+    url: SITE_URL,
+    name: `${PROFILE_DATA.name} Portfolio`,
+    description: SITE_CONFIG.description,
+    author: {
+      "@id": `${SITE_URL}/#person`,
+    },
   };
 
   return (
@@ -96,7 +172,28 @@ export default function RootLayout({
       <head>
         <script
           type="application/ld+json"
-          dangerouslySetInnerHTML={{ __html: JSON.stringify(jsonLd) }}
+          dangerouslySetInnerHTML={{ __html: JSON.stringify(personJsonLd) }}
+        />
+        <script
+          type="application/ld+json"
+          dangerouslySetInnerHTML={{ __html: JSON.stringify(localBusinessJsonLd) }}
+        />
+        <script
+          type="application/ld+json"
+          dangerouslySetInnerHTML={{ __html: JSON.stringify(websiteJsonLd) }}
+        />
+        <script
+          dangerouslySetInnerHTML={{
+            __html: `
+              if (typeof window !== 'undefined' && 'serviceWorker' in navigator) {
+                navigator.serviceWorker.getRegistrations().then(function(registrations) {
+                  for (var i = 0; i < registrations.length; i++) {
+                    registrations[i].unregister();
+                  }
+                });
+              }
+            `,
+          }}
         />
       </head>
       <body>

@@ -1,0 +1,55 @@
+# Husain Hakim — Offensive Security & Cybersecurity Workspace
+> A specialized portfolio and virtual filesystem workspace showcasing offensive security research, penetration testing tools, SUID privilege escalation writeups, and low-level network engineering.
+
+## Summary
+Husain Hakim is a Cybersecurity student at ITM Skills University (B.Tech CSE, 2023–2027) focused on ethical hacking, offensive security, vulnerability discovery, network reconnaissance, and secure backend systems.
+
+- Website: https://husainhakim.me
+- Alternate URL: https://husainhakim.vercel.app
+- Location: Mumbai, India
+- Email: husain.m.hakim.533@gmail.com
+- GitHub: https://github.com/husainhakim
+- LinkedIn: https://www.linkedin.com/in/husainhakim/
+- X (Twitter): https://x.com/Husain533
+
+## Core Competencies & Pillars
+- Reconnaissance & Asset Discovery (Subnet sweeping, port probing, ARP/mDNS dissection)
+- Network Protocol Analysis & Security Tooling (Zero-dependency raw sockets, packet telemetry)
+- Authentication & Password Security Audits (Hashcat/John entropy scoring, dictionary resistance)
+- Linux Internals & Privilege Escalation (SUID binary exploitation, cron misuse, capabilities)
+- File Integrity & Reverse Engineering (Magic byte / header verification, polyglot file detection)
+
+## Key Projects
+- **CYBER // SONAR**: Fast, multi-threaded offensive network scanner built in Python. Performs automated subnet sweeps, ARP host discovery, TCP port auditing, and service banner grabbing.
+  - URL: https://husainhakim.me/projects/cyber-sonar
+  - Repository: https://github.com/husainhakim/cyber-sonar
+
+- **File Signature & Magic Number Detector**: Tactical binary analysis utility to inspect magic bytes, identify hidden payloads/polyglot files, and combat MIME-type spoofing.
+  - URL: https://husainhakim.me/projects/file-signature-detector
+  - Repository: https://github.com/husainhakim/file-signature-detector
+
+- **Password Entropy & Hash Audit Suite**: Password strength verification and cryptographic hashing utility evaluating entropy resistance against brute-force/dictionary attacks.
+  - URL: https://husainhakim.me/projects/password-audit-suite
+  - Repository: https://github.com/husainhakim/password-audit-suite
+
+- **Linux SUID Capability Auditor**: Automated enumeration tool for misconfigured SUID/SGID binaries and Linux POSIX capabilities.
+  - URL: https://husainhakim.me/projects/suid-capability-auditor
+  - Repository: https://github.com/husainhakim/suid-capability-auditor
+
+## Security Research Writeups
+- **SUID Binary Exploitation & Privilege Escalation**: Comprehensive methodology on identifying and exploiting misconfigured SUID binaries in Linux environments (GTFOBins, PATH hijacking, shared library injection).
+  - URL: https://husainhakim.me/writeups/network-security/suid-privilege-escalation
+
+- **Network Reconnaissance & Port Scanning Methodologies**: Deep dive into active vs passive scanning, TCP SYN half-open probes, FIN/Xmas scans, and firewall bypass techniques.
+  - URL: https://husainhakim.me/writeups/network-security/network-recon-methodology
+
+- **SQL Injection Defense & Parameterized Architecture**: Technical analysis of second-order injection vulnerabilities and parameterized query mitigation strategies.
+  - URL: https://husainhakim.me/writeups/web-security/sqli-parameterized-defense
+
+- **Authentication Logic Flaws & Rate Limiting Bypass**: Research on token invalidation vulnerabilities, OTP race conditions, and cryptographic nonce validation.
+  - URL: https://husainhakim.me/writeups/web-security/auth-logic-flaws
+
+## Education & Experience
+- **Education**: ITM Skills University — Bachelor of Technology in Computer Science and Engineering (2023 – 2027)
+- **Experience**: Backend Developer at LetsUpgrade (Sept 2025 – Present)
+- **Leadership**: Hackathon Organizer for 3 major university hackathons with prize pools exceeding ₹6,85,000.

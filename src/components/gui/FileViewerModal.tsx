@@ -34,13 +34,14 @@ export function FileViewerModal() {
   // Close on ESC key
   useEffect(() => {
     const handleKeyDown = (e: KeyboardEvent) => {
-      if (e.key === "Escape") {
+      if (e.key === "Escape" && openedFile) {
+        e.preventDefault();
         closeFile();
       }
     };
     window.addEventListener("keydown", handleKeyDown);
     return () => window.removeEventListener("keydown", handleKeyDown);
-  }, [closeFile]);
+  }, [closeFile, openedFile]);
 
   if (!openedFile) return null;
 

@@ -415,13 +415,14 @@ Currently focused on building bespoke security tools (like CYBER // SONAR and Fi
 
 // Filesystem Navigation Utilities
 export function normalizePath(path: string): string {
-  if (!path || path === "~" || path === "/~") return ROOT_PATH;
+  if (!path || path === "~" || path === "/~" || path === "/" || path === "/home") return ROOT_PATH;
+  
   if (path.startsWith("~/")) {
     path = ROOT_PATH + path.slice(1);
-  }
-  if (!path.startsWith("/")) {
+  } else if (!path.startsWith("/")) {
     path = "/" + path;
   }
+
   // Resolve "." and ".."
   const parts = path.split("/").filter(Boolean);
   const stack: string[] = [];
@@ -433,11 +434,23 @@ export function normalizePath(path: string): string {
       stack.push(part);
     }
   }
-  const resolved = "/" + stack.join("/");
-  // Enforce root boundary or allow root /home/husain
+  let resolved = "/" + stack.join("/");
+
   if (resolved === "/" || resolved === "/home") {
     return ROOT_PATH;
   }
+
+  // If path does not start with /home/husain, prefix it
+  if (!resolved.startsWith(ROOT_PATH)) {
+    resolved = ROOT_PATH + resolved;
+  }
+
+  // Common alias mappings
+  if (resolved === "/home/husain/about") return "/home/husain/about.md";
+  if (resolved === "/home/husain/skills") return "/home/husain/skills.md";
+  if (resolved === "/home/husain/contact") return "/home/husain/contact-info.md";
+  if (resolved === "/home/husain/contact-info") return "/home/husain/contact-info.md";
+
   return resolved;
 }
 
@@ -450,9 +463,16 @@ export function findNodeByPath(path: string, root: FSDirectory = VIRTUAL_FS): FS
   const relative = norm.slice(root.path.length).split("/").filter(Boolean);
 
   let current: FSNode = root;
-  for (const segment of relative) {
+  for (let i = 0; i < relative.length; i++) {
+    const segment = relative[i];
+    const isLast = i === relative.length - 1;
     if (current.type !== "directory") return null;
-    const found: FSNode | undefined = current.children.find((child) => child.name === segment);
+    
+    // Look for exact match or match with .md appended
+    let found: FSNode | undefined = current.children.find((child) => child.name === segment);
+    if (!found && isLast) {
+      found = current.children.find((child) => child.name === `${segment}.md`);
+    }
     if (!found) return null;
     current = found;
   }

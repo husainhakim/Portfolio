@@ -10,7 +10,7 @@ import {
   User
 } from "lucide-react";
 import { Win11Folder, Win11Pdf } from "./Win11Icons";
-import { findNodeByPath } from "@/data/filesystemData";
+import { findNodeByPath, FSFile } from "@/data/filesystemData";
 import styles from "./Gui.module.css";
 
 interface NavShortcut {
@@ -23,12 +23,12 @@ interface NavShortcut {
 
 const SHORTCUTS: NavShortcut[] = [
   { label: "about.md", path: "/home/husain/about.md", isUser: true },
-  { label: "projects", path: "/home/husain/projects", colorTheme: "blueGray" },
-  { label: "writeups", path: "/home/husain/writeups", colorTheme: "teal" },
-  { label: "blogs", path: "/home/husain/blogs", colorTheme: "warm" },
-  { label: "skills.md", path: "/home/husain/skills.md", colorTheme: "yellow" },
-  { label: "experience", path: "/home/husain/experience", colorTheme: "brown" },
-  { label: "contact-info.md", path: "/home/husain/contact-info.md", colorTheme: "blue" },
+  { label: "projects", path: "/home/husain/projects", colorTheme: "teal" },
+  { label: "writeups", path: "/home/husain/writeups", colorTheme: "blue" },
+  { label: "blogs", path: "/home/husain/blogs", colorTheme: "blueGray" },
+  { label: "skills", path: "/home/husain/skills.md", colorTheme: "yellow" },
+  { label: "experience", path: "/home/husain/experience", colorTheme: "warm" },
+  { label: "contact", path: "/home/husain/contact-info.md", colorTheme: "brown" },
   { label: "resume.pdf", path: "/home/husain/resume.pdf", isPdf: true },
 ];
 
@@ -40,13 +40,18 @@ interface SidebarQuickNavProps {
 export function SidebarQuickNav({ isOpen, onClose }: SidebarQuickNavProps) {
   const { currentPath, navigate, openFile } = useFilesystem();
 
+  const handleNavigate = (path: string) => {
+    navigate(path);
+    if (onClose) onClose();
+  };
+
   return (
     <aside className={`${styles.sidebar} ${isOpen ? styles.sidebarOpen : ""}`}>
       {/* Top Section */}
       <div className={styles.sidebarSection}>
         <div className={styles.sidebarNavList}>
           <button
-            onClick={() => navigate("/home/husain")}
+            onClick={() => handleNavigate("/home/husain")}
             className={`${styles.sidebarNavItem} ${currentPath === "/home/husain" ? styles.sidebarNavActive : ""}`}
             title="Navigate to Home"
           >
@@ -59,7 +64,7 @@ export function SidebarQuickNav({ isOpen, onClose }: SidebarQuickNavProps) {
             onClick={() => {
               const vaultFile = findNodeByPath("/home/husain/vault/personal_vault.md");
               if (vaultFile && vaultFile.type === "file") {
-                openFile(vaultFile as any);
+                openFile(vaultFile as FSFile);
               }
             }}
             className={styles.sidebarNavItem}
@@ -138,7 +143,7 @@ export function SidebarQuickNav({ isOpen, onClose }: SidebarQuickNavProps) {
                     <span style={{ width: '93%', height: '100%', backgroundColor: '#26a0da', display: 'block' }} />
                   </span>
                   <span style={{ fontSize: '10.5px', color: 'var(--text-muted)', fontFamily: 'var(--font-sans)', lineHeight: 1.3, marginTop: '2px' }}>
-                    coffee storage consumed<br/>93% out of 100%
+                    coffee storage consumed<br />93% out of 100%
                   </span>
                 </span>
               </span>

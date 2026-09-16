@@ -1,16 +1,11 @@
 "use client";
 
 import React, { useState } from "react";
-import { PROFILE_DATA } from "@/data/profileData";
 import {
   Download,
   ExternalLink,
   FileText,
-  Shield,
-  Eye,
-  CheckCircle2,
   HardDrive,
-  Calendar,
 } from "lucide-react";
 import styles from "./Views.module.css";
 

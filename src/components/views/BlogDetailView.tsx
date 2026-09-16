@@ -76,7 +76,11 @@ export function BlogDetailView({ blog }: BlogDetailViewProps) {
 
       <div className={styles.viewContainer}>
         {blog.bannerImage && (
-          <img src={blog.bannerImage} alt={blog.title} className={styles.blogBanner} />
+          <img
+            src={blog.bannerImage}
+            alt={`Publication banner for article: ${blog.title}`}
+            className={styles.blogBanner}
+          />
         )}
         <div className={styles.projectHeader}>
           <div className={styles.badgeRow}>

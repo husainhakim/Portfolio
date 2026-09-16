@@ -2,7 +2,7 @@
 
 import React from "react";
 import { WRITEUPS_DATA } from "@/data/writeupsData";
-import { BookOpen, Calendar, Clock, ArrowRight } from "lucide-react";
+import { Calendar, Clock, ArrowRight } from "lucide-react";
 import styles from "./Views.module.css";
 import { useFilesystem } from "@/context/FilesystemContext";
 

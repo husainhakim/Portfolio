@@ -73,7 +73,7 @@ export function DirectoryGrid({ nodes }: DirectoryGridProps) {
   const isRoot = currentPath === ROOT_PATH;
 
   const filteredNodes = React.useMemo(() => {
-    let results: FSNode[] = [];
+    const results: FSNode[] = [];
 
     if (searchQuery) {
       const query = searchQuery.toLowerCase();

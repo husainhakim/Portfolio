@@ -23,7 +23,7 @@ export function AboutView() {
         <div className={styles.avatarWrapper}>
           <Image
             src={PROFILE_DATA.avatarUrl}
-            alt={PROFILE_DATA.name}
+            alt="Husain Hakim - Cybersecurity Student & Offensive Security Researcher Avatar"
             width={120}
             height={120}
             className={styles.avatarImage}

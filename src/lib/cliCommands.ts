@@ -1,6 +1,4 @@
 import {
-  FSNode,
-  FSDirectory,
   FSFile,
   ROOT_PATH,
   VIRTUAL_FS,
@@ -526,7 +524,6 @@ export function getAutocompleteSuggestion(
   }
 
   // Completing arguments (files / directories)
-  const cmd = parts[0].toLowerCase();
   const lastArg = parts[parts.length - 1];
 
   const node = findNodeByPath(currentPath);

@@ -42,7 +42,7 @@ export const PROFILE_DATA: ProfileData = {
   github: "https://github.com/husainhakim",
   linkedin: "https://www.linkedin.com/in/husainhakim/",
   x: "https://x.com/Husain533",
-  portfolio: "https://husainhakim.vercel.app",
+  portfolio: "https://husainhakim.me",
   avatarUrl: "/husain.jpg",
   resumeUrl: "/resume.pdf",
   summary:

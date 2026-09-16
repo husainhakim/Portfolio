@@ -63,17 +63,17 @@ export function PersonalVaultView() {
 
       <div className={styles.viewContent}>
         <p className={styles.leadText} style={{ fontStyle: 'italic', color: 'var(--text-secondary)' }}>
-          This is the part of my portfolio that isn't meant to sound like a resume. It's a little more personal and a little less polished.
+          This is the part of my portfolio that isn&apos;t meant to sound like a resume. It&apos;s a little more personal and a little less polished.
         </p>
 
         <div style={boxStyle}>
           <h2 className={styles.sectionTitle}>Outside the Terminal</h2>
           <div className={styles.textBlock}>
             <p>Not everything I do revolves around a terminal.</p>
-            <p style={{ marginTop: '8px' }}>I've lost more than <strong>14 kg through the gym</strong>, and getting into fitness has become a pretty important part of my life. I also love running — sometimes for the workout, sometimes just to get away from a screen for a while.</p>
-            <p style={{ marginTop: '8px' }}>And when I'm not doing either of those things, there's a good chance I'm playing <strong>BGMI</strong>.</p>
-            <p style={{ marginTop: '8px' }}>I've learned a lot from the process of getting fitter, especially about consistency, patience, and actually sticking with something even when progress feels slow.</p>
-            <p style={{ marginTop: '8px' }}>If you're working on your fitness and feel like you don't know where to start, <strong>feel free to reach out.</strong> I've been there, and if I can help from my own experience, I'll be happy to.</p>
+            <p style={{ marginTop: '8px' }}>I&apos;ve lost more than <strong>14 kg through the gym</strong>, and getting into fitness has become a pretty important part of my life. I also love running — sometimes for the workout, sometimes just to get away from a screen for a while.</p>
+            <p style={{ marginTop: '8px' }}>And when I&apos;m not doing either of those things, there&apos;s a good chance I&apos;m playing <strong>BGMI</strong>.</p>
+            <p style={{ marginTop: '8px' }}>I&apos;ve learned a lot from the process of getting fitter, especially about consistency, patience, and actually sticking with something even when progress feels slow.</p>
+            <p style={{ marginTop: '8px' }}>If you&apos;re working on your fitness and feel like you don&apos;t know where to start, <strong>feel free to reach out.</strong> I&apos;ve been there, and if I can help from my own experience, I&apos;ll be happy to.</p>
           </div>
         </div>
 
@@ -83,23 +83,20 @@ export function PersonalVaultView() {
             <p>I started out more interested in understanding technology than in cybersecurity specifically. I liked figuring out how things worked behind the interface — what happens in a network, how operating systems manage things, what actually happens when you run a command, and why something behaves the way it does.</p>
             <p style={{ marginTop: '8px' }}>As I started learning more about Linux, networking, and security, I became increasingly interested in the offensive side of things.</p>
             <p style={{ marginTop: '8px' }}>The idea that you can look at a system, understand how it works, find where it is weak, and then prove that weakness actually exists is what pulled me toward ethical hacking.</p>
-            <p style={{ marginTop: '8px' }}>I'm still early in that journey. I'm not going to pretend I've mastered it. Right now, I'm focused on building the fundamentals properly and getting as much hands-on experience as I can.</p>
+            <p style={{ marginTop: '8px' }}>I&apos;m still early in that journey. I&apos;m not going to pretend I&apos;ve mastered it. Right now, I&apos;m focused on building the fundamentals properly and getting as much hands-on experience as I can.</p>
           </div>
         </div>
 
         <div style={boxStyle}>
           <h2 className={styles.sectionTitle}>What Keeps Me Learning</h2>
           <div className={styles.textBlock}>
-            <p>One thing I've realized pretty quickly is that cybersecurity has a way of exposing what you <em>don't</em> understand.</p>
-            <p style={{ marginTop: '8px' }}>I'll sometimes spend a ridiculous amount of time trying to figure something out, only to realize that I was missing a basic concept underneath it.</p>
+            <p>One thing I&apos;ve realized pretty quickly is that cybersecurity has a way of exposing what you <em>don&apos;t</em> understand.</p>
+            <p style={{ marginTop: '8px' }}>I&apos;ll sometimes spend a ridiculous amount of time trying to figure something out, only to realize that I was missing a basic concept underneath it.</p>
             <p style={{ marginTop: '8px' }}>Linux and networking have taught me this repeatedly.</p>
-            <p style={{ marginTop: '8px' }}>Something that looks like a complicated security problem can often become much easier once you actually understand what's happening underneath it.</p>
-            <p style={{ marginTop: '8px' }}>That's one of the things I enjoy most about learning ethical hacking: every difficult problem usually points toward something I need to understand better.</p>
+            <p style={{ marginTop: '8px' }}>Something that looks like a complicated security problem can often become much easier once you actually understand what&apos;s happening underneath it.</p>
+            <p style={{ marginTop: '8px' }}>That&apos;s one of the things I enjoy most about learning ethical hacking: every difficult problem usually points toward something I need to understand better.</p>
           </div>
         </div>
-
-
-
       </div>
     </div>
   );
