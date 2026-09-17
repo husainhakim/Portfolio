@@ -23,14 +23,14 @@ interface NavShortcut {
 }
 
 const SHORTCUTS: NavShortcut[] = [
-  { label: "about.md", path: "/home/husain/about.md", type: "document" },
-  { label: "projects", path: "/home/husain/projects", type: "folder" },
-  { label: "writeups", path: "/home/husain/writeups", type: "folder" },
-  { label: "blogs", path: "/home/husain/blogs", type: "folder" },
-  { label: "skills.md", path: "/home/husain/skills.md", type: "document" },
-  { label: "experience", path: "/home/husain/experience", type: "folder" },
-  { label: "contact-info.md", path: "/home/husain/contact-info.md", type: "document" },
-  { label: "resume.pdf", path: "/home/husain/resume.pdf", type: "pdf" },
+  { label: "About.md", path: "/home/husain/about.md", type: "document" },
+  { label: "Projects", path: "/home/husain/projects", type: "folder" },
+  { label: "Writeups", path: "/home/husain/writeups", type: "folder" },
+  { label: "Blogs", path: "/home/husain/blogs", type: "folder" },
+  { label: "Skills.md", path: "/home/husain/skills.md", type: "document" },
+  { label: "Experience", path: "/home/husain/experience", type: "folder" },
+  { label: "Contact-info.md", path: "/home/husain/contact-info.md", type: "document" },
+  { label: "Resume.pdf", path: "/home/husain/resume.pdf", type: "pdf" },
 ];
 
 interface SidebarQuickNavProps {

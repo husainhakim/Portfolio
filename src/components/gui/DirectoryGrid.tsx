@@ -43,6 +43,50 @@ interface DirectoryGridProps {
   nodes: FSNode[];
 }
 
+const ITEM_PURPOSE_TAGS: Record<string, string> = {
+  "about.md": "PERSONAL INTRO",
+  "projects": "CODE & BUILDS",
+  "writeups": "SECURITY WRITEUPS",
+  "resume.pdf": "RESUME / CV",
+  "blogs": "BLOG POSTS",
+  "skills.md": "TECH STACK & SKILLS",
+  "experience": "WORK HISTORY",
+  "contact-info.md": "GET IN TOUCH",
+  "personal_vault.md": "ENCRYPTED VAULT",
+  "vault": "PERSONAL VAULT",
+  "file-sign-identifier": "FORENSICS TOOL",
+  "network-device-scanner": "NETWORK SCANNER",
+  "password-strength-checker": "SECURITY TOOL",
+  "quickref": "CLI REFERENCE",
+  "repochecker": "HYGIENE UTILITY",
+  "intrusion-detection-system": "IDS SIMULATION",
+  "file-identifier.md": "SECURITY WRITEUP",
+  "network-device-scanner.md": "SECURITY WRITEUP",
+};
+
+function getItemTag(node: FSNode): string {
+  if (ITEM_PURPOSE_TAGS[node.name]) {
+    return ITEM_PURPOSE_TAGS[node.name];
+  }
+  if (node.type === "directory") {
+    return "FILE FOLDER";
+  }
+  const file = node as FSFile;
+  switch (file.fileType) {
+    case "project": return "SECURITY PROJECT";
+    case "writeup": return "SECURITY WRITEUP";
+    case "blog": return "BLOG POST";
+    case "pdf": return "RESUME / CV";
+    case "markdown": return "MARKDOWN DOC";
+    default: return `${file.fileType.toUpperCase()} FILE`;
+  }
+}
+
+function formatDisplayName(name: string): string {
+  if (!name) return name;
+  return name.charAt(0).toUpperCase() + name.slice(1);
+}
+
 export function DirectoryGrid({ nodes }: DirectoryGridProps) {
   const [isMounted, setIsMounted] = React.useState(false);
   const [isQuickAccessOpen, setIsQuickAccessOpen] = React.useState(true);
@@ -246,12 +290,12 @@ export function DirectoryGrid({ nodes }: DirectoryGridProps) {
         </div>
 
         <div className={styles.gridItemInfo}>
-          <span className={styles.gridItemName}>{node.name}</span>
+          <span className={styles.gridItemName}>{formatDisplayName(node.name)}</span>
         </div>
 
         <div className={styles.gridItemFooter}>
           <span className={styles.gridItemSize}>
-            {node.type === "directory" ? "File folder" : `${(node as FSFile).fileType.toUpperCase()} File`}
+            {getItemTag(node)}
           </span>
           <span className={styles.gridItemSize}>
             {node.type === "file" ? formatFileSize((node as FSFile).size) : `${(node as FSDirectory).children.length} items`}
@@ -285,7 +329,7 @@ export function DirectoryGrid({ nodes }: DirectoryGridProps) {
             <div className={`${styles.listRowIcon} ${iconClass}`}>{getNodeIconElement(node, 16)}</div>
           </div>
           <div className={styles.listRowNameInfo}>
-            <span className={styles.listRowName}>{node.name}</span>
+            <span className={styles.listRowName}>{formatDisplayName(node.name)}</span>
           </div>
         </div>
         <span className={styles.colDate}>{node.updatedAt}</span>
@@ -370,12 +414,12 @@ export function DirectoryGrid({ nodes }: DirectoryGridProps) {
                 </div>
 
                 <div className={styles.gridItemInfo}>
-                  <span className={styles.gridItemName}>{node.name}</span>
+                  <span className={styles.gridItemName}>{formatDisplayName(node.name)}</span>
                 </div>
 
                 <div className={styles.gridItemFooter}>
                   <span className={styles.gridItemSize}>
-                    {node.type === "directory" ? "File folder" : `${(node as FSFile).fileType.toUpperCase()} File`}
+                    {getItemTag(node)}
                   </span>
                   <span className={styles.gridItemSize}>
                     {node.type === "file" ? formatFileSize((node as FSFile).size) : `${(node as FSDirectory).children.length} items`}
@@ -460,7 +504,7 @@ export function DirectoryGrid({ nodes }: DirectoryGridProps) {
                 <div className={styles.colName}>
                   <div className={`${styles.listRowIcon} ${iconClass}`}>{getNodeIconElement(node, 16)}</div>
                   <div className={styles.listRowNameInfo}>
-                    <span className={styles.listRowName}>{node.name}</span>
+                    <span className={styles.listRowName}>{formatDisplayName(node.name)}</span>
                   </div>
                 </div>
 
