@@ -56,7 +56,7 @@ export function DirectoryGrid({ nodes }: DirectoryGridProps) {
       if (!seen) {
         setHasSeenTutorial(false);
       }
-    } catch (_) {}
+    } catch (_) { }
   }, []);
 
   const {
@@ -146,7 +146,7 @@ export function DirectoryGrid({ nodes }: DirectoryGridProps) {
     try {
       localStorage.setItem(ABOUT_TUTORIAL_KEY, "1");
       setHasSeenTutorial(true);
-    } catch (_) {}
+    } catch (_) { }
     if (node.type === "directory") {
       navigate(node.path);
     } else {
@@ -164,50 +164,37 @@ export function DirectoryGrid({ nodes }: DirectoryGridProps) {
   const getNodeIconElement = (node: FSNode, size: number = 24, className: string = "") => {
     if (node.type === "directory") {
       switch (node.name) {
-        case "about": return <Win11Folder size={size} className={className} colorTheme="blue" badgeIcon={<User size={32} color="#fff" strokeWidth={2.5} />} />;
-        case "projects": return <Win11Folder size={size} className={className} colorTheme="blueGray" badgeIcon={<Code size={32} color="#fff" strokeWidth={2.5} />} />;
-        case "writeups": return <Win11Folder size={size} className={className} colorTheme="teal" badgeIcon={<Shield size={32} color="#fff" strokeWidth={2.5} />} />;
-        case "blogs": return <Win11Folder size={size} className={className} colorTheme="warm" badgeIcon={<BookOpen size={32} color="#fff" strokeWidth={2.5} />} />;
-        case "experience": return <Win11Folder size={size} className={className} colorTheme="brown" badgeIcon={<Briefcase size={32} color="#fff" strokeWidth={2.5} />} />;
-        case "vault": return <Win11Folder size={size} className={className} colorTheme="warm" badgeIcon={<Lock size={32} color="#fff" strokeWidth={2.5} />} />;
+        case "about": return <Win11Folder size={size} className={className} colorTheme="yellow" badgeIcon={<User size={32} color="#fff" strokeWidth={2.5} />} />;
+        case "projects": return <Win11Folder size={size} className={className} colorTheme="yellow" badgeIcon={<Code size={32} color="#fff" strokeWidth={2.5} />} />;
+        case "writeups": return <Win11Folder size={size} className={className} colorTheme="yellow" badgeIcon={<Shield size={32} color="#fff" strokeWidth={2.5} />} />;
+        case "blogs": return <Win11Folder size={size} className={className} colorTheme="yellow" badgeIcon={<BookOpen size={32} color="#fff" strokeWidth={2.5} />} />;
+        case "experience": return <Win11Folder size={size} className={className} colorTheme="yellow" badgeIcon={<Briefcase size={32} color="#fff" strokeWidth={2.5} />} />;
+        case "vault": return <Win11Folder size={size} className={className} colorTheme="yellow" badgeIcon={<Lock size={32} color="#fff" strokeWidth={2.5} />} />;
         default: return <Win11Folder size={size} className={className} colorTheme="yellow" />;
       }
     }
 
     const file = node as FSFile;
-    if (node.name === "about.md") return <User size={size} className={className} color="#3b82f6" />;
-    if (file.fileType === "vault" || node.name === "personal_vault.md") return <Lock size={size} className={className} color="#ef4444" />;
-    if (file.fileType === "pdf") return <Win11Pdf size={size} className={className} />;
-    if (file.fileType === "contact") return <Mail size={size} className={className} color="var(--accent-primary)" />;
-    if (file.fileType === "skills") return <Wrench size={size} className={className} color="#e5a000" />;
+    if (file.fileType === "vault" || node.name === "personal_vault.md") {
+      return <Lock size={size} className={className} color="#ef4444" />;
+    }
+    if (file.fileType === "pdf" || node.name.endsWith(".pdf")) {
+      return <Win11Pdf size={size} className={className} />;
+    }
 
-    // For other files, use flat icons or Win11 doc placeholder
-    return <FileText size={size} className={className} color="#888" />;
+    // All markdown and document files share unified document category styling
+    return <FileText size={size} className={className} color="var(--accent-primary)" />;
   };
 
   const getNodeIconClass = (node: FSNode) => {
     if (node.type === "directory") {
-      if (node.name === "about") return styles.aboutIcon;
-      if (node.name === "projects") return styles.projectIcon;
-      if (node.name === "writeups") return styles.writeupIcon;
-      if (node.name === "blogs") return styles.blogIcon;
-      if (node.name === "skills") return styles.skillsIcon;
-      if (node.name === "experience") return styles.expIcon;
-      if (node.name === "contact") return styles.contactIcon;
       if (node.name === "vault") return styles.vaultIcon;
       return styles.folderIcon;
     }
 
     const file = node as FSFile;
-    if (node.name === "about.md") return styles.aboutIcon;
     if (file.fileType === "vault" || node.name === "personal_vault.md") return styles.vaultIcon;
-    if (file.fileType === "pdf") return styles.pdfIcon;
-    if (file.fileType === "project") return styles.projectIcon;
-    if (file.fileType === "writeup") return styles.writeupIcon;
-    if (file.fileType === "blog") return styles.blogIcon;
-    if (file.fileType === "skills") return styles.skillsIcon;
-    if (file.fileType === "experience") return styles.expIcon;
-    if (file.fileType === "contact") return styles.contactIcon;
+    if (file.fileType === "pdf" || node.name.endsWith(".pdf")) return styles.pdfIcon;
 
     return styles.fileIcon;
   };
@@ -241,7 +228,7 @@ export function DirectoryGrid({ nodes }: DirectoryGridProps) {
         onClick={() => handleNodeClick(node)}
         onDoubleClick={() => handleNodeDoubleClick(node)}
         onKeyDown={(e) => handleKeyDown(e, node)}
-        className={`${styles.gridItemCard} ${styles.qaTile} ${isSelected ? styles.gridItemSelected : ""} ${isAboutTutorialTarget ? "tutorialTargetNode" : ""}`}
+        className={`${styles.gridItemCard} ${isSelected ? styles.gridItemSelected : ""} ${isAboutTutorialTarget ? "tutorialTargetNode" : ""}`}
         role="button"
         aria-label={`${node.type === "directory" ? "Directory" : "File"}: ${node.name}`}
       >
@@ -251,15 +238,22 @@ export function DirectoryGrid({ nodes }: DirectoryGridProps) {
             onDismiss={() => setHasSeenTutorial(true)}
           />
         )}
-        <Pin size={12} className={styles.pinIcon} />
-        <div className={styles.qaTileTop}>
-          <div className={`${styles.listRowIcon} ${iconClass}`}>
-            {getNodeIconElement(node, 24)}
+        <Pin size={12} className={styles.pinIconHover} />
+        <div className={styles.gridItemTop}>
+          <div className={`${styles.gridItemIcon} ${iconClass}`}>
+            {getNodeIconElement(node, 48)}
           </div>
         </div>
-        <div className={styles.qaTileInfo}>
+
+        <div className={styles.gridItemInfo}>
           <span className={styles.gridItemName}>{node.name}</span>
-          <span className={styles.qaTileSub}>
+        </div>
+
+        <div className={styles.gridItemFooter}>
+          <span className={styles.gridItemSize}>
+            {node.type === "directory" ? "File folder" : `${(node as FSFile).fileType.toUpperCase()} File`}
+          </span>
+          <span className={styles.gridItemSize}>
             {node.type === "file" ? formatFileSize((node as FSFile).size) : `${(node as FSDirectory).children.length} items`}
           </span>
         </div>

@@ -77,8 +77,8 @@ export function Header() {
             <Image
               src="/husain.jpg"
               alt="Husain Hakim - Cybersecurity Student & Offensive Security Researcher"
-              width={48}
-              height={48}
+              width={38}
+              height={38}
               className={styles.avatarImage}
             />
           </div>

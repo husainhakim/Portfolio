@@ -1,15 +1,17 @@
 "use client";
 
-import React, { useState, useEffect } from "react";
+import React from "react";
 import { useFilesystem } from "@/context/FilesystemContext";
 import {
-  Folder,
   HardDrive,
   Cloud,
   Pin,
-  User,
-  Lock
+  FileText,
+  Lock,
+  Mail,
 } from "lucide-react";
+import { GithubIcon, LinkedinIcon } from "@/components/ui/Icons";
+import { PROFILE_DATA } from "@/data/profileData";
 import { Win11Folder, Win11Pdf } from "./Win11Icons";
 import { findNodeByPath, FSFile } from "@/data/filesystemData";
 import styles from "./Gui.module.css";
@@ -17,20 +19,18 @@ import styles from "./Gui.module.css";
 interface NavShortcut {
   label: string;
   path: string;
-  colorTheme?: "yellow" | "blue" | "blueGray" | "teal" | "warm" | "brown";
-  isPdf?: boolean;
-  isUser?: boolean;
+  type: "folder" | "document" | "pdf";
 }
 
 const SHORTCUTS: NavShortcut[] = [
-  { label: "about.md", path: "/home/husain/about.md", isUser: true },
-  { label: "projects", path: "/home/husain/projects", colorTheme: "teal" },
-  { label: "writeups", path: "/home/husain/writeups", colorTheme: "blue" },
-  { label: "blogs", path: "/home/husain/blogs", colorTheme: "blueGray" },
-  { label: "skills.md", path: "/home/husain/skills.md", colorTheme: "yellow" },
-  { label: "experience", path: "/home/husain/experience", colorTheme: "warm" },
-  { label: "contact-info.md", path: "/home/husain/contact-info.md", colorTheme: "brown" },
-  { label: "resume.pdf", path: "/home/husain/resume.pdf", isPdf: true },
+  { label: "about.md", path: "/home/husain/about.md", type: "document" },
+  { label: "projects", path: "/home/husain/projects", type: "folder" },
+  { label: "writeups", path: "/home/husain/writeups", type: "folder" },
+  { label: "blogs", path: "/home/husain/blogs", type: "folder" },
+  { label: "skills.md", path: "/home/husain/skills.md", type: "document" },
+  { label: "experience", path: "/home/husain/experience", type: "folder" },
+  { label: "contact-info.md", path: "/home/husain/contact-info.md", type: "document" },
+  { label: "resume.pdf", path: "/home/husain/resume.pdf", type: "pdf" },
 ];
 
 interface SidebarQuickNavProps {
@@ -48,19 +48,23 @@ export function SidebarQuickNav({ isOpen, onClose }: SidebarQuickNavProps) {
 
   return (
     <aside className={`${styles.sidebar} ${isOpen ? styles.sidebarOpen : ""}`}>
-      {/* Top Section */}
+      {/* Zone 1: NAVIGATION */}
       <div className={styles.sidebarSection}>
+        <div className={styles.sidebarSectionHeader}>
+          <span className={styles.sidebarSectionTitle}>NAVIGATION</span>
+        </div>
         <div className={styles.sidebarNavList}>
           <button
             onClick={() => handleNavigate("/home/husain")}
             className={`${styles.sidebarNavItem} ${currentPath === "/home/husain" ? styles.sidebarNavActive : ""}`}
-            title="Navigate to Home"
+            title="Navigate to Home Root"
           >
             <div className={styles.sidebarNavLeft}>
-              <Folder size={16} color="#0067C0" fill="#0067C0" className={styles.sidebarNavIcon} />
+              <Win11Folder size={16} colorTheme="yellow" className={styles.sidebarNavIcon} />
               <span className={styles.sidebarNavLabel}>Home</span>
             </div>
           </button>
+
           <button
             onClick={() => {
               const vaultFile = findNodeByPath("/home/husain/vault/personal_vault.md");
@@ -85,7 +89,7 @@ export function SidebarQuickNav({ isOpen, onClose }: SidebarQuickNavProps) {
               </div>
             </div>
             <span className={styles.customTooltip}>
-              ⚠️ Highly unfiltered thoughts — proceed at your own risk 👀
+              ⚠️ Highly unfiltered thoughts, proceed at your own risk 👀
             </span>
           </button>
         </div>
@@ -93,8 +97,11 @@ export function SidebarQuickNav({ isOpen, onClose }: SidebarQuickNavProps) {
 
       <div className={styles.sidebarDivider} />
 
-      {/* Quick Access Section */}
+      {/* Zone 2: PINNED */}
       <div className={styles.sidebarSection}>
+        <div className={styles.sidebarSectionHeader}>
+          <span className={styles.sidebarSectionTitle}>PINNED</span>
+        </div>
         <div className={styles.sidebarNavList}>
           {SHORTCUTS.map((item) => {
             const isActive = item.path !== "/home/husain" && currentPath.startsWith(item.path);
@@ -102,21 +109,21 @@ export function SidebarQuickNav({ isOpen, onClose }: SidebarQuickNavProps) {
             return (
               <button
                 key={item.path}
-                onClick={() => navigate(item.path)}
+                onClick={() => handleNavigate(item.path)}
                 className={`${styles.sidebarNavItem} ${isActive ? styles.sidebarNavActive : ""}`}
                 title={`Navigate to ${item.path}`}
               >
                 <div className={styles.sidebarNavLeft}>
-                  {item.isPdf ? (
+                  {item.type === "pdf" ? (
                     <Win11Pdf size={16} className={styles.sidebarNavIcon} />
-                  ) : item.isUser ? (
-                    <User size={16} color="#3b82f6" className={styles.sidebarNavIcon} />
+                  ) : item.type === "folder" ? (
+                    <Win11Folder size={16} colorTheme="yellow" className={styles.sidebarNavIcon} />
                   ) : (
-                    <Win11Folder size={16} colorTheme={item.colorTheme} className={styles.sidebarNavIcon} />
+                    <FileText size={16} color="var(--accent-primary)" className={styles.sidebarNavIcon} />
                   )}
                   <span className={styles.sidebarNavLabel}>{item.label}</span>
                 </div>
-                <Pin size={12} className={styles.pinIconStatic} />
+                <Pin size={12} className={styles.pinIconHover} />
               </button>
             );
           })}
@@ -125,53 +132,107 @@ export function SidebarQuickNav({ isOpen, onClose }: SidebarQuickNavProps) {
 
       <div className={styles.sidebarDivider} />
 
-      {/* Workspace Section (This PC equivalent) */}
+      {/* Zone 3: WORKSPACE */}
       <div className={styles.sidebarSection}>
+        <div className={styles.sidebarSectionHeader}>
+          <span className={styles.sidebarSectionTitle}>WORKSPACE</span>
+        </div>
         <div className={styles.sidebarNavList}>
           <button
-            onClick={() => navigate("/home/husain")}
+            onClick={() => handleNavigate("/home/husain")}
             className={styles.sidebarNavItem}
-            title="Workspace"
+            title="Local Storage (C:)"
           >
-            <div className={styles.sidebarNavLeft}>
-              <HardDrive size={16} color="#0067C0" className={styles.sidebarNavIcon} />
-              <span className={styles.sidebarNavLabel}>Workspace</span>
+            <div className={styles.sidebarNavLeft} style={{ alignItems: 'flex-start', width: '100%' }}>
+              <HardDrive size={16} color="var(--accent-primary)" className={styles.sidebarNavIcon} style={{ marginTop: '2px' }} />
+              <div className={styles.diskUsageContainer}>
+                <span className={styles.sidebarNavLabel} style={{ fontWeight: 600 }}>Local Disk (C:)</span>
+                <div className={styles.diskProgressTrack}>
+                  <div className={styles.diskProgressBar} style={{ width: '93%' }} />
+                </div>
+                <div className={styles.diskUsageText}>
+                  coffee storage consumed <strong className={styles.diskUsagePercent}>93%</strong>
+                </div>
+              </div>
             </div>
           </button>
+        </div>
+      </div>
 
-          <div style={{ marginLeft: 16 }}>
-            <button
-              onClick={() => navigate("/home/husain")}
-              className={styles.sidebarNavItem}
-              title="Local Storage"
+      <div className={styles.sidebarDivider} />
+
+      {/* Zone 4: NETWORK ATTACHED */}
+      <div className={styles.sidebarSection}>
+        <div className={styles.sidebarSectionHeader}>
+          <span className={styles.sidebarSectionTitle}>NETWORK ATTACHED</span>
+        </div>
+        <div className={styles.sidebarNavList}>
+          <button
+            type="button"
+            className={`${styles.sidebarNavItem} ${styles.hasTooltip}`}
+            aria-disabled="true"
+            style={{ cursor: 'default' }}
+          >
+            <div className={styles.sidebarNavLeft}>
+              <Cloud size={16} color="var(--text-muted)" className={styles.sidebarNavIcon} />
+              <span className={styles.sidebarNavLabel}>Network Drive</span>
+            </div>
+            <span className={styles.customTooltip}>Dont really know what to put here just added for the vibes🤓</span>
+          </button>
+        </div>
+      </div>
+
+      {/* Pushed-to-Bottom Footer Area */}
+      <div className={styles.sidebarFooter}>
+        <div className={styles.sidebarFooterDivider} />
+
+        {/* Social Links & Version Tag */}
+        <div className={styles.sidebarFooterMeta}>
+          <div className={styles.sidebarSocialsRow}>
+            <a
+              href={PROFILE_DATA.github}
+              target="_blank"
+              rel="noopener noreferrer"
+              className={styles.sidebarSocialBtn}
+              title="GitHub Profile (@husainhakim)"
+              aria-label="GitHub Profile"
             >
-              <span className={styles.sidebarNavLeft} style={{ alignItems: 'flex-start', marginTop: '2px', whiteSpace: 'normal', display: 'flex' }}>
-                <HardDrive size={16} color="#888" className={styles.sidebarNavIcon} style={{ marginTop: '2px' }} />
-                <span style={{ display: 'flex', flexDirection: 'column', overflow: 'hidden', width: '100%' }}>
-                  <span className={styles.sidebarNavLabel} style={{ marginBottom: '4px', lineHeight: 1 }}>Local Disk (C:)</span>
-                  <span style={{ width: '100px', height: '12px', backgroundColor: '#e6e6e6', border: '1px solid #bcbcbc', marginBottom: '2px', display: 'block' }}>
-                    <span style={{ width: '93%', height: '100%', backgroundColor: '#26a0da', display: 'block' }} />
-                  </span>
-                  <span style={{ fontSize: '10.5px', color: 'var(--text-muted)', fontFamily: 'var(--font-sans)', lineHeight: 1.3, marginTop: '2px' }}>
-                    coffee storage consumed<br />93% out of 100%
-                  </span>
-                </span>
-              </span>
-            </button>
-            <button
-              className={`${styles.sidebarNavItem} ${styles.hasTooltip}`}
-              disabled
+              <GithubIcon size={17} />
+            </a>
+            <a
+              href={PROFILE_DATA.linkedin}
+              target="_blank"
+              rel="noopener noreferrer"
+              className={styles.sidebarSocialBtn}
+              title="LinkedIn Profile"
+              aria-label="LinkedIn Profile"
             >
-              <div className={styles.sidebarNavLeft}>
-                <Cloud size={16} color="#888" className={styles.sidebarNavIcon} />
-                <span className={styles.sidebarNavLabel}>Network Attached</span>
-              </div>
-              <span className={styles.customTooltip}>Dont really know what to put here just added for the vibes🤓</span>
-            </button>
+              <LinkedinIcon size={17} />
+            </a>
+            <a
+              href={`mailto:${PROFILE_DATA.email}`}
+              className={styles.sidebarSocialBtn}
+              title="Email Contact"
+              aria-label="Email Contact"
+            >
+              <Mail size={17} />
+            </a>
+          </div>
+          <span className={styles.sidebarVersionBadge}>v2.1.3</span>
+        </div>
+
+        {/* User Identity & Live Status Badge */}
+        <div className={styles.sidebarUserProfile}>
+          <div className={styles.sidebarUserBadge}>
+            <span className={styles.sidebarUserMonogram}>HH</span>
+            <span className={styles.sidebarOnlineDot} title="System Ready / Online" />
+          </div>
+          <div className={styles.sidebarUserInfo}>
+            <span className={styles.sidebarUserName}>Husain Hakim</span>
+            <span className={styles.sidebarUserStatus}>Active • Terminal v1</span>
           </div>
         </div>
       </div>
     </aside>
   );
 }
-

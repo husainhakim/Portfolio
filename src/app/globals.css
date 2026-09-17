@@ -21,18 +21,18 @@
   --border-default: #c9c4b5;
   --border-strong: #9e9783;
 
-  --accent-primary: #851c2c;
-  --accent-hover: #681521;
-  --accent-surface: #faebed;
-  --accent-border: #e8a8b1;
-  --accent-text: #851c2c;
+  --accent-primary: #0067c0;
+  --accent-hover: #005096;
+  --accent-surface: rgba(0, 103, 192, 0.08);
+  --accent-border: rgba(0, 103, 192, 0.28);
+  --accent-text: #0067c0;
 
   --status-success: #15733c;
   --status-success-bg: #e6f6ec;
   --status-warning: #9e6400;
   --status-warning-bg: #fff5db;
-  --status-info: #065ec2;
-  --status-info-bg: #e9f2fd;
+  --status-info: #0067c0;
+  --status-info-bg: rgba(0, 103, 192, 0.08);
 
   --font-sans: -apple-system, BlinkMacSystemFont, "Inter", "Segoe UI", Roboto, sans-serif;
   --font-mono: "JetBrains Mono", "SF Mono", Menlo, Monaco, Consolas, "Liberation Mono", monospace;
@@ -48,12 +48,12 @@
   --shadow-card: none;
   --shadow-modal: 0 0 0 1px var(--border-strong), 0 12px 32px rgba(0, 0, 0, 0.25);
 
-  --toolbar-height: 54px;
+  --toolbar-height: 50px;
   --breadcrumb-height: 40px;
   --statusbar-height: 26px;
 }
 
-/* Dark Theme (Deep Charcoal / Terminal Workstation with Maroon/Red Accents) */
+/* Dark Theme (Deep Charcoal / Terminal Workstation with Unified Blue Accents) */
 [data-theme="dark"] {
   --bg-app: #0a0b0d;
   --bg-surface: #101215;
@@ -71,18 +71,18 @@
   --border-default: #2a2f39;
   --border-strong: #3f4756;
 
-  --accent-primary: #a82439;
-  --accent-hover: #c92e47;
-  --accent-surface: #241115;
-  --accent-border: #521922;
-  --accent-text: #e04a62;
+  --accent-primary: #4ca8ff;
+  --accent-hover: #1990ff;
+  --accent-surface: rgba(76, 168, 255, 0.15);
+  --accent-border: rgba(76, 168, 255, 0.35);
+  --accent-text: #4ca8ff;
 
   --status-success: #2ea043;
   --status-success-bg: #0d2615;
   --status-warning: #d29922;
   --status-warning-bg: #2b1d06;
-  --status-info: #58a6ff;
-  --status-info-bg: #091e38;
+  --status-info: #4ca8ff;
+  --status-info-bg: rgba(76, 168, 255, 0.12);
 
   --shadow-subtle: none;
   --shadow-card: none;
