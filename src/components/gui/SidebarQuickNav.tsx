@@ -85,7 +85,7 @@ export function SidebarQuickNav({ isOpen, onClose }: SidebarQuickNavProps) {
               </div>
             </div>
             <span className={styles.customTooltip}>
-              ⚠️ Classified // Unfiltered personal thoughts 👀
+              ⚠️ Highly unfiltered thoughts — proceed at your own risk 👀
             </span>
           </button>
         </div>
