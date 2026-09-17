@@ -33,6 +33,7 @@ import {
   Star,
   Users,
   Wrench,
+  Lock,
 } from "lucide-react";
 import styles from "./Gui.module.css";
 import { Win11Folder, Win11Pdf } from "./Win11Icons";
@@ -168,12 +169,14 @@ export function DirectoryGrid({ nodes }: DirectoryGridProps) {
         case "writeups": return <Win11Folder size={size} className={className} colorTheme="teal" badgeIcon={<Shield size={32} color="#fff" strokeWidth={2.5} />} />;
         case "blogs": return <Win11Folder size={size} className={className} colorTheme="warm" badgeIcon={<BookOpen size={32} color="#fff" strokeWidth={2.5} />} />;
         case "experience": return <Win11Folder size={size} className={className} colorTheme="brown" badgeIcon={<Briefcase size={32} color="#fff" strokeWidth={2.5} />} />;
+        case "vault": return <Win11Folder size={size} className={className} colorTheme="warm" badgeIcon={<Lock size={32} color="#fff" strokeWidth={2.5} />} />;
         default: return <Win11Folder size={size} className={className} colorTheme="yellow" />;
       }
     }
 
     const file = node as FSFile;
     if (node.name === "about.md") return <User size={size} className={className} color="#3b82f6" />;
+    if (file.fileType === "vault" || node.name === "personal_vault.md") return <Lock size={size} className={className} color="#ef4444" />;
     if (file.fileType === "pdf") return <Win11Pdf size={size} className={className} />;
     if (file.fileType === "contact") return <Mail size={size} className={className} color="var(--accent-primary)" />;
     if (file.fileType === "skills") return <Wrench size={size} className={className} color="#e5a000" />;
@@ -191,11 +194,13 @@ export function DirectoryGrid({ nodes }: DirectoryGridProps) {
       if (node.name === "skills") return styles.skillsIcon;
       if (node.name === "experience") return styles.expIcon;
       if (node.name === "contact") return styles.contactIcon;
+      if (node.name === "vault") return styles.vaultIcon;
       return styles.folderIcon;
     }
 
     const file = node as FSFile;
     if (node.name === "about.md") return styles.aboutIcon;
+    if (file.fileType === "vault" || node.name === "personal_vault.md") return styles.vaultIcon;
     if (file.fileType === "pdf") return styles.pdfIcon;
     if (file.fileType === "project") return styles.projectIcon;
     if (file.fileType === "writeup") return styles.writeupIcon;

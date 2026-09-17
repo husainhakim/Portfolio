@@ -7,7 +7,8 @@ import {
   HardDrive,
   Cloud,
   Pin,
-  User
+  User,
+  Lock
 } from "lucide-react";
 import { Win11Folder, Win11Pdf } from "./Win11Icons";
 import { findNodeByPath, FSFile } from "@/data/filesystemData";
@@ -67,16 +68,25 @@ export function SidebarQuickNav({ isOpen, onClose }: SidebarQuickNavProps) {
                 openFile(vaultFile as FSFile);
               }
             }}
-            className={styles.sidebarNavItem}
-            title="Personal Vault"
+            className={`${styles.sidebarNavItem} ${styles.sidebarVaultBtn} ${styles.hasTooltip}`}
+            title="Personal Vault (Confidential)"
           >
-            <div className={styles.sidebarNavLeft} style={{ alignItems: 'flex-start' }}>
-              <Cloud size={16} color="#0067C0" className={styles.sidebarNavIcon} style={{ marginTop: '3px' }} />
-              <div style={{ display: 'flex', flexDirection: 'column' }}>
-                <span className={styles.sidebarNavLabel} style={{ lineHeight: 1.2 }}>Personal Vault</span>
-                <span style={{ fontSize: '10px', color: 'var(--text-muted)', fontStyle: 'italic', fontWeight: 400, marginTop: '2px' }}>(don't click)</span>
+            <div className={styles.sidebarNavLeft} style={{ alignItems: 'center' }}>
+              <div className={styles.vaultIconWrapper}>
+                <Lock size={14} className={styles.vaultLockIcon} />
+              </div>
+              <div className={styles.vaultTextGroup}>
+                <span className={styles.vaultNavLabel}>Personal Vault</span>
+                <span className={styles.dontClickBadge}>
+                  <span className={styles.dontClickDot} />
+                  <span>don&apos;t click</span>
+                  <span className={styles.dontClickShimmer} />
+                </span>
               </div>
             </div>
+            <span className={styles.customTooltip}>
+              ⚠️ Classified // Unfiltered personal thoughts 👀
+            </span>
           </button>
         </div>
       </div>
