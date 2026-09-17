@@ -69,7 +69,7 @@ export function SidebarQuickNav({ isOpen, onClose }: SidebarQuickNavProps) {
               }
             }}
             className={`${styles.sidebarNavItem} ${styles.sidebarVaultBtn} ${styles.hasTooltip}`}
-            title="Personal Vault (Confidential)"
+            aria-label="Personal Vault (Confidential)"
           >
             <div className={styles.sidebarNavLeft} style={{ alignItems: 'center' }}>
               <div className={styles.vaultIconWrapper}>
