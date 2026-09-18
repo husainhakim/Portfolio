@@ -41,6 +41,51 @@ interface FilesystemContextType {
   canGoForward: boolean;
   canGoUp: boolean;
   history: string[];
+  // GUI In-Memory Modifications
+  customNames: Record<string, string>;
+  deletedNodeIds: string[];
+  folderOrders: Record<string, string[]>;
+  isModified: boolean;
+  renameNode: (nodeId: string, newName: string) => void;
+  deleteNode: (nodeId: string) => void;
+  restoreNode: (nodeId: string) => void;
+  reorderNodes: (folderKey: string, sourceId: string, targetId: string) => void;
+  setExplicitFolderOrder: (folderKey: string, newOrderedIds: string[]) => void;
+  resetModifications: () => void;
+  // Shared Actions & Toast State
+  toastMessage: string | null;
+  showToast: (message: string, duration?: number) => void;
+  handleCopyNode: (node: FSNode) => void;
+  handleDeleteNode: (node: FSNode) => void;
+  justRestoredNodeIds: string[];
+}
+
+const PUNCHLINE_MESSAGES: Record<string, string> = {
+  "resume.pdf": "Bold move deleting the one thing that gets me hired 💀",
+  "about.md": "Trying to erase my whole existence? Rude.",
+  projects: "Deleting my projects? That's where the magic happens 🪄",
+  writeups: "My security writeups... gone? Bold strategy.",
+  blogs: "Silencing my blog. Censorship much?",
+  "skills.md": "Nice, now I officially have no skills 😔",
+  "contact-info.md": "Deleting my contact info? Guess we're not friends anymore.",
+  experience: "Wiping my experience? I'm still experienced, I promise.",
+};
+
+const FALLBACK_PUNCHLINES = [
+  "Deleted. Bold of you.",
+  "That's gone. For now 😏",
+  "Poof. You're powerful.",
+  "Wow, ruthless.",
+  "That felt oddly satisfying to watch.",
+];
+
+function getDeletePunchline(nodeName: string): string {
+  const key = nodeName.toLowerCase();
+  if (PUNCHLINE_MESSAGES[key]) {
+    return PUNCHLINE_MESSAGES[key];
+  }
+  const randomIndex = Math.floor(Math.random() * FALLBACK_PUNCHLINES.length);
+  return FALLBACK_PUNCHLINES[randomIndex];
 }
 
 const FilesystemContext = createContext<FilesystemContextType | undefined>(undefined);
@@ -56,6 +101,157 @@ export function FilesystemProvider({ children }: { children: React.ReactNode }) 
   const [viewLayout, setViewLayout] = useState<ViewLayout>("grid");
   const [searchQuery, setSearchQuery] = useState<string>("");
   const [sortOption, setSortOption] = useState<SortOption>("default");
+
+  // GUI-only interactive customization state (in-memory, reset on command or refresh)
+  const [customNames, setCustomNames] = useState<Record<string, string>>({});
+  const [deletedNodeIds, setDeletedNodeIds] = useState<string[]>([]);
+  const [folderOrders, setFolderOrders] = useState<Record<string, string[]>>({});
+
+  // Toast & auto-restore state
+  const [toastMessage, setToastMessage] = useState<string | null>(null);
+  const toastTimerRef = React.useRef<NodeJS.Timeout | null>(null);
+  const restoreTimersRef = React.useRef<Map<string, NodeJS.Timeout>>(new Map());
+  const [justRestoredNodeIds, setJustRestoredNodeIds] = useState<string[]>([]);
+
+  const isModified =
+    Object.keys(customNames).length > 0 ||
+    deletedNodeIds.length > 0 ||
+    Object.keys(folderOrders).length > 0 ||
+    restoreTimersRef.current.size > 0;
+
+  const showToast = useCallback((message: string, duration = 2500) => {
+    if (toastTimerRef.current) clearTimeout(toastTimerRef.current);
+    setToastMessage(message);
+    toastTimerRef.current = setTimeout(() => {
+      setToastMessage(null);
+    }, duration);
+  }, []);
+
+  const renameNode = useCallback((nodeId: string, newName: string) => {
+    setCustomNames((prev) => {
+      const trimmed = newName.trim();
+      if (!trimmed) {
+        const next = { ...prev };
+        delete next[nodeId];
+        return next;
+      }
+      return { ...prev, [nodeId]: trimmed };
+    });
+  }, []);
+
+  const deleteNode = useCallback((nodeId: string) => {
+    setDeletedNodeIds((prev) => (prev.includes(nodeId) ? prev : [...prev, nodeId]));
+    setSelectedNode((current) => (current?.id === nodeId ? null : current));
+  }, []);
+
+  const restoreNode = useCallback((nodeId: string) => {
+    setDeletedNodeIds((prev) => prev.filter((id) => id !== nodeId));
+  }, []);
+
+  const handleCopyNode = useCallback(
+    (node: FSNode) => {
+      if (typeof window === "undefined") return;
+      const url = `${window.location.origin}${node.path}`;
+      if (navigator.clipboard?.writeText) {
+        navigator.clipboard.writeText(url).catch(() => {});
+      }
+      showToast("Link copied to clipboard");
+    },
+    [showToast]
+  );
+
+  const handleDeleteNode = useCallback(
+    (node: FSNode) => {
+      // Exclude Personal Vault entirely
+      if (
+        node.id === "vault" ||
+        node.name.toLowerCase() === "vault" ||
+        node.name.toLowerCase() === "personal vault"
+      ) {
+        return;
+      }
+
+      // 1. Reset timer if this item was already mid-countdown
+      const existing = restoreTimersRef.current.get(node.id);
+      if (existing) {
+        clearTimeout(existing);
+        restoreTimersRef.current.delete(node.id);
+      }
+
+      // 2. Soft-delete immediately
+      deleteNode(node.id);
+
+      // 3. Show punchline toast (persisting for 4.5s)
+      showToast(getDeletePunchline(node.name), 4500);
+
+      // 4. Set 5-second countdown to auto-restore
+      const timer = setTimeout(() => {
+        restoreNode(node.id);
+        restoreTimersRef.current.delete(node.id);
+
+        // Trigger pop-in animation
+        setJustRestoredNodeIds((prev) => [...prev, node.id]);
+        setTimeout(() => {
+          setJustRestoredNodeIds((prev) => prev.filter((id) => id !== node.id));
+        }, 450);
+      }, 5000);
+
+      restoreTimersRef.current.set(node.id, timer);
+    },
+    [deleteNode, restoreNode, showToast]
+  );
+
+  const reorderNodes = useCallback((folderKey: string, sourceId: string, targetId: string) => {
+    if (sourceId === targetId) return;
+    setFolderOrders((prev) => {
+      const current = prev[folderKey] || [];
+      const newOrder = [...current];
+      const sourceIndex = newOrder.indexOf(sourceId);
+      const targetIndex = newOrder.indexOf(targetId);
+
+      if (sourceIndex !== -1 && targetIndex !== -1) {
+        newOrder.splice(sourceIndex, 1);
+        newOrder.splice(targetIndex, 0, sourceId);
+      }
+      return { ...prev, [folderKey]: newOrder };
+    });
+  }, []);
+
+  const setExplicitFolderOrder = useCallback((folderKey: string, newOrderedIds: string[]) => {
+    setFolderOrders((prev) => ({ ...prev, [folderKey]: newOrderedIds }));
+  }, []);
+
+  const resetModifications = useCallback(() => {
+    restoreTimersRef.current.forEach((timer) => clearTimeout(timer));
+    restoreTimersRef.current.clear();
+    setCustomNames({});
+    setDeletedNodeIds([]);
+    setFolderOrders({});
+  }, []);
+
+  // Synchronize restore timers when deletedNodeIds changes (e.g. manual Reset button clicked)
+  useEffect(() => {
+    if (deletedNodeIds.length === 0 && restoreTimersRef.current.size > 0) {
+      restoreTimersRef.current.forEach((timer) => clearTimeout(timer));
+      restoreTimersRef.current.clear();
+    } else {
+      restoreTimersRef.current.forEach((timer, nodeId) => {
+        if (!deletedNodeIds.includes(nodeId)) {
+          clearTimeout(timer);
+          restoreTimersRef.current.delete(nodeId);
+        }
+      });
+    }
+  }, [deletedNodeIds]);
+
+  // Clean up all timers on unmount
+  useEffect(() => {
+    return () => {
+      if (toastTimerRef.current) clearTimeout(toastTimerRef.current);
+      restoreTimersRef.current.forEach((timer) => clearTimeout(timer));
+      restoreTimersRef.current.clear();
+    };
+  }, []);
 
   const modeRef = React.useRef<WorkspaceMode>(mode);
   useEffect(() => {
@@ -204,6 +400,21 @@ export function FilesystemProvider({ children }: { children: React.ReactNode }) 
         canGoForward,
         canGoUp,
         history,
+        customNames,
+        deletedNodeIds,
+        folderOrders,
+        isModified,
+        renameNode,
+        deleteNode,
+        restoreNode,
+        reorderNodes,
+        setExplicitFolderOrder,
+        resetModifications,
+        toastMessage,
+        showToast,
+        handleCopyNode,
+        handleDeleteNode,
+        justRestoredNodeIds,
       }}
     >
       {children}

@@ -126,6 +126,24 @@
   padding: 18px 20px;
 }
 
+.textBlock {
+  display: flex;
+  flex-direction: column;
+  gap: 14px;
+  font-size: 13.5px;
+  line-height: 1.65;
+  color: var(--text-secondary);
+}
+
+.textBlock p {
+  margin: 0;
+}
+
+.textBlock strong {
+  color: var(--text-primary);
+  font-weight: 600;
+}
+
 .sectionTitle {
   display: flex;
   align-items: center;
@@ -1121,3 +1139,958 @@
     height: 460px;
   }
 }
+
+/* ═══════════════════════════════════════════════
+   Personal Vault — Clean File-Manager Modal (Light Neutral Palette)
+   ═══════════════════════════════════════════════ */
+
+/* Backdrop overlay — subtle scrim with blur */
+.vaultOverlay {
+  position: fixed;
+  inset: 0;
+  z-index: 99999;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  background: rgba(18, 19, 22, 0.45);
+  backdrop-filter: blur(8px);
+  -webkit-backdrop-filter: blur(8px);
+  animation: vOverlayIn 0.22s ease-out;
+}
+
+.vaultOverlayExit {
+  animation: vOverlayOut 0.4s cubic-bezier(0.4, 0, 0.2, 1) forwards;
+}
+
+/* Modal panel — light warm neutral matching the workstation file-manager UI */
+.vaultPanel {
+  position: relative;
+  width: 660px;
+  max-width: 94vw;
+  max-height: 90vh;
+  min-height: 480px;
+  display: flex;
+  flex-direction: column;
+  background: var(--bg-subtle, #f7f6f4);
+  border: 1px solid var(--border-default, #c9c4b5);
+  box-shadow:
+    0 1px 3px rgba(0, 0, 0, 0.05),
+    0 20px 48px rgba(0, 0, 0, 0.14);
+  animation: vPanelIn 0.24s cubic-bezier(0.16, 1, 0.3, 1);
+  overflow: hidden;
+}
+
+.vaultPanelExit {
+  animation: vPanelOut 0.35s cubic-bezier(0.4, 0, 0.2, 1) forwards;
+}
+
+/* Panel Header — clean neutral header matching app file headers */
+.vaultPanelHeader {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  height: 48px;
+  padding: 0 22px;
+  background: var(--bg-panel, #ebe9e1);
+  border-bottom: 1px solid var(--border-default, #c9c4b5);
+  position: relative;
+  flex-shrink: 0;
+}
+
+.vaultHeaderLeft {
+  display: flex;
+  align-items: center;
+  gap: 10px;
+  position: relative;
+  z-index: 1;
+}
+
+.vaultHeaderIcon {
+  color: var(--text-secondary, #4a505b);
+  flex-shrink: 0;
+}
+
+.vaultHeaderTitle {
+  font-family: var(--font-mono);
+  font-size: 13px;
+  font-weight: 700;
+  color: #1a1a1a;
+  letter-spacing: 0.02em;
+}
+
+/* Permission tag (-rw-------) badge: muted neutral */
+.vaultHeaderPerms {
+  position: relative;
+  z-index: 1;
+  font-family: var(--font-mono);
+  font-size: 11px;
+  color: #747b88;
+  padding: 3px 9px;
+  background: var(--bg-subtle, #f8f7f4);
+  border: 1px solid var(--border-subtle, #dbd7cb);
+  border-radius: 0;
+  letter-spacing: 0.06em;
+  user-select: none;
+}
+
+/* Panel Body */
+.vaultPanelBody {
+  display: flex;
+  flex-direction: column;
+  padding: 26px 26px;
+  overflow-y: auto;
+  background: var(--bg-subtle, #f7f6f4);
+  flex: 1;
+  position: relative;
+}
+
+/* Resting Form Wrapper */
+.vaultFormContent {
+  display: flex;
+  flex-direction: column;
+  gap: 20px;
+  animation: vFadeIn 0.25s ease-out;
+}
+
+.vaultFormSubmitting {
+  animation: vFormFadeOut 0.22s ease-out forwards;
+}
+
+/* Lock Row — icon + metadata */
+.vaultLockRow {
+  display: flex;
+  align-items: center;
+  gap: 14px;
+}
+
+/* Plain red lock icon — no background box, no dashed border, no pulsing glow */
+.vaultLockCircle {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  width: auto;
+  height: auto;
+  padding: 0;
+  flex-shrink: 0;
+  color: #dc2626;
+  background: transparent;
+  border: none;
+  box-shadow: none;
+}
+
+.vaultLockMeta {
+  display: flex;
+  flex-direction: column;
+  gap: 4px;
+}
+
+.vaultLockBadgeRow {
+  display: flex;
+  align-items: center;
+  gap: 9px;
+}
+
+/* "ENCRYPTED" label: red with subtle light-red tint */
+.vaultLockLabel {
+  font-family: var(--font-mono);
+  font-size: 12px;
+  font-weight: 700;
+  color: #dc2626;
+  letter-spacing: 0.1em;
+  background: rgba(220, 38, 38, 0.08);
+  border: 1px solid rgba(220, 38, 38, 0.22);
+  padding: 2px 7px;
+  display: inline-block;
+}
+
+.vaultLockSub {
+  font-family: var(--font-mono);
+  font-size: 12px;
+  color: #8a8a8a;
+}
+
+/* Questions container — rhythm: distinct gap of 16px */
+.vaultQuestions {
+  display: flex;
+  flex-direction: column;
+  gap: 16px;
+}
+
+/* Question card: slightly darker neutral (#eeece8) with thin light border */
+.vaultQ {
+  display: flex;
+  flex-direction: column;
+  gap: 10px;
+  padding: 15px 18px;
+  background: #eeece8;
+  border: 1px solid #dcd7ce;
+  box-shadow: 0 1px 2px rgba(0, 0, 0, 0.03);
+  transition: border-color 0.15s ease, background-color 0.15s ease, box-shadow 0.15s ease;
+}
+
+.vaultQ:hover {
+  border-color: #c9c4b5;
+  background: #eae8e3;
+}
+
+.vaultQ:focus-within {
+  border-color: #b8b2a3;
+  background: #eeece8;
+  box-shadow: 0 2px 6px rgba(0, 0, 0, 0.05);
+}
+
+.vaultQLabel {
+  display: flex;
+  align-items: baseline;
+  gap: 10px;
+  font-family: var(--font-mono);
+  font-size: 13px;
+  color: #1a1a1a;
+  line-height: 1.45;
+}
+
+/* Question numbers (Q1/Q2/Q3) reserved red accent */
+.vaultQNum {
+  font-family: var(--font-mono);
+  font-size: 11px;
+  font-weight: 700;
+  color: #ffffff;
+  padding: 2px 7px;
+  background: #dc2626;
+  border: 1px solid #dc2626;
+  flex-shrink: 0;
+  line-height: 1.5;
+}
+
+/* Input fields: transparent background, near-black text (#1a1a1a),
+   thin bottom border that turns red on focus */
+.vaultQInput {
+  width: 100%;
+  padding: 8px 0;
+  font-family: var(--font-mono);
+  font-size: 14px;
+  color: #1a1a1a;
+  background: transparent;
+  border: none;
+  border-bottom: 1px solid #c9c4b5;
+  border-radius: 0;
+  outline: none !important;
+  box-shadow: none !important;
+  -webkit-appearance: none;
+  transition: border-color 0.15s ease;
+}
+
+.vaultQInput::placeholder {
+  color: #8a8a8a;
+  font-style: italic;
+}
+
+.vaultQInput:focus,
+.vaultQInput:focus-visible {
+  outline: none !important;
+  outline-offset: 0 !important;
+  border-bottom: 2px solid #dc2626 !important;
+  box-shadow: none !important;
+}
+
+/* Error banner */
+.vaultErr {
+  display: flex;
+  align-items: center;
+  gap: 8px;
+  font-family: var(--font-mono);
+  font-size: 11.5px;
+  color: #b91c1c;
+  padding: 9px 14px;
+  background: #fee2e2;
+  border: 1px solid #fca5a5;
+  animation: vErrShake 0.3s ease;
+}
+
+/* Actions row */
+.vaultActions {
+  display: flex;
+  align-items: center;
+  gap: 16px;
+  margin-top: 3px;
+}
+
+/* Unlock button: solid red, white text */
+.vaultSubmitBtn {
+  padding: 9px 32px;
+  font-family: var(--font-mono);
+  font-size: 12.5px;
+  font-weight: 700;
+  letter-spacing: 0.05em;
+  text-transform: uppercase;
+  color: #ffffff;
+  background: #dc2626;
+  border: 1px solid #dc2626;
+  cursor: pointer;
+  box-shadow: 0 2px 8px rgba(220, 38, 38, 0.2);
+  transition: background-color 0.15s ease, border-color 0.15s ease, box-shadow 0.15s ease, transform 0.1s ease;
+}
+
+.vaultSubmitBtn:hover:not(:disabled) {
+  background: #b91c1c;
+  border-color: #b91c1c;
+  box-shadow: 0 4px 12px rgba(220, 38, 38, 0.35);
+}
+
+.vaultSubmitBtn:active:not(:disabled) {
+  background: #991b1b;
+  border-color: #991b1b;
+  transform: translateY(1px);
+}
+
+.vaultSubmitBtn:focus-visible {
+  outline: 2px solid #dc2626 !important;
+  outline-offset: 2px !important;
+}
+
+.vaultSubmitBtn:disabled {
+  opacity: 0.6;
+  cursor: not-allowed;
+}
+
+/* "Need a hint?" button — prominent, clear contrast, unmistakably visible */
+.vaultHintBtn {
+  display: inline-flex;
+  align-items: center;
+  gap: 7px;
+  font-family: var(--font-mono);
+  font-size: 12.5px;
+  font-weight: 600;
+  color: #1a1a1a;
+  background: #ebe9e1;
+  border: 1px solid #c9c4b5;
+  padding: 8px 16px;
+  cursor: pointer;
+  letter-spacing: 0.02em;
+  transition: all 0.15s ease;
+  user-select: none;
+}
+
+.vaultHintBtn:hover {
+  background: #e0ddd3;
+  border-color: #9e9783;
+  color: #000000;
+}
+
+.vaultHintBtn:focus-visible {
+  outline: 2px solid #dc2626 !important;
+  outline-offset: 2px !important;
+}
+
+/* Hint message callout box — high contrast, clearly legible */
+.vaultHintBox {
+  display: flex;
+  align-items: flex-start;
+  gap: 10px;
+  font-family: var(--font-mono);
+  font-size: 12.5px;
+  line-height: 1.5;
+  color: #1a1a1a;
+  padding: 12px 16px;
+  background: #eeece8;
+  border: 1px solid #dcd7ce;
+  border-left: 3px solid #dc2626;
+  animation: vFadeIn 0.2s ease-out;
+}
+
+/* Disclaimer text: mid-gray (#8a8a8a) */
+.vaultNote {
+  font-family: var(--font-mono);
+  font-size: 10.5px;
+  color: #8a8a8a;
+  text-align: center;
+  margin-top: -2px;
+}
+
+/* ═══════════════════════════════════════════════
+   FULLSCREEN VIDEO UNLOCK CINEMA STAGE (100% OF SCREEN)
+   ═══════════════════════════════════════════════ */
+
+.vaultFullscreenStage {
+  position: fixed;
+  inset: 0;
+  width: 100vw;
+  height: 100vh;
+  z-index: 100000;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
+  animation: vFadeIn 0.25s ease-out forwards;
+  overflow: hidden;
+}
+
+/* Dark Theme Vault Stage */
+.vaultStageDark {
+  background: rgba(10, 11, 13, 0.55);
+  backdrop-filter: blur(6px);
+  -webkit-backdrop-filter: blur(6px);
+}
+
+/* Light Theme Vault Stage */
+.vaultStageLight {
+  background: rgba(244, 243, 239, 0.65);
+  backdrop-filter: blur(6px);
+  -webkit-backdrop-filter: blur(6px);
+}
+
+.vaultFullscreenExit {
+  animation: vFullscreenOut 0.4s cubic-bezier(0.4, 0, 0.2, 1) forwards;
+}
+
+@keyframes vFullscreenOut {
+  0% { opacity: 1; transform: scale(1); }
+  100% { opacity: 0; transform: scale(1.03); }
+}
+
+.vaultFullscreenHeader {
+  position: absolute;
+  top: 0;
+  left: 0;
+  right: 0;
+  height: 56px;
+  padding: 0 24px;
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  background: transparent;
+  z-index: 30;
+}
+
+.vaultFullscreenTitle {
+  font-family: var(--font-mono);
+  font-size: 13px;
+  font-weight: 700;
+  color: #ffffff;
+  letter-spacing: 0.04em;
+  display: flex;
+  align-items: center;
+  gap: 10px;
+  background: rgba(15, 23, 42, 0.65);
+  padding: 6px 14px;
+  border-radius: 9999px;
+  border: 1px solid rgba(255, 255, 255, 0.1);
+  backdrop-filter: blur(8px);
+  -webkit-backdrop-filter: blur(8px);
+}
+
+/* Light Theme HUD Overrides */
+.vaultStageLight .vaultFullscreenTitle {
+  background: rgba(255, 255, 255, 0.88);
+  color: #121316;
+  border: 1px solid rgba(0, 0, 0, 0.12);
+  box-shadow: 0 2px 10px rgba(0, 0, 0, 0.06);
+}
+
+.vaultDoorStage3d {
+  position: relative;
+  width: 520px;
+  height: 520px;
+  max-width: min(90vw, 76vh);
+  max-height: min(90vw, 76vh);
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  perspective: 1300px;
+  perspective-origin: 20% 50%;
+  user-select: none;
+}
+
+.vaultDoorStageGranted {
+  animation: vGrantedPulse 0.5s ease-out;
+}
+
+@keyframes vGrantedPulse {
+  0% { transform: scale(1); }
+  50% { transform: scale(1.02); }
+  100% { transform: scale(1); }
+}
+
+.vaultLockAura {
+  position: absolute;
+  width: 550px;
+  height: 550px;
+  border-radius: 50%;
+  background: radial-gradient(circle, rgba(239, 68, 68, 0.18) 0%, rgba(239, 68, 68, 0.05) 45%, transparent 70%);
+  filter: blur(44px);
+  pointer-events: none;
+  transition: background 0.5s ease, filter 0.5s ease;
+}
+
+.vaultLockAuraGranted {
+  background: radial-gradient(circle, rgba(34, 197, 94, 0.32) 0%, rgba(34, 197, 94, 0.1) 50%, transparent 70%);
+  filter: blur(52px);
+}
+
+/* 2. Outer Static Vault Bulkhead Ring & Chamber Interior */
+.vaultPortalOuterSvg {
+  position: absolute;
+  top: 0;
+  left: 0;
+  width: 100%;
+  height: 100%;
+  z-index: 3;
+  pointer-events: none;
+  filter: drop-shadow(0 18px 40px rgba(0, 0, 0, 0.88));
+}
+
+/* 3. The Massive Circular Vault Door (Swings open in 3D) */
+.vaultDoorDoor {
+  position: absolute;
+  top: 0;
+  left: 0;
+  width: 100%;
+  height: 100%;
+  z-index: 5;
+  transform-origin: 9.72% 50%;
+  transform-style: preserve-3d;
+  transition: transform 0.8s cubic-bezier(0.16, 1, 0.3, 1), filter 0.8s ease;
+  filter: drop-shadow(0 16px 32px rgba(0, 0, 0, 0.8));
+  will-change: transform;
+}
+
+.vaultDoorDoorOpen {
+  transform: rotateY(-80deg);
+  filter: drop-shadow(-32px 20px 44px rgba(0, 0, 0, 0.95));
+}
+
+.vaultDoorSvg {
+  width: 100%;
+  height: 100%;
+  display: block;
+  overflow: visible;
+}
+
+.vaultDoorBodyCircle {
+  transition: stroke 0.4s ease;
+}
+
+/* 8 Radial Locking Bolts */
+.vaultBoltsLayer {
+  position: relative;
+}
+
+.vaultBolt {
+  transition: transform 0.4s cubic-bezier(0.4, 0, 0.2, 1);
+  will-change: transform;
+}
+
+.vaultBoltRetracted {
+  transform: translateY(18px);
+}
+
+/* Central 4-Spoke Wheel */
+.vaultWheelGroup {
+  transform-origin: 180px 180px;
+  transform: rotate(0deg);
+  transition: transform 0.85s cubic-bezier(0.25, 1, 0.5, 1);
+  will-change: transform;
+}
+
+.vaultWheelSpun {
+  transform: rotate(360deg);
+}
+
+.vaultDoorLed {
+  transition: fill 0.3s ease;
+}
+
+.vaultFullscreenFooter {
+  position: absolute;
+  bottom: 28px;
+  left: 50%;
+  transform: translateX(-50%);
+  padding: 10px 24px;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  gap: 4px;
+  background: rgba(15, 23, 42, 0.75);
+  backdrop-filter: blur(10px);
+  -webkit-backdrop-filter: blur(10px);
+  border: 1px solid rgba(255, 255, 255, 0.12);
+  border-radius: 9999px;
+  box-shadow: 0 10px 30px rgba(0, 0, 0, 0.4);
+  z-index: 30;
+  text-align: center;
+  white-space: nowrap;
+}
+
+.vaultFullscreenStatus {
+  font-family: var(--font-mono);
+  font-size: 15px;
+  font-weight: 700;
+  color: #ef4444;
+  letter-spacing: 0.08em;
+  text-shadow: 0 0 12px rgba(239, 68, 68, 0.6);
+  transition: color 0.25s ease, text-shadow 0.25s ease;
+}
+
+.vaultFullscreenStatusGranted {
+  color: #22c55e !important;
+  text-shadow: 0 0 16px rgba(34, 197, 94, 0.7) !important;
+  animation: heroStatusFlash 0.35s ease-out;
+}
+
+.vaultFullscreenSub {
+  font-family: var(--font-mono);
+  font-size: 12px;
+  color: #888888;
+  letter-spacing: 0.05em;
+}
+
+.vaultVideoSkipBtn {
+  font-family: var(--font-mono);
+  font-size: 11.5px;
+  font-weight: 700;
+  color: #ffffff;
+  background: rgba(255, 255, 255, 0.1);
+  border: 1px solid rgba(255, 255, 255, 0.25);
+  padding: 5px 14px;
+  cursor: pointer;
+  letter-spacing: 0.06em;
+  text-transform: uppercase;
+  transition: all 0.15s ease;
+}
+
+.vaultVideoSkipBtn:hover {
+  color: #ffffff;
+  border-color: #ef4444;
+  background: #dc2626;
+  box-shadow: 0 0 12px rgba(239, 68, 68, 0.5);
+}
+
+/* Light Mode Overrides for 3D Vault Stage Elements */
+.vaultStageLight .vaultVideoSkipBtn {
+  background: rgba(0, 0, 0, 0.05);
+  color: #4a505b;
+  border: 1px solid rgba(0, 0, 0, 0.15);
+}
+
+.vaultStageLight .vaultVideoSkipBtn:hover {
+  background: #dc2626;
+  color: #ffffff;
+  border-color: #dc2626;
+}
+
+.vaultStageLight .vaultDoorDoor {
+  filter: drop-shadow(0 14px 28px rgba(0, 0, 0, 0.22));
+}
+
+.vaultStageLight .vaultDoorDoorOpen {
+  filter: drop-shadow(-20px 16px 32px rgba(0, 0, 0, 0.3));
+}
+
+.vaultStageLight .vaultPortalOuterSvg {
+  filter: drop-shadow(0 14px 30px rgba(0, 0, 0, 0.2));
+}
+
+.vaultStageLight .vaultInteriorPortal {
+  background: radial-gradient(circle at center, #ecfdf5 0%, #dcfce7 45%, #bbf7d0 85%);
+  border: 2px solid #16a34a;
+  box-shadow: inset 0 0 25px rgba(0, 0, 0, 0.06);
+}
+
+.vaultStageLight .vaultInteriorPortalActive {
+  box-shadow: 0 0 50px rgba(22, 163, 74, 0.35), inset 0 0 25px rgba(34, 197, 94, 0.2);
+}
+
+.vaultStageLight .vaultInteriorGlow {
+  background: radial-gradient(circle, rgba(34, 197, 94, 0.2) 0%, transparent 65%);
+}
+
+.vaultStageLight .vaultInteriorTitle {
+  color: #15803d;
+  text-shadow: 0 0 10px rgba(22, 163, 74, 0.4);
+}
+
+.vaultStageLight .vaultInteriorSub {
+  color: #166534;
+}
+
+.vaultStageLight .vaultFullscreenFooter {
+  background: rgba(255, 255, 255, 0.92);
+  border: 1px solid rgba(0, 0, 0, 0.12);
+  box-shadow: 0 8px 24px rgba(0, 0, 0, 0.08);
+}
+
+.vaultStageLight .vaultFullscreenStatus {
+  color: #dc2626;
+  text-shadow: none;
+}
+
+.vaultStageLight .vaultFullscreenStatusGranted {
+  color: #15803d !important;
+  text-shadow: 0 0 10px rgba(21, 128, 61, 0.3) !important;
+}
+
+.vaultStageLight .vaultFullscreenSub {
+  color: #747b88;
+}
+
+/* ── Dark Theme Overrides for Vault Challenge Modal ── */
+:global([data-theme="dark"]) .vaultPanel {
+  background: var(--bg-panel, #16181d);
+  border-color: var(--border-default, #2a2f39);
+  box-shadow: 0 1px 3px rgba(0, 0, 0, 0.5), 0 20px 48px rgba(0, 0, 0, 0.7);
+}
+
+:global([data-theme="dark"]) .vaultPanelHeader {
+  background: var(--bg-surface, #101215);
+  border-bottom-color: var(--border-default, #2a2f39);
+}
+
+:global([data-theme="dark"]) .vaultHeaderTitle {
+  color: var(--text-primary, #e6e8ec);
+}
+
+:global([data-theme="dark"]) .vaultHeaderIcon {
+  color: var(--text-muted, #626875);
+}
+
+:global([data-theme="dark"]) .vaultHeaderPerms {
+  color: var(--text-muted, #626875);
+  background: var(--bg-subtle, #0d0e11);
+  border-color: var(--border-subtle, #1e2229);
+}
+
+:global([data-theme="dark"]) .vaultPanelBody {
+  background: var(--bg-panel, #16181d);
+}
+
+:global([data-theme="dark"]) .vaultLockCircle {
+  background: var(--bg-surface, #101215);
+  border-color: var(--border-default, #2a2f39);
+  color: #ef4444;
+}
+
+:global([data-theme="dark"]) .vaultLockSub {
+  color: var(--text-muted, #626875);
+}
+
+:global([data-theme="dark"]) .vaultQ {
+  background: var(--bg-surface, #101215);
+  border-color: var(--border-subtle, #1e2229);
+}
+
+:global([data-theme="dark"]) .vaultQ:hover {
+  background: var(--bg-panel-hover, #1e2127);
+  border-color: var(--border-default, #2a2f39);
+}
+
+:global([data-theme="dark"]) .vaultQ:focus-within {
+  background: var(--bg-surface, #101215);
+  border-color: var(--border-strong, #3f4756);
+}
+
+:global([data-theme="dark"]) .vaultQLabel {
+  color: var(--text-primary, #e6e8ec);
+}
+
+:global([data-theme="dark"]) .vaultQInput {
+  color: var(--text-primary, #e6e8ec);
+  border-bottom-color: var(--border-default, #2a2f39);
+}
+
+:global([data-theme="dark"]) .vaultQInput::placeholder {
+  color: var(--text-muted, #626875);
+}
+
+:global([data-theme="dark"]) .vaultHintBtn {
+  background: var(--bg-surface, #101215);
+  border-color: var(--border-default, #2a2f39);
+  color: var(--text-secondary, #9da3af);
+}
+
+:global([data-theme="dark"]) .vaultHintBtn:hover {
+  background: var(--bg-panel-hover, #1e2127);
+  color: var(--text-primary, #e6e8ec);
+}
+
+:global([data-theme="dark"]) .vaultHintBox {
+  background: var(--bg-surface, #101215);
+  border-color: var(--border-subtle, #1e2229);
+  color: var(--text-secondary, #9da3af);
+}
+
+/* Cyber HUD Corner Brackets */
+.vaultVideoCorner {
+  position: absolute;
+  width: 20px;
+  height: 20px;
+  pointer-events: none;
+  z-index: 10;
+}
+
+.vaultVideoCornerTL {
+  top: 12px;
+  left: 12px;
+  border-top: 3px solid #dc2626;
+  border-left: 3px solid #dc2626;
+}
+
+.vaultVideoCornerTR {
+  top: 12px;
+  right: 12px;
+  border-top: 3px solid #dc2626;
+  border-right: 3px solid #dc2626;
+}
+
+.vaultVideoCornerBL {
+  bottom: 12px;
+  left: 12px;
+  border-bottom: 3px solid #dc2626;
+  border-left: 3px solid #dc2626;
+}
+
+.vaultVideoCornerBR {
+  bottom: 12px;
+  right: 12px;
+  border-bottom: 3px solid #dc2626;
+  border-right: 3px solid #dc2626;
+}
+
+/* Unlocked content slide-in */
+.vaultContentIn {
+  animation: vContentIn 0.4s cubic-bezier(0.16, 1, 0.3, 1);
+}
+
+/* ── Keyframes ── */
+
+@keyframes vOverlayIn {
+  from { opacity: 0; }
+  to { opacity: 1; }
+}
+
+@keyframes vOverlayOut {
+  from { opacity: 1; }
+  to { opacity: 0; }
+}
+
+@keyframes vPanelIn {
+  from { opacity: 0; transform: scale(0.96) translateY(12px); }
+  to { opacity: 1; transform: scale(1) translateY(0); }
+}
+
+@keyframes vPanelOut {
+  0% { opacity: 1; transform: scale(1) translateY(0); }
+  100% { opacity: 0; transform: scale(0.97) translateY(-14px); }
+}
+
+@keyframes vBorderScan {
+  0% { transform: translateX(-100%); opacity: 1; }
+  100% { transform: translateX(100%); opacity: 0; }
+}
+
+@keyframes vFormFadeOut {
+  0% { opacity: 1; transform: translateY(0); }
+  100% { opacity: 0; transform: translateY(12px); pointer-events: none; }
+}
+
+@keyframes heroLockIn {
+  from {
+    opacity: 0;
+    transform: scale(0.85);
+  }
+  to {
+    opacity: 1;
+    transform: scale(1);
+  }
+}
+
+@keyframes heroSnapFlash {
+  0% { filter: brightness(1); }
+  35% { filter: brightness(1.4) drop-shadow(0 0 30px rgba(239, 68, 68, 0.8)); }
+  100% { filter: brightness(1); }
+}
+
+@keyframes heroDissolve {
+  0% {
+    opacity: 1;
+    transform: scale(1) translateY(0);
+  }
+  100% {
+    opacity: 0;
+    transform: scale(0.88) translateY(-14px);
+  }
+}
+
+@keyframes heroStatusFlash {
+  0% { transform: scale(0.95); opacity: 0.5; }
+  50% { transform: scale(1.06); opacity: 1; }
+  100% { transform: scale(1); opacity: 1; }
+}
+
+@keyframes vErrShake {
+  0%, 100% { transform: translateX(0); }
+  20% { transform: translateX(-4px); }
+  40% { transform: translateX(3px); }
+  60% { transform: translateX(-2px); }
+  80% { transform: translateX(1px); }
+}
+
+@keyframes vFadeIn {
+  from { opacity: 0; }
+  to { opacity: 1; }
+}
+
+@keyframes vContentIn {
+  from { opacity: 0; transform: translateY(14px); }
+  to { opacity: 1; transform: translateY(0); }
+}
+
+/* ── prefers-reduced-motion ── */
+@media (prefers-reduced-motion: reduce) {
+  .vaultOverlay,
+  .vaultOverlayExit,
+  .vaultPanel,
+  .vaultPanelExit,
+  .vaultFullscreenStage,
+  .vaultFullscreenExit,
+  .vaultFullscreenStatus,
+  .vaultErr,
+  .vaultHintBox,
+  .vaultContentIn {
+    animation: none !important;
+    transition: none !important;
+  }
+}
+
+/* ── Vault Responsive ── */
+@media (max-width: 768px) {
+  .vaultPanel {
+    width: 95vw;
+  }
+
+  .vaultPanelBody {
+    padding: 20px 16px;
+  }
+
+  .vaultActions {
+    flex-direction: column;
+    align-items: stretch;
+    gap: 10px;
+  }
+
+  .vaultSubmitBtn,
+  .vaultHintBtn {
+    width: 100%;
+    justify-content: center;
+  }
+
+  .vaultFullscreenHeader {
+    padding: 0 16px;
+    height: 52px;
+  }
+
+  .vaultFullscreenFooter {
+    padding: 16px 16px 20px;
+  }
+}
+
+

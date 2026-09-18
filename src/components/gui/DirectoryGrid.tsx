@@ -34,6 +34,13 @@ import {
   Users,
   Wrench,
   Lock,
+  FileEdit,
+  Info,
+  Copy,
+  Trash2,
+  Check,
+  FolderOpen,
+  X,
 } from "lucide-react";
 import styles from "./Gui.module.css";
 import { Win11Folder, Win11Pdf } from "./Win11Icons";
@@ -45,20 +52,20 @@ interface DirectoryGridProps {
 
 const ITEM_PURPOSE_TAGS: Record<string, string> = {
   "about.md": "PERSONAL INTRO",
-  "projects": "CODE & BUILDS",
-  "writeups": "SECURITY WRITEUPS",
+  projects: "CODE & BUILDS",
+  writeups: "SECURITY WRITEUPS",
   "resume.pdf": "RESUME / CV",
-  "blogs": "BLOG POSTS",
+  blogs: "BLOG POSTS",
   "skills.md": "TECH STACK & SKILLS",
-  "experience": "WORK HISTORY",
+  experience: "WORK HISTORY",
   "contact-info.md": "GET IN TOUCH",
   "personal_vault.md": "ENCRYPTED VAULT",
-  "vault": "PERSONAL VAULT",
+  vault: "PERSONAL VAULT",
   "file-sign-identifier": "FORENSICS TOOL",
   "network-device-scanner": "NETWORK SCANNER",
   "password-strength-checker": "SECURITY TOOL",
-  "quickref": "CLI REFERENCE",
-  "repochecker": "HYGIENE UTILITY",
+  quickref: "CLI REFERENCE",
+  repochecker: "HYGIENE UTILITY",
   "intrusion-detection-system": "IDS SIMULATION",
   "file-identifier.md": "SECURITY WRITEUP",
   "network-device-scanner.md": "SECURITY WRITEUP",
@@ -73,12 +80,18 @@ function getItemTag(node: FSNode): string {
   }
   const file = node as FSFile;
   switch (file.fileType) {
-    case "project": return "SECURITY PROJECT";
-    case "writeup": return "SECURITY WRITEUP";
-    case "blog": return "BLOG POST";
-    case "pdf": return "RESUME / CV";
-    case "markdown": return "MARKDOWN DOC";
-    default: return `${file.fileType.toUpperCase()} FILE`;
+    case "project":
+      return "SECURITY PROJECT";
+    case "writeup":
+      return "SECURITY WRITEUP";
+    case "blog":
+      return "BLOG POST";
+    case "pdf":
+      return "RESUME / CV";
+    case "markdown":
+      return "MARKDOWN DOC";
+    default:
+      return `${file.fileType.toUpperCase()} FILE`;
   }
 }
 
@@ -87,22 +100,30 @@ function formatDisplayName(name: string): string {
   return name.charAt(0).toUpperCase() + name.slice(1);
 }
 
+// Deterministic, stable hex checksum per item (never randomizes on reopen)
+function getStableHash(node: FSNode): string {
+  const seed = `${node.id}:${node.path}:${node.name}`;
+  let h1 = 0xdeadbeef;
+  let h2 = 0x41c64e6d;
+  for (let i = 0; i < seed.length; i++) {
+    const ch = seed.charCodeAt(i);
+    h1 = Math.imul(h1 ^ ch, 2654435761);
+    h2 = Math.imul(h2 ^ ch, 1597334677);
+  }
+  h1 = Math.imul(h1 ^ (h1 >>> 16), 2246822507) ^ Math.imul(h2 ^ (h2 >>> 13), 3266489909);
+  h2 = Math.imul(h2 ^ (h2 >>> 16), 2246822507) ^ Math.imul(h1 ^ (h1 >>> 13), 3266489909);
+  const hex = (
+    (h2 >>> 0).toString(16).padStart(8, "0") + (h1 >>> 0).toString(16).padStart(8, "0")
+  ).toLowerCase();
+  return `SHA-256: ${hex.slice(0, 8)}...${hex.slice(8, 16)}`;
+}
 export function DirectoryGrid({ nodes }: DirectoryGridProps) {
   const [isMounted, setIsMounted] = React.useState(false);
   const [isQuickAccessOpen, setIsQuickAccessOpen] = React.useState(true);
   const [isRecentOpen, setIsRecentOpen] = React.useState(true);
   const [hasSeenTutorial, setHasSeenTutorial] = React.useState<boolean>(true);
 
-  React.useEffect(() => {
-    setIsMounted(true);
-    try {
-      const seen = localStorage.getItem(ABOUT_TUTORIAL_KEY);
-      if (!seen) {
-        setHasSeenTutorial(false);
-      }
-    } catch (_) { }
-  }, []);
-
+  // In-memory state hooks from FilesystemContext
   const {
     currentPath,
     navigate,
@@ -112,11 +133,168 @@ export function DirectoryGrid({ nodes }: DirectoryGridProps) {
     viewLayout,
     searchQuery,
     sortOption,
+    customNames,
+    deletedNodeIds,
+    folderOrders,
+    renameNode,
+    deleteNode,
+    restoreNode,
+    setExplicitFolderOrder,
+    handleCopyNode,
+    handleDeleteNode,
+    justRestoredNodeIds,
   } = useFilesystem();
+
+  // Inline Rename State
+  const [renamingNodeId, setRenamingNodeId] = React.useState<string | null>(null);
+  const [renameValue, setRenameValue] = React.useState<string>("");
+  const renameInputRef = React.useRef<HTMLInputElement | null>(null);
+
+  // Context Menu State
+  const [contextMenu, setContextMenu] = React.useState<{
+    isOpen: boolean;
+    x: number;
+    y: number;
+    node: FSNode | null;
+  }>({
+    isOpen: false,
+    x: 0,
+    y: 0,
+    node: null,
+  });
+
+  // Get Info Modal State
+  const [infoNode, setInfoNode] = React.useState<FSNode | null>(null);
+
+  // Drag and Drop State
+  const [draggedNodeId, setDraggedNodeId] = React.useState<string | null>(null);
+  const [dragOverNodeId, setDragOverNodeId] = React.useState<string | null>(null);
+  const [dragFolderKey, setDragFolderKey] = React.useState<string | null>(null);
+
+  React.useEffect(() => {
+    setIsMounted(true);
+    try {
+      const seen = localStorage.getItem(ABOUT_TUTORIAL_KEY);
+      if (!seen) {
+        setHasSeenTutorial(false);
+      }
+    } catch (_) {}
+  }, []);
+
+  // Focus and select input on rename activation
+  React.useEffect(() => {
+    if (renamingNodeId && renameInputRef.current) {
+      renameInputRef.current.focus();
+      renameInputRef.current.select();
+    }
+  }, [renamingNodeId]);
+
+  // Context menu click-outside and Escape listener
+  React.useEffect(() => {
+    if (!contextMenu.isOpen) return;
+
+    const handlePointerDown = (e: MouseEvent) => {
+      const target = e.target as HTMLElement;
+      if (!target.closest(`.${styles.contextMenu}`)) {
+        setContextMenu((prev) => ({ ...prev, isOpen: false }));
+      }
+    };
+
+    const handleKeyDown = (e: KeyboardEvent) => {
+      if (e.key === "Escape") {
+        setContextMenu((prev) => ({ ...prev, isOpen: false }));
+      }
+    };
+
+    window.addEventListener("pointerdown", handlePointerDown);
+    window.addEventListener("keydown", handleKeyDown);
+    return () => {
+      window.removeEventListener("pointerdown", handlePointerDown);
+      window.removeEventListener("keydown", handleKeyDown);
+    };
+  }, [contextMenu.isOpen]);
+
+  // Get Info Escape key listener
+  React.useEffect(() => {
+    if (!infoNode) return;
+    const handleKeyDown = (e: KeyboardEvent) => {
+      if (e.key === "Escape") {
+        setInfoNode(null);
+      }
+    };
+    window.addEventListener("keydown", handleKeyDown);
+    return () => window.removeEventListener("keydown", handleKeyDown);
+  }, [infoNode]);
+
+  // Helper to get active display name
+  const getNodeDisplayName = (node: FSNode) => {
+    if (customNames[node.id]) {
+      return customNames[node.id];
+    }
+    return formatDisplayName(node.name);
+  };
+
+  const commitRename = (nodeId: string) => {
+    if (renamingNodeId === nodeId) {
+      renameNode(nodeId, renameValue);
+      setRenamingNodeId(null);
+    }
+  };
+
+  const cancelRename = () => {
+    setRenamingNodeId(null);
+  };
+
+  // Reordering helper
+  const handleReorder = (
+    folderKey: string,
+    currentIds: string[],
+    sourceId: string,
+    targetId: string
+  ) => {
+    if (sourceId === targetId) return;
+    const newIds = [...currentIds];
+    const sourceIdx = newIds.indexOf(sourceId);
+    const targetIdx = newIds.indexOf(targetId);
+    if (sourceIdx === -1 || targetIdx === -1) return;
+
+    newIds.splice(sourceIdx, 1);
+    newIds.splice(targetIdx, 0, sourceId);
+    setExplicitFolderOrder(folderKey, newIds);
+  };
+
+  // Context menu trigger
+  const handleContextMenu = (e: React.MouseEvent, node: FSNode) => {
+    e.preventDefault();
+    e.stopPropagation();
+    setSelectedNode(node);
+
+    const menuWidth = 195;
+    const menuHeight = 210;
+    const margin = 12;
+
+    let x = e.clientX;
+    let y = e.clientY;
+
+    if (x + menuWidth > window.innerWidth - margin) {
+      x = Math.max(margin, window.innerWidth - menuWidth - margin);
+    }
+    if (y + menuHeight > window.innerHeight - margin) {
+      y = Math.max(margin, window.innerHeight - menuHeight - margin);
+    }
+
+    setContextMenu({
+      isOpen: true,
+      x,
+      y,
+      node,
+    });
+  };
 
   // Check if we are at root /home/husain
   const isRoot = currentPath === ROOT_PATH;
 
+  // Filtered and custom-ordered main nodes
   const filteredNodes = React.useMemo(() => {
     const results: FSNode[] = [];
 
@@ -124,7 +302,9 @@ export function DirectoryGrid({ nodes }: DirectoryGridProps) {
       const query = searchQuery.toLowerCase();
       const searchDeep = (directory: FSDirectory) => {
         for (const child of directory.children) {
+          const displayName = (customNames[child.id] || child.name).toLowerCase();
           if (
+            displayName.includes(query) ||
             child.name.toLowerCase().includes(query) ||
             (child.description && child.description.toLowerCase().includes(query))
           ) {
@@ -139,32 +319,76 @@ export function DirectoryGrid({ nodes }: DirectoryGridProps) {
       searchDeep(VIRTUAL_FS);
     }
 
-    const finalNodes = searchQuery ? results : [...nodes];
+    // Filter out soft-deleted nodes
+    const baseNodes = (searchQuery ? results : [...nodes]).filter(
+      (node) => !deletedNodeIds.includes(node.id)
+    );
 
     if (sortOption === "a-z") {
-      finalNodes.sort((a, b) => a.name.localeCompare(b.name));
+      baseNodes.sort((a, b) => {
+        const nameA = customNames[a.id] || a.name;
+        const nameB = customNames[b.id] || b.name;
+        return nameA.localeCompare(nameB);
+      });
     } else if (sortOption === "z-a") {
-      finalNodes.sort((a, b) => b.name.localeCompare(a.name));
+      baseNodes.sort((a, b) => {
+        const nameA = customNames[a.id] || a.name;
+        const nameB = customNames[b.id] || b.name;
+        return nameB.localeCompare(nameA);
+      });
+    } else {
+      // Respect manual drag-and-drop reorder for current folder
+      const customOrder = folderOrders[currentPath];
+      if (customOrder && customOrder.length > 0) {
+        baseNodes.sort((a, b) => {
+          const idxA = customOrder.indexOf(a.id);
+          const idxB = customOrder.indexOf(b.id);
+          if (idxA !== -1 && idxB !== -1) return idxA - idxB;
+          if (idxA !== -1) return -1;
+          if (idxB !== -1) return 1;
+          return 0;
+        });
+      }
     }
 
-    return finalNodes;
-  }, [nodes, searchQuery, sortOption]);
+    return baseNodes;
+  }, [nodes, searchQuery, sortOption, deletedNodeIds, customNames, folderOrders, currentPath]);
 
-  if (!isMounted) return null;
-
+  // Quick Access nodes with custom ordering and delete filtering
   const quickAccessNames = ["about.md", "projects", "writeups", "resume.pdf"];
-  const quickAccessNodes = isRoot && !searchQuery
-    ? quickAccessNames.map(name => nodes.find(n => n.name === name)).filter(Boolean) as FSNode[]
-    : [];
+  const quickAccessBase =
+    isRoot && !searchQuery
+      ? (quickAccessNames
+          .map((name) => nodes.find((n) => n.name === name))
+          .filter(Boolean) as FSNode[])
+      : [];
 
-  const isQaShowingAbout = isRoot && !searchQuery && isQuickAccessOpen && quickAccessNodes.some(n => n.name === "about.md");
+  const quickAccessSurviving = quickAccessBase.filter((n) => !deletedNodeIds.includes(n.id));
+  const qaCustomOrder = folderOrders["quick-access"];
+  const quickAccessNodes =
+    qaCustomOrder && qaCustomOrder.length > 0
+      ? [...quickAccessSurviving].sort((a, b) => {
+          const idxA = qaCustomOrder.indexOf(a.id);
+          const idxB = qaCustomOrder.indexOf(b.id);
+          if (idxA !== -1 && idxB !== -1) return idxA - idxB;
+          if (idxA !== -1) return -1;
+          if (idxB !== -1) return 1;
+          return 0;
+        })
+      : quickAccessSurviving;
+
+  const isQaShowingAbout =
+    isRoot &&
+    !searchQuery &&
+    isQuickAccessOpen &&
+    quickAccessNodes.some((n) => n.name === "about.md");
 
   const getRecentItems = () => {
     if (!isRoot || searchQuery) return [];
 
     const allItems: FSNode[] = [];
 
-    VIRTUAL_FS.children.forEach(child => {
+    VIRTUAL_FS.children.forEach((child) => {
       // Don't include root folders in recent, only their contents or root files
       if (child.type === "directory") {
         if (child.name !== "vault") {
@@ -176,6 +400,7 @@ export function DirectoryGrid({ nodes }: DirectoryGridProps) {
     });
 
     return allItems
+      .filter((child) => !deletedNodeIds.includes(child.id))
       .sort((a, b) => new Date(b.updatedAt).getTime() - new Date(a.updatedAt).getTime())
       .slice(0, 3);
   };
@@ -190,7 +415,7 @@ export function DirectoryGrid({ nodes }: DirectoryGridProps) {
     try {
       localStorage.setItem(ABOUT_TUTORIAL_KEY, "1");
       setHasSeenTutorial(true);
-    } catch (_) { }
+    } catch (_) {}
     if (node.type === "directory") {
       navigate(node.path);
     } else {
@@ -199,6 +424,7 @@ export function DirectoryGrid({ nodes }: DirectoryGridProps) {
   };
 
   const handleKeyDown = (e: React.KeyboardEvent, node: FSNode) => {
+    if (renamingNodeId === node.id) return;
     if (e.key === "Enter" || e.key === " ") {
       e.preventDefault();
       handleNodeDoubleClick(node);
@@ -208,13 +434,62 @@ export function DirectoryGrid({ nodes }: DirectoryGridProps) {
   const getNodeIconElement = (node: FSNode, size: number = 24, className: string = "") => {
     if (node.type === "directory") {
       switch (node.name) {
-        case "about": return <Win11Folder size={size} className={className} colorTheme="yellow" badgeIcon={<User size={32} color="#fff" strokeWidth={2.5} />} />;
-        case "projects": return <Win11Folder size={size} className={className} colorTheme="yellow" badgeIcon={<Code size={32} color="#fff" strokeWidth={2.5} />} />;
-        case "writeups": return <Win11Folder size={size} className={className} colorTheme="yellow" badgeIcon={<Shield size={32} color="#fff" strokeWidth={2.5} />} />;
-        case "blogs": return <Win11Folder size={size} className={className} colorTheme="yellow" badgeIcon={<BookOpen size={32} color="#fff" strokeWidth={2.5} />} />;
-        case "experience": return <Win11Folder size={size} className={className} colorTheme="yellow" badgeIcon={<Briefcase size={32} color="#fff" strokeWidth={2.5} />} />;
-        case "vault": return <Win11Folder size={size} className={className} colorTheme="yellow" badgeIcon={<Lock size={32} color="#fff" strokeWidth={2.5} />} />;
-        default: return <Win11Folder size={size} className={className} colorTheme="yellow" />;
+        case "about":
+          return (
+            <Win11Folder
+              size={size}
+              className={className}
+              colorTheme="yellow"
+              badgeIcon={<User size={32} color="#fff" strokeWidth={2.5} />}
+            />
+          );
+        case "projects":
+          return (
+            <Win11Folder
+              size={size}
+              className={className}
+              colorTheme="yellow"
+              badgeIcon={<Code size={32} color="#fff" strokeWidth={2.5} />}
+            />
+          );
+        case "writeups":
+          return (
+            <Win11Folder
+              size={size}
+              className={className}
+              colorTheme="yellow"
+              badgeIcon={<Shield size={32} color="#fff" strokeWidth={2.5} />}
+            />
+          );
+        case "blogs":
+          return (
+            <Win11Folder
+              size={size}
+              className={className}
+              colorTheme="yellow"
+              badgeIcon={<BookOpen size={32} color="#fff" strokeWidth={2.5} />}
+            />
+          );
+        case "experience":
+          return (
+            <Win11Folder
+              size={size}
+              className={className}
+              colorTheme="yellow"
+              badgeIcon={<Briefcase size={32} color="#fff" strokeWidth={2.5} />}
+            />
+          );
+        case "vault":
+          return (
+            <Win11Folder
+              size={size}
+              className={className}
+              colorTheme="yellow"
+              badgeIcon={<Lock size={32} color="#fff" strokeWidth={2.5} />}
+            />
+          );
+        default:
+          return <Win11Folder size={size} className={className} colorTheme="yellow" />;
       }
     }
 
@@ -226,7 +501,6 @@ export function DirectoryGrid({ nodes }: DirectoryGridProps) {
       return <Win11Pdf size={size} className={className} />;
     }
 
-    // All markdown and document files share unified document category styling
     return <FileText size={size} className={className} color="var(--accent-primary)" />;
   };
 
@@ -243,7 +517,9 @@ export function DirectoryGrid({ nodes }: DirectoryGridProps) {
     return styles.fileIcon;
   };
 
-  if (filteredNodes.length === 0) {
+  if (!isMounted) return null;
+
+  if (filteredNodes.length === 0 && (!isRoot || quickAccessNodes.length === 0)) {
     return (
       <div className={styles.emptyState}>
         <Folder size={36} className={styles.emptyIcon} />
@@ -259,20 +535,71 @@ export function DirectoryGrid({ nodes }: DirectoryGridProps) {
     );
   }
 
-  // Shared function to render a node in Quick Access / Recent layout
+  // Shared function to render a node in Quick Access
   const renderQuickAccessNode = (node: FSNode) => {
     const isSelected = selectedNode?.id === node.id;
     const isAboutTutorialTarget = node.name === "about.md" && !hasSeenTutorial;
     const iconClass = getNodeIconClass(node);
+    const folderKey = "quick-access";
+    const isDragging = draggedNodeId === node.id;
+    const isDragOver = dragOverNodeId === node.id && dragFolderKey === folderKey;
+    const isJustRestored = justRestoredNodeIds.includes(node.id);
 
     return (
       <div
         key={node.id}
         tabIndex={0}
-        onClick={() => handleNodeClick(node)}
-        onDoubleClick={() => handleNodeDoubleClick(node)}
+        draggable={renamingNodeId !== node.id}
+        onDragStart={(e) => {
+          e.dataTransfer.setData("text/plain", node.id);
+          setDraggedNodeId(node.id);
+          setDragFolderKey(folderKey);
+        }}
+        onDragOver={(e) => {
+          e.preventDefault();
+          e.dataTransfer.dropEffect = "move";
+          if (dragFolderKey === folderKey && dragOverNodeId !== node.id) {
+            setDragOverNodeId(node.id);
+          }
+        }}
+        onDragLeave={() => {
+          if (dragOverNodeId === node.id) setDragOverNodeId(null);
+        }}
+        onDrop={(e) => {
+          e.preventDefault();
+          const sourceId = e.dataTransfer.getData("text/plain") || draggedNodeId;
+          if (sourceId && sourceId !== node.id && dragFolderKey === folderKey) {
+            handleReorder(
+              folderKey,
+              quickAccessNodes.map((n) => n.id),
+              sourceId,
+              node.id
+            );
+          }
+          setDraggedNodeId(null);
+          setDragOverNodeId(null);
+          setDragFolderKey(null);
+        }}
+        onDragEnd={() => {
+          setDraggedNodeId(null);
+          setDragOverNodeId(null);
+          setDragFolderKey(null);
+        }}
+        onClick={(e) => {
+          e.stopPropagation();
+          handleNodeClick(node);
+        }}
+        onDoubleClick={(e) => {
+          e.stopPropagation();
+          handleNodeDoubleClick(node);
+        }}
         onKeyDown={(e) => handleKeyDown(e, node)}
-        className={`${styles.gridItemCard} ${isSelected ? styles.gridItemSelected : ""} ${isAboutTutorialTarget ? "tutorialTargetNode" : ""}`}
+        onContextMenu={(e) => handleContextMenu(e, node)}
+        className={`${styles.gridItemCard} ${isSelected ? styles.gridItemSelected : ""} ${
+          isAboutTutorialTarget ? "tutorialTargetNode" : ""
+        } ${isDragging ? styles.draggedItem : ""} ${isDragOver ? styles.dragOverTarget : ""} ${
+          isJustRestored ? styles.itemPopIn : ""
+        }`}
         role="button"
         aria-label={`${node.type === "directory" ? "Directory" : "File"}: ${node.name}`}
       >
@@ -290,15 +617,37 @@ export function DirectoryGrid({ nodes }: DirectoryGridProps) {
         </div>
 
         <div className={styles.gridItemInfo}>
-          <span className={styles.gridItemName}>{formatDisplayName(node.name)}</span>
+          {renamingNodeId === node.id ? (
+            <input
+              ref={renameInputRef}
+              type="text"
+              value={renameValue}
+              onChange={(e) => setRenameValue(e.target.value)}
+              onKeyDown={(e) => {
+                if (e.key === "Enter") {
+                  e.preventDefault();
+                  commitRename(node.id);
+                } else if (e.key === "Escape") {
+                  e.preventDefault();
+                  cancelRename();
+                }
+              }}
+              onBlur={() => commitRename(node.id)}
+              onClick={(e) => e.stopPropagation()}
+              onDoubleClick={(e) => e.stopPropagation()}
+              className={styles.inlineRenameInput}
+            />
+          ) : (
+            <span className={styles.gridItemName}>{getNodeDisplayName(node)}</span>
+          )}
         </div>
 
         <div className={styles.gridItemFooter}>
+          <span className={styles.gridItemSize}>{getItemTag(node)}</span>
           <span className={styles.gridItemSize}>
-            {getItemTag(node)}
-          </span>
-          <span className={styles.gridItemSize}>
-            {node.type === "file" ? formatFileSize((node as FSFile).size) : `${(node as FSDirectory).children.length} items`}
+            {node.type === "file"
+              ? formatFileSize((node as FSFile).size)
+              : `${(node as FSDirectory).children.length} items`}
           </span>
         </div>
       </div>
@@ -310,30 +659,207 @@ export function DirectoryGrid({ nodes }: DirectoryGridProps) {
     const iconClass = getNodeIconClass(node);
 
     // Get parent path
-    const pathParts = node.path.split('/');
-    const parentPath = pathParts.slice(0, -1).join('/') + '/';
+    const pathParts = node.path.split("/");
+    const parentPath = pathParts.slice(0, -1).join("/") + "/";
+    const isJustRestored = justRestoredNodeIds.includes(node.id);
 
     return (
       <div
         key={node.id}
         tabIndex={0}
-        onClick={() => handleNodeClick(node)}
-        onDoubleClick={() => handleNodeDoubleClick(node)}
+        onClick={(e) => {
+          e.stopPropagation();
+          handleNodeClick(node);
+        }}
+        onDoubleClick={(e) => {
+          e.stopPropagation();
+          handleNodeDoubleClick(node);
+        }}
         onKeyDown={(e) => handleKeyDown(e, node)}
-        className={`${styles.recentListRow} ${isSelected ? styles.listRowSelected : ""}`}
+        onContextMenu={(e) => handleContextMenu(e, node)}
+        className={`${styles.recentListRow} ${isSelected ? styles.listRowSelected : ""} ${
+          isJustRestored ? styles.itemPopIn : ""
+        }`}
         role="button"
         aria-label={`${node.type === "directory" ? "Directory" : "File"}: ${node.name}`}
       >
         <div className={styles.colName}>
           <div className={styles.listRowIcon}>
-            <div className={`${styles.listRowIcon} ${iconClass}`}>{getNodeIconElement(node, 16)}</div>
+            <div className={`${styles.listRowIcon} ${iconClass}`}>
+              {getNodeIconElement(node, 16)}
+            </div>
           </div>
           <div className={styles.listRowNameInfo}>
-            <span className={styles.listRowName}>{formatDisplayName(node.name)}</span>
+            {renamingNodeId === node.id ? (
+              <input
+                ref={renameInputRef}
+                type="text"
+                value={renameValue}
+                onChange={(e) => setRenameValue(e.target.value)}
+                onKeyDown={(e) => {
+                  if (e.key === "Enter") {
+                    e.preventDefault();
+                    commitRename(node.id);
+                  } else if (e.key === "Escape") {
+                    e.preventDefault();
+                    cancelRename();
+                  }
+                }}
+                onBlur={() => commitRename(node.id)}
+                onClick={(e) => e.stopPropagation()}
+                onDoubleClick={(e) => e.stopPropagation()}
+                className={`${styles.inlineRenameInput} ${styles.inlineRenameInputList}`}
+              />
+            ) : (
+              <span className={styles.listRowName}>{getNodeDisplayName(node)}</span>
+            )}
           </div>
         </div>
         <span className={styles.colDate}>{node.updatedAt}</span>
-        <span className={styles.colPath}>{parentPath.replace('/home/husain/', '') || '/'}</span>
+        <span className={styles.colPath}>{parentPath.replace("/home/husain/", "") || "/"}</span>
+      </div>
+    );
+  };
+
+  // Render context menu element
+  const renderContextMenu = () => {
+    if (!contextMenu.isOpen || !contextMenu.node) return null;
+    const node = contextMenu.node;
+
+    return (
+      <div
+        className={styles.contextMenu}
+        style={{ top: contextMenu.y, left: contextMenu.x }}
+        onClick={(e) => e.stopPropagation()}
+      >
+        <button
+          className={styles.contextMenuItem}
+          onClick={() => {
+            handleNodeDoubleClick(node);
+            setContextMenu((prev) => ({ ...prev, isOpen: false }));
+          }}
+        >
+          <FolderOpen size={14} />
+          <span>Open</span>
+        </button>
+
+        <button
+          className={styles.contextMenuItem}
+          onClick={() => {
+            setRenamingNodeId(node.id);
+            setRenameValue(customNames[node.id] || node.name);
+            setContextMenu((prev) => ({ ...prev, isOpen: false }));
+          }}
+        >
+          <FileEdit size={14} />
+          <span>Rename</span>
+        </button>
+
+        <button
+          className={styles.contextMenuItem}
+          onClick={() => {
+            setInfoNode(node);
+            setContextMenu((prev) => ({ ...prev, isOpen: false }));
+          }}
+        >
+          <Info size={14} />
+          <span>Get Info</span>
+        </button>
+
+        <button
+          className={styles.contextMenuItem}
+          onClick={() => {
+            handleCopyNode(node);
+            setContextMenu((prev) => ({ ...prev, isOpen: false }));
+          }}
+        >
+          <Copy size={14} />
+          <span>Copy Link</span>
+        </button>
+
+        <div className={styles.contextMenuDivider} />
+
+        <button
+          className={`${styles.contextMenuItem} ${styles.contextMenuItemDanger}`}
+          onClick={() => {
+            handleDeleteNode(node);
+            setContextMenu((prev) => ({ ...prev, isOpen: false }));
+          }}
+        >
+          <Trash2 size={14} />
+          <span>Delete</span>
+        </button>
+      </div>
+    );
+  };
+
+  // Render Get Info modal element
+  const renderGetInfoModal = () => {
+    if (!infoNode) return null;
+
+    return (
+      <div className={styles.getInfoBackdrop} onClick={() => setInfoNode(null)}>
+        <div className={styles.getInfoModal} onClick={(e) => e.stopPropagation()}>
+          <div className={styles.getInfoTitleBar}>
+            <div className={styles.getInfoTitle}>
+              <Info size={15} color="var(--accent-primary)" />
+              <span>Info: {getNodeDisplayName(infoNode)}</span>
+            </div>
+            <button
+              className={styles.getInfoCloseBtn}
+              onClick={() => setInfoNode(null)}
+              title="Close"
+            >
+              <X size={15} />
+            </button>
+          </div>
+
+          <div className={styles.getInfoBody}>
+            <div className={styles.getInfoHero}>
+              <div className={styles.getInfoHeroIcon}>
+                {getNodeIconElement(infoNode, 32)}
+              </div>
+              <div className={styles.getInfoHeroMeta}>
+                <span className={styles.getInfoHeroName}>{getNodeDisplayName(infoNode)}</span>
+                <span className={styles.getInfoHeroTag}>{getItemTag(infoNode)}</span>
+              </div>
+            </div>
+
+            <div className={styles.getInfoGrid}>
+              <span className={styles.getInfoLabel}>Type:</span>
+              <span className={styles.getInfoValue}>
+                {infoNode.type === "directory" ? "File Folder" : (infoNode as FSFile).fileType}
+              </span>
+
+              <span className={styles.getInfoLabel}>Location:</span>
+              <span className={styles.getInfoValue}>{infoNode.path}</span>
+
+              <span className={styles.getInfoLabel}>Size:</span>
+              <span className={styles.getInfoValue}>
+                {infoNode.type === "file"
+                  ? formatFileSize((infoNode as FSFile).size)
+                  : `${(infoNode as FSDirectory).children?.length || 0} items`}
+              </span>
+
+              <span className={styles.getInfoLabel}>Created:</span>
+              <span className={styles.getInfoValue}>{infoNode.createdAt || "Jan 15, 2024"}</span>
+
+              <span className={styles.getInfoLabel}>Modified:</span>
+              <span className={styles.getInfoValue}>{infoNode.updatedAt}</span>
+
+              <span className={styles.getInfoLabel}>Checksum:</span>
+              <span className={styles.getInfoValue}>
+                <code className={styles.getInfoHashBadge}>{getStableHash(infoNode)}</code>
+              </span>
+            </div>
+          </div>
+
+          <div className={styles.getInfoFooter}>
+            <button className={styles.getInfoDoneBtn} onClick={() => setInfoNode(null)}>
+              Done
+            </button>
+          </div>
+        </div>
       </div>
     );
   };
@@ -341,7 +867,7 @@ export function DirectoryGrid({ nodes }: DirectoryGridProps) {
   // Standard Directory Grid Layout
   if (viewLayout === "grid") {
     return (
-      <div className={styles.gridContainer}>
+      <div className={styles.gridContainer} onClick={() => setSelectedNode(null)}>
         {isRoot && !searchQuery && quickAccessNodes.length > 0 && (
           <div className={styles.sectionContainer}>
             <div
@@ -352,7 +878,11 @@ export function DirectoryGrid({ nodes }: DirectoryGridProps) {
               <span className={styles.sectionTitle}>Quick Access</span>
             </div>
             {isQuickAccessOpen && (
-              <div className={`${styles.qaGrid} ${!hasSeenTutorial ? styles.qaGridTutorialActive : ""}`}>
+              <div
+                className={`${styles.qaGrid} ${
+                  !hasSeenTutorial ? styles.qaGridTutorialActive : ""
+                }`}
+              >
                 {quickAccessNodes.map(renderQuickAccessNode)}
               </div>
             )}
@@ -384,20 +914,78 @@ export function DirectoryGrid({ nodes }: DirectoryGridProps) {
           </div>
         )}
 
-        <div className={`${styles.fileGrid} ${!isQaShowingAbout && !hasSeenTutorial ? styles.fileGridTutorialActive : ""}`}>
+        <div
+          className={`${styles.fileGrid} ${
+            !isQaShowingAbout && !hasSeenTutorial ? styles.fileGridTutorialActive : ""
+          }`}
+        >
           {filteredNodes.map((node) => {
             const isSelected = selectedNode?.id === node.id;
-            const isAboutTutorialTarget = !isQaShowingAbout && node.name === "about.md" && !hasSeenTutorial;
+            const isAboutTutorialTarget =
+              !isQaShowingAbout && node.name === "about.md" && !hasSeenTutorial;
             const iconClass = getNodeIconClass(node);
+            const folderKey = currentPath;
+            const isDragging = draggedNodeId === node.id;
+            const isDragOver = dragOverNodeId === node.id && dragFolderKey === folderKey;
+            const isJustRestored = justRestoredNodeIds.includes(node.id);
 
             return (
               <div
                 key={node.id}
                 tabIndex={0}
-                onClick={() => handleNodeClick(node)}
-                onDoubleClick={() => handleNodeDoubleClick(node)}
+                draggable={renamingNodeId !== node.id}
+                onDragStart={(e) => {
+                  e.dataTransfer.setData("text/plain", node.id);
+                  setDraggedNodeId(node.id);
+                  setDragFolderKey(folderKey);
+                }}
+                onDragOver={(e) => {
+                  e.preventDefault();
+                  e.dataTransfer.dropEffect = "move";
+                  if (dragFolderKey === folderKey && dragOverNodeId !== node.id) {
+                    setDragOverNodeId(node.id);
+                  }
+                }}
+                onDragLeave={() => {
+                  if (dragOverNodeId === node.id) setDragOverNodeId(null);
+                }}
+                onDrop={(e) => {
+                  e.preventDefault();
+                  const sourceId = e.dataTransfer.getData("text/plain") || draggedNodeId;
+                  if (sourceId && sourceId !== node.id && dragFolderKey === folderKey) {
+                    handleReorder(
+                      folderKey,
+                      filteredNodes.map((n) => n.id),
+                      sourceId,
+                      node.id
+                    );
+                  }
+                  setDraggedNodeId(null);
+                  setDragOverNodeId(null);
+                  setDragFolderKey(null);
+                }}
+                onDragEnd={() => {
+                  setDraggedNodeId(null);
+                  setDragOverNodeId(null);
+                  setDragFolderKey(null);
+                }}
+                onClick={(e) => {
+                  e.stopPropagation();
+                  handleNodeClick(node);
+                }}
+                onDoubleClick={(e) => {
+                  e.stopPropagation();
+                  handleNodeDoubleClick(node);
+                }}
                 onKeyDown={(e) => handleKeyDown(e, node)}
-                className={`${styles.gridItemCard} ${isSelected ? styles.gridItemSelected : ""} ${isAboutTutorialTarget ? "tutorialTargetNode" : ""}`}
+                onContextMenu={(e) => handleContextMenu(e, node)}
+                className={`${styles.gridItemCard} ${
+                  isSelected ? styles.gridItemSelected : ""
+                } ${isAboutTutorialTarget ? "tutorialTargetNode" : ""} ${
+                  isDragging ? styles.draggedItem : ""
+                } ${isDragOver ? styles.dragOverTarget : ""} ${
+                  isJustRestored ? styles.itemPopIn : ""
+                }`}
                 role="button"
                 aria-label={`${node.type === "directory" ? "Directory" : "File"}: ${node.name}`}
               >
@@ -414,28 +1002,53 @@ export function DirectoryGrid({ nodes }: DirectoryGridProps) {
                 </div>
 
                 <div className={styles.gridItemInfo}>
-                  <span className={styles.gridItemName}>{formatDisplayName(node.name)}</span>
+                  {renamingNodeId === node.id ? (
+                    <input
+                      ref={renameInputRef}
+                      type="text"
+                      value={renameValue}
+                      onChange={(e) => setRenameValue(e.target.value)}
+                      onKeyDown={(e) => {
+                        if (e.key === "Enter") {
+                          e.preventDefault();
+                          commitRename(node.id);
+                        } else if (e.key === "Escape") {
+                          e.preventDefault();
+                          cancelRename();
+                        }
+                      }}
+                      onBlur={() => commitRename(node.id)}
+                      onClick={(e) => e.stopPropagation()}
+                      onDoubleClick={(e) => e.stopPropagation()}
+                      className={styles.inlineRenameInput}
+                    />
+                  ) : (
+                    <span className={styles.gridItemName}>{getNodeDisplayName(node)}</span>
+                  )}
                 </div>
 
                 <div className={styles.gridItemFooter}>
+                  <span className={styles.gridItemSize}>{getItemTag(node)}</span>
                   <span className={styles.gridItemSize}>
-                    {getItemTag(node)}
-                  </span>
-                  <span className={styles.gridItemSize}>
-                    {node.type === "file" ? formatFileSize((node as FSFile).size) : `${(node as FSDirectory).children.length} items`}
+                    {node.type === "file"
+                      ? formatFileSize((node as FSFile).size)
+                      : `${(node as FSDirectory).children.length} items`}
                   </span>
                 </div>
               </div>
             );
           })}
         </div>
+
+        {renderContextMenu()}
+        {renderGetInfoModal()}
       </div>
     );
   }
 
   // List Layout (Sharp technical table format)
   return (
-    <div className={styles.listContainer}>
+    <div className={styles.listContainer} onClick={() => setSelectedNode(null)}>
       {isRoot && !searchQuery && quickAccessNodes.length > 0 && (
         <div className={styles.sectionContainer}>
           <div
@@ -446,7 +1059,11 @@ export function DirectoryGrid({ nodes }: DirectoryGridProps) {
             <span className={styles.sectionTitle}>Quick Access</span>
           </div>
           {isQuickAccessOpen && (
-            <div className={`${styles.qaGrid} ${!hasSeenTutorial ? styles.qaGridTutorialActive : ""}`}>
+            <div
+              className={`${styles.qaGrid} ${
+                !hasSeenTutorial ? styles.qaGridTutorialActive : ""
+              }`}
+            >
               {quickAccessNodes.map(renderQuickAccessNode)}
             </div>
           )}
@@ -489,22 +1106,97 @@ export function DirectoryGrid({ nodes }: DirectoryGridProps) {
           {filteredNodes.map((node) => {
             const isSelected = selectedNode?.id === node.id;
             const iconClass = getNodeIconClass(node);
+            const folderKey = currentPath;
+            const isDragging = draggedNodeId === node.id;
+            const isDragOver = dragOverNodeId === node.id && dragFolderKey === folderKey;
+            const isJustRestored = justRestoredNodeIds.includes(node.id);
 
             return (
               <div
                 key={node.id}
                 tabIndex={0}
-                onClick={() => handleNodeClick(node)}
-                onDoubleClick={() => handleNodeDoubleClick(node)}
+                draggable={renamingNodeId !== node.id}
+                onDragStart={(e) => {
+                  e.dataTransfer.setData("text/plain", node.id);
+                  setDraggedNodeId(node.id);
+                  setDragFolderKey(folderKey);
+                }}
+                onDragOver={(e) => {
+                  e.preventDefault();
+                  e.dataTransfer.dropEffect = "move";
+                  if (dragFolderKey === folderKey && dragOverNodeId !== node.id) {
+                    setDragOverNodeId(node.id);
+                  }
+                }}
+                onDragLeave={() => {
+                  if (dragOverNodeId === node.id) setDragOverNodeId(null);
+                }}
+                onDrop={(e) => {
+                  e.preventDefault();
+                  const sourceId = e.dataTransfer.getData("text/plain") || draggedNodeId;
+                  if (sourceId && sourceId !== node.id && dragFolderKey === folderKey) {
+                    handleReorder(
+                      folderKey,
+                      filteredNodes.map((n) => n.id),
+                      sourceId,
+                      node.id
+                    );
+                  }
+                  setDraggedNodeId(null);
+                  setDragOverNodeId(null);
+                  setDragFolderKey(null);
+                }}
+                onDragEnd={() => {
+                  setDraggedNodeId(null);
+                  setDragOverNodeId(null);
+                  setDragFolderKey(null);
+                }}
+                onClick={(e) => {
+                  e.stopPropagation();
+                  handleNodeClick(node);
+                }}
+                onDoubleClick={(e) => {
+                  e.stopPropagation();
+                  handleNodeDoubleClick(node);
+                }}
                 onKeyDown={(e) => handleKeyDown(e, node)}
-                className={`${styles.fileListRow} ${isSelected ? styles.listRowSelected : ""}`}
+                onContextMenu={(e) => handleContextMenu(e, node)}
+                className={`${styles.fileListRow} ${isSelected ? styles.listRowSelected : ""} ${
+                  isDragging ? styles.draggedItem : ""
+                } ${isDragOver ? styles.dragOverTarget : ""} ${
+                  isJustRestored ? styles.itemPopIn : ""
+                }`}
                 role="button"
                 aria-label={`${node.type === "directory" ? "Directory" : "File"}: ${node.name}`}
               >
                 <div className={styles.colName}>
-                  <div className={`${styles.listRowIcon} ${iconClass}`}>{getNodeIconElement(node, 16)}</div>
+                  <div className={`${styles.listRowIcon} ${iconClass}`}>
+                    {getNodeIconElement(node, 16)}
+                  </div>
                   <div className={styles.listRowNameInfo}>
-                    <span className={styles.listRowName}>{formatDisplayName(node.name)}</span>
+                    {renamingNodeId === node.id ? (
+                      <input
+                        ref={renameInputRef}
+                        type="text"
+                        value={renameValue}
+                        onChange={(e) => setRenameValue(e.target.value)}
+                        onKeyDown={(e) => {
+                          if (e.key === "Enter") {
+                            e.preventDefault();
+                            commitRename(node.id);
+                          } else if (e.key === "Escape") {
+                            e.preventDefault();
+                            cancelRename();
+                          }
+                        }}
+                        onBlur={() => commitRename(node.id)}
+                        onClick={(e) => e.stopPropagation()}
+                        onDoubleClick={(e) => e.stopPropagation()}
+                        className={`${styles.inlineRenameInput} ${styles.inlineRenameInputList}`}
+                      />
+                    ) : (
+                      <span className={styles.listRowName}>{getNodeDisplayName(node)}</span>
+                    )}
                   </div>
                 </div>
 
@@ -513,21 +1205,22 @@ export function DirectoryGrid({ nodes }: DirectoryGridProps) {
                   {node.owner}:{node.group}
                 </span>
                 <span className={styles.colSize}>
-                  {node.type === "file" ? formatFileSize((node as FSFile).size) : `${(node as FSDirectory).children.length} items`}
+                  {node.type === "file"
+                    ? formatFileSize((node as FSFile).size)
+                    : `${(node as FSDirectory).children.length} items`}
                 </span>
                 <span className={styles.colDate}>{node.updatedAt}</span>
                 <div className={styles.colType}>
-                  {node.type === "directory" ? (
-                    "Folder"
-                  ) : (
-                    (node as FSFile).fileType
-                  )}
+                  {node.type === "directory" ? "Folder" : (node as FSFile).fileType}
                 </div>
               </div>
             );
           })}
         </div>
       </div>
+
+      {renderContextMenu()}
+      {renderGetInfoModal()}
     </div>
   );
 }

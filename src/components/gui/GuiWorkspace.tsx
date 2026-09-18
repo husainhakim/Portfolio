@@ -11,6 +11,7 @@ import { StatusBar } from "./StatusBar";
 import { FSNode } from "@/data/filesystemData";
 import { BlogView } from "@/components/views/BlogView";
 import { WriteupsListView } from "@/components/views/WriteupsListView";
+import { ToastNotification } from "./ToastNotification";
 import styles from "./Gui.module.css";
 
 export function GuiWorkspace() {
@@ -67,6 +68,9 @@ export function GuiWorkspace() {
 
       {/* Bottom Status Bar */}
       <StatusBar />
+
+      {/* Global GUI Toast Notification */}
+      <ToastNotification />
     </div>
   );
 }

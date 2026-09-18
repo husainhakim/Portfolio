@@ -15,7 +15,8 @@ import {
   Plus,
   Share2,
   FileEdit,
-  ChevronDown
+  ChevronDown,
+  RotateCcw
 } from "lucide-react";
 import styles from "./Gui.module.css";
 
@@ -24,7 +25,22 @@ const CHEVRON_SIZE = 11;
 const STROKE_WIDTH = 1.8;
 
 export function RibbonToolbar() {
-  const { viewLayout, setViewLayout, sortOption, setSortOption } = useFilesystem();
+  const {
+    viewLayout,
+    setViewLayout,
+    sortOption,
+    setSortOption,
+    isModified,
+    resetModifications,
+    selectedNode,
+    handleCopyNode,
+    handleDeleteNode,
+  } = useFilesystem();
+
+  const isVaultSelected =
+    selectedNode?.id === "vault" ||
+    selectedNode?.name.toLowerCase() === "vault" ||
+    selectedNode?.name.toLowerCase() === "personal vault";
 
   const handleSortCycle = () => {
     if (sortOption === "default") setSortOption("a-z");
@@ -56,7 +72,12 @@ export function RibbonToolbar() {
         <button className={styles.ribbonBtn} title="Cut" disabled>
           <Scissors size={ICON_SIZE} strokeWidth={STROKE_WIDTH} />
         </button>
-        <button className={styles.ribbonBtn} title="Copy" disabled>
+        <button
+          className={styles.ribbonBtn}
+          title={selectedNode ? `Copy link to ${selectedNode.name}` : "Copy"}
+          disabled={!selectedNode}
+          onClick={() => selectedNode && handleCopyNode(selectedNode)}
+        >
           <Copy size={ICON_SIZE} strokeWidth={STROKE_WIDTH} />
         </button>
         <button className={styles.ribbonBtn} title="Paste" disabled>
@@ -68,7 +89,12 @@ export function RibbonToolbar() {
         <button className={styles.ribbonBtn} title="Share" disabled>
           <Share2 size={ICON_SIZE} strokeWidth={STROKE_WIDTH} />
         </button>
-        <button className={styles.ribbonBtn} title="Delete" disabled>
+        <button
+          className={styles.ribbonBtn}
+          title={selectedNode ? `Delete ${selectedNode.name}` : "Delete"}
+          disabled={!selectedNode || isVaultSelected}
+          onClick={() => selectedNode && handleDeleteNode(selectedNode)}
+        >
           <Trash2 size={ICON_SIZE} strokeWidth={STROKE_WIDTH} />
         </button>
       </div>
@@ -95,6 +121,16 @@ export function RibbonToolbar() {
           <Filter size={ICON_SIZE} strokeWidth={STROKE_WIDTH} />
           <span>Filter</span>
           <ChevronDown size={CHEVRON_SIZE} strokeWidth={STROKE_WIDTH} style={{ marginLeft: -2 }} />
+        </button>
+        <button
+          className={`${styles.ribbonBtnWithLabel} ${isModified ? styles.ribbonResetActive : ""}`}
+          title={isModified ? "Reset all customizations (undo renames, deletions, reorders)" : "Reset workspace (no modifications)"}
+          disabled={!isModified}
+          onClick={resetModifications}
+        >
+          <RotateCcw size={ICON_SIZE} strokeWidth={STROKE_WIDTH} />
+          <span>Reset</span>
+          {isModified && <span className={styles.ribbonResetBadge} />}
         </button>
       </div>
 

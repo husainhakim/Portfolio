@@ -96,7 +96,8 @@ export function AboutView() {
           Profile Summary
         </h2>
         <div className={styles.textBlock} style={{ display: 'flex', flexDirection: 'column', gap: '16px', lineHeight: '1.6', color: 'var(--text-secondary)' }}>
-          <p>I’m a Computer Science student currently building my way into offensive security and ethical hacking.</p>
+          <p>I&apos;m a Computer Science student currently building my way into offensive security and ethical hacking.</p>
+          <p>Before CS, I was in a PCMB stream — Physics, Chemistry, Maths, Biology — which, looking back, explains why I approach problems the way I do. That background gave me a very systems-level way of thinking about things.</p>
           <p>My interest in cybersecurity started with wanting to understand what actually happens underneath the things I use every day — how computers communicate, how operating systems work, what happens behind a command in the terminal, and where systems can go wrong.</p>
           <p>That curiosity eventually led me toward ethical hacking.</p>
         </div>
@@ -137,7 +138,7 @@ export function AboutView() {
           Right Now
         </h2>
         <div className={styles.textBlock} style={{ display: 'flex', flexDirection: 'column', gap: '12px', lineHeight: '1.6', color: 'var(--text-secondary)' }}>
-          <p>Right now, I'm building my foundation around:</p>
+          <p>Right now, I&apos;m building my foundation around:</p>
           <ul style={{ listStyleType: 'disc', paddingLeft: '20px', display: 'flex', flexDirection: 'column', gap: '4px' }}>
             <li>Linux and the command line</li>
             <li>Networking and how systems communicate</li>
@@ -149,8 +150,9 @@ export function AboutView() {
             <li>Building small security tools</li>
             <li>Practicing in labs and intentionally vulnerable environments</li>
           </ul>
-          <p style={{ marginTop: '8px' }}>I'm also documenting what I learn through projects, writeups, and technical blogs.</p>
-          <p>The goal isn't just to collect tools and memorize commands.</p>
+          <p style={{ marginTop: '8px' }}>My very first &quot;Hello World&quot; was in C++, and honestly, figuring out <code>cout</code> felt like cracking a puzzle at the time. That feeling of making something work from scratch is what got me hooked on programming in the first place.</p>
+          <p>I&apos;m also documenting what I learn through projects, writeups, and technical blogs.</p>
+          <p>The goal isn&apos;t just to collect tools and memorize commands.</p>
           <p>I want to understand why something works.</p>
         </div>
       </div>
@@ -163,11 +165,12 @@ export function AboutView() {
         <div className={styles.textBlock} style={{ display: 'flex', flexDirection: 'column', gap: '12px', lineHeight: '1.6', color: 'var(--text-secondary)' }}>
           <p>My immediate goal is simple:</p>
           <p><strong>Get really good at the fundamentals.</strong></p>
+          <p>When I was younger, I was convinced I&apos;d become a pilot — the idea of flying always fascinated me. Turns out I ended up navigating networks instead of airspace, but that same curiosity about how complex systems work carried over.</p>
           <p>I want to keep progressing through networking, Linux, web security, reconnaissance, exploitation, and privilege escalation, while turning what I learn into actual projects and writeups.</p>
           <p>Eventually, I want to explore areas like Active Directory, red teaming, vulnerability research, and more advanced offensive security.</p>
-          <p>I don't have my entire career mapped out yet, and I don't think I need to.</p>
-          <p>For now, I want to keep learning, keep breaking things in environments where I'm allowed to, understand why they broke, and get better at putting them back together.</p>
-          <p>That's the direction I'm heading in.</p>
+          <p>I don&apos;t have my entire career mapped out yet, and I don&apos;t think I need to.</p>
+          <p>For now, I want to keep learning, keep breaking things in environments where I&apos;m allowed to, understand why they broke, and get better at putting them back together.</p>
+          <p>That&apos;s the direction I&apos;m heading in.</p>
         </div>
       </div>
 

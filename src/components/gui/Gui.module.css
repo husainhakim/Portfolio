@@ -2326,10 +2326,13 @@
 }
 
 @keyframes pulseBeacon {
-  0%, 100% {
+
+  0%,
+  100% {
     opacity: 1;
     transform: scale(1);
   }
+
   50% {
     opacity: 0.3;
     transform: scale(0.75);
@@ -2342,20 +2345,21 @@
   left: -100%;
   width: 50%;
   height: 100%;
-  background: linear-gradient(
-    90deg,
-    transparent,
-    rgba(255, 255, 255, 0.4),
-    transparent
-  );
+  background: linear-gradient(90deg,
+      transparent,
+      rgba(255, 255, 255, 0.4),
+      transparent);
   transform: skewX(-20deg);
   animation: badgeShimmer 2.8s infinite;
 }
 
 @keyframes badgeShimmer {
-  0%, 60% {
+
+  0%,
+  60% {
     left: -100%;
   }
+
   100% {
     left: 200%;
   }
@@ -2392,4 +2396,441 @@
 
 .vaultIcon {
   color: #ef4444;
+}
+
+/* ==========================================================================
+   RIBBON RESET BUTTON ACTIVE STATE
+   ========================================================================== */
+
+.ribbonResetActive {
+  color: var(--accent-primary) !important;
+  border-color: rgba(var(--accent-primary-rgb, 59, 130, 246), 0.45) !important;
+  background: rgba(var(--accent-primary-rgb, 59, 130, 246), 0.08) !important;
+  position: relative;
+}
+
+.ribbonResetActive:hover {
+  background: rgba(var(--accent-primary-rgb, 59, 130, 246), 0.16) !important;
+  box-shadow: 0 0 10px rgba(var(--accent-primary-rgb, 59, 130, 246), 0.25);
+}
+
+.ribbonResetBadge {
+  position: absolute;
+  top: 4px;
+  right: 4px;
+  width: 6px;
+  height: 6px;
+  border-radius: 50%;
+  background-color: var(--accent-primary);
+  box-shadow: 0 0 6px var(--accent-primary);
+  animation: pulseReset 1.5s infinite ease-in-out;
+}
+
+@keyframes pulseReset {
+  0%, 100% { opacity: 1; transform: scale(1); }
+  50% { opacity: 0.4; transform: scale(0.75); }
+}
+
+/* ==========================================================================
+   RIGHT-CLICK CONTEXT MENU
+   ========================================================================== */
+
+.contextMenu {
+  position: fixed;
+  z-index: 100000;
+  min-width: 190px;
+  background: var(--bg-surface);
+  border: 1px solid var(--border-subtle);
+  border-radius: var(--radius-md);
+  box-shadow: 0 10px 30px rgba(0, 0, 0, 0.3), 0 1px 4px rgba(0, 0, 0, 0.12);
+  backdrop-filter: blur(16px);
+  -webkit-backdrop-filter: blur(16px);
+  padding: 5px;
+  display: flex;
+  flex-direction: column;
+  gap: 2px;
+  animation: contextMenuFadeIn 0.12s cubic-bezier(0.16, 1, 0.3, 1);
+  user-select: none;
+}
+
+@keyframes contextMenuFadeIn {
+  from {
+    opacity: 0;
+    transform: scale(0.96);
+  }
+  to {
+    opacity: 1;
+    transform: scale(1);
+  }
+}
+
+.contextMenuItem {
+  display: flex;
+  align-items: center;
+  gap: 10px;
+  width: 100%;
+  padding: 6px 10px;
+  border-radius: 4px;
+  background: transparent;
+  border: none;
+  font-family: var(--font-sans);
+  font-size: 13px;
+  font-weight: 500;
+  color: var(--text-primary);
+  cursor: pointer;
+  text-align: left;
+  transition: background 0.15s ease, color 0.15s ease;
+}
+
+.contextMenuItem:hover {
+  background: var(--bg-surface-hover);
+  color: var(--text-primary);
+}
+
+.contextMenuItemDanger {
+  color: #ef4444 !important;
+}
+
+.contextMenuItemDanger:hover {
+  background: rgba(239, 68, 68, 0.12) !important;
+  color: #dc2626 !important;
+}
+
+:global([data-theme="dark"]) .contextMenuItemDanger:hover {
+  background: rgba(239, 68, 68, 0.2) !important;
+  color: #f87171 !important;
+}
+
+.contextMenuDivider {
+  height: 1px;
+  background: var(--border-subtle);
+  margin: 3px 0;
+}
+
+/* ==========================================================================
+   INLINE RENAME INPUT
+   ========================================================================== */
+
+.inlineRenameInput {
+  width: 100%;
+  padding: 2px 6px;
+  font-family: var(--font-mono);
+  font-size: 12px;
+  font-weight: 600;
+  background: var(--bg-surface);
+  color: var(--text-primary);
+  border: 1.5px solid var(--accent-primary);
+  border-radius: 4px;
+  outline: none;
+  box-shadow: 0 0 0 2px rgba(var(--accent-primary-rgb, 59, 130, 246), 0.25);
+  text-align: center;
+}
+
+.inlineRenameInputList {
+  text-align: left;
+  font-size: 13px;
+  width: 220px;
+}
+
+/* ==========================================================================
+   DRAG AND DROP FEEDBACK
+   ========================================================================== */
+
+.draggedItem {
+  opacity: 0.35 !important;
+  transform: scale(0.96);
+  transition: opacity 0.15s ease, transform 0.15s ease;
+}
+
+.dragOverTarget {
+  border-color: var(--accent-primary) !important;
+  box-shadow: 0 0 0 2px var(--accent-primary), 0 4px 14px rgba(var(--accent-primary-rgb, 59, 130, 246), 0.35) !important;
+  position: relative;
+}
+
+.dragOverTarget::after {
+  content: "";
+  position: absolute;
+  top: -3px;
+  bottom: -3px;
+  left: -4px;
+  width: 4px;
+  border-radius: 2px;
+  background: var(--accent-primary);
+  box-shadow: 0 0 8px var(--accent-primary);
+  pointer-events: none;
+}
+
+/* ==========================================================================
+   AUTO-RESTORE POP-IN ANIMATION (< 400ms)
+   ========================================================================== */
+
+.itemPopIn {
+  animation: cardPopIn 380ms cubic-bezier(0.175, 0.885, 0.32, 1.275) forwards !important;
+}
+
+@keyframes cardPopIn {
+  0% {
+    opacity: 0;
+    transform: scale(0.84);
+  }
+  100% {
+    opacity: 1;
+    transform: scale(1);
+  }
+}
+
+/* ==========================================================================
+   GET INFO MODAL
+   ========================================================================== */
+
+.getInfoBackdrop {
+  position: fixed;
+  inset: 0;
+  z-index: 100010;
+  background: rgba(0, 0, 0, 0.55);
+  backdrop-filter: blur(4px);
+  -webkit-backdrop-filter: blur(4px);
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  padding: 16px;
+  animation: modalFadeIn 0.2s cubic-bezier(0.16, 1, 0.3, 1);
+}
+
+.getInfoModal {
+  width: 100%;
+  max-width: 440px;
+  background: var(--bg-surface);
+  border: 1px solid var(--border-subtle);
+  border-radius: var(--radius-lg);
+  box-shadow: 0 20px 50px rgba(0, 0, 0, 0.4);
+  overflow: hidden;
+  display: flex;
+  flex-direction: column;
+}
+
+.getInfoTitleBar {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  padding: 12px 16px;
+  background: var(--bg-surface-header);
+  border-bottom: 1px solid var(--border-subtle);
+}
+
+.getInfoTitle {
+  display: flex;
+  align-items: center;
+  gap: 8px;
+  font-family: var(--font-mono);
+  font-size: 13.5px;
+  font-weight: 700;
+  color: var(--text-primary);
+}
+
+.getInfoCloseBtn {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  width: 28px;
+  height: 28px;
+  border-radius: 4px;
+  border: none;
+  background: transparent;
+  color: var(--text-muted);
+  cursor: pointer;
+  transition: all 0.15s ease;
+}
+
+.getInfoCloseBtn:hover {
+  background: var(--bg-surface-hover);
+  color: var(--text-primary);
+}
+
+.getInfoBody {
+  padding: 18px 20px;
+  display: flex;
+  flex-direction: column;
+  gap: 16px;
+}
+
+.getInfoHero {
+  display: flex;
+  align-items: center;
+  gap: 16px;
+  padding-bottom: 14px;
+  border-bottom: 1px solid var(--border-subtle);
+}
+
+.getInfoHeroIcon {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  width: 56px;
+  height: 56px;
+  border-radius: 8px;
+  background: rgba(var(--accent-primary-rgb, 59, 130, 246), 0.1);
+  border: 1px solid rgba(var(--accent-primary-rgb, 59, 130, 246), 0.2);
+  flex-shrink: 0;
+}
+
+.getInfoHeroMeta {
+  display: flex;
+  flex-direction: column;
+  gap: 4px;
+  min-width: 0;
+}
+
+.getInfoHeroName {
+  font-family: var(--font-mono);
+  font-size: 15px;
+  font-weight: 700;
+  color: var(--text-primary);
+  overflow: hidden;
+  text-overflow: ellipsis;
+  white-space: nowrap;
+}
+
+.getInfoHeroTag {
+  font-family: var(--font-mono);
+  font-size: 11px;
+  font-weight: 600;
+  color: var(--accent-primary);
+  text-transform: uppercase;
+  letter-spacing: 0.04em;
+}
+
+.getInfoGrid {
+  display: grid;
+  grid-template-columns: 110px 1fr;
+  gap: 10px 12px;
+  font-size: 12.5px;
+}
+
+.getInfoLabel {
+  font-family: var(--font-mono);
+  font-weight: 600;
+  color: var(--text-muted);
+}
+
+.getInfoValue {
+  font-family: var(--font-mono);
+  color: var(--text-primary);
+  word-break: break-all;
+}
+
+.getInfoHashBadge {
+  display: inline-block;
+  padding: 3px 6px;
+  border-radius: 4px;
+  background: var(--bg-surface-hover);
+  border: 1px solid var(--border-subtle);
+  font-family: var(--font-mono);
+  font-size: 11px;
+  color: var(--text-muted);
+  letter-spacing: 0.02em;
+}
+
+.getInfoFooter {
+  display: flex;
+  justify-content: flex-end;
+  padding: 12px 20px;
+  background: var(--bg-surface-header);
+  border-top: 1px solid var(--border-subtle);
+}
+
+.getInfoDoneBtn {
+  padding: 6px 16px;
+  border-radius: 6px;
+  background: var(--accent-primary);
+  color: #ffffff;
+  border: none;
+  font-family: var(--font-sans);
+  font-size: 13px;
+  font-weight: 600;
+  cursor: pointer;
+  transition: opacity 0.15s ease;
+}
+
+.getInfoDoneBtn:hover {
+  opacity: 0.9;
+}
+
+/* ==========================================================================
+   GUI TOAST NOTIFICATION (Clean Minimalist Card)
+   ========================================================================== */
+
+.guiToast {
+  position: fixed;
+  bottom: 56px;
+  left: 50%;
+  transform: translateX(-50%);
+  z-index: 100020;
+  display: inline-flex;
+  align-items: center;
+  gap: 14px;
+  max-width: min(92vw, 680px);
+  width: max-content;
+  padding: 14px 26px;
+  border-radius: 10px;
+  background: #111622;
+  border: 1.5px solid rgba(255, 255, 255, 0.16);
+  color: #f8fafc;
+  font-family: var(--font-sans);
+  font-size: 15.5px;
+  font-weight: 550;
+  letter-spacing: 0.01em;
+  box-shadow: 0 6px 20px rgba(0, 0, 0, 0.4), 0 20px 48px rgba(0, 0, 0, 0.5);
+  backdrop-filter: blur(12px);
+  -webkit-backdrop-filter: blur(12px);
+  pointer-events: none;
+  animation: toastFadeIn 0.18s cubic-bezier(0.16, 1, 0.3, 1) forwards;
+}
+
+:global([data-theme="light"]) .guiToast {
+  background: #ffffff;
+  border: 1.5px solid rgba(0, 0, 0, 0.12);
+  color: #0f172a;
+  box-shadow: 0 6px 20px rgba(0, 0, 0, 0.08), 0 20px 48px rgba(0, 0, 0, 0.12);
+}
+
+.guiToastIcon {
+  flex-shrink: 0;
+  color: var(--accent-primary);
+}
+
+.guiToastText {
+  line-height: 1.45;
+  word-break: break-word;
+}
+
+/* Deletion variant — subtle, refined dark ruby in dark mode, gentle rose in light mode */
+.guiToastDanger {
+  background: #1f0b0f;
+  border-color: rgba(239, 68, 68, 0.45);
+  color: #fecaca;
+  box-shadow: 0 6px 20px rgba(0, 0, 0, 0.45), 0 20px 48px rgba(185, 28, 28, 0.28);
+}
+
+:global([data-theme="light"]) .guiToastDanger {
+  background: #fef2f2;
+  border-color: #fca5a5;
+  color: #991b1b;
+  box-shadow: 0 6px 20px rgba(220, 38, 38, 0.08), 0 20px 44px rgba(220, 38, 38, 0.12);
+}
+
+.guiToastDanger .guiToastIcon {
+  color: #ef4444;
+}
+
+@keyframes toastFadeIn {
+  from {
+    opacity: 0;
+    transform: translate(-50%, 8px) scale(0.97);
+  }
+  to {
+    opacity: 1;
+    transform: translate(-50%, 0) scale(1);
+  }
 }
