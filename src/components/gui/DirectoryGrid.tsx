@@ -3,7 +3,7 @@
 import React from "react";
 import Image from "next/image";
 import { useFilesystem } from "@/context/FilesystemContext";
-import { FSNode, FSDirectory, FSFile, ROOT_PATH, VIRTUAL_FS } from "@/data/filesystemData";
+import { FSNode, FSDirectory, FSFile, ROOT_PATH, VIRTUAL_FS, findNodeById } from "@/data/filesystemData";
 import { formatFileSize, getFileBadgeVariant } from "@/lib/fileHelpers";
 import {
   Folder,
@@ -29,6 +29,7 @@ import {
   Target,
   ChevronDown,
   Pin,
+  PinOff,
   Clock,
   Star,
   Users,
@@ -143,6 +144,11 @@ export function DirectoryGrid({ nodes }: DirectoryGridProps) {
     handleCopyNode,
     handleDeleteNode,
     justRestoredNodeIds,
+    quickAccessIds,
+    addToQuickAccess,
+    removeFromQuickAccess,
+    justPinnedNodeIds,
+    showToast,
   } = useFilesystem();
 
   // Inline Rename State
@@ -170,6 +176,24 @@ export function DirectoryGrid({ nodes }: DirectoryGridProps) {
   const [draggedNodeId, setDraggedNodeId] = React.useState<string | null>(null);
   const [dragOverNodeId, setDragOverNodeId] = React.useState<string | null>(null);
   const [dragFolderKey, setDragFolderKey] = React.useState<string | null>(null);
+  const [isDragOverQuickAccess, setIsDragOverQuickAccess] = React.useState(false);
+  const [isDragOverRemoveZone, setIsDragOverRemoveZone] = React.useState(false);
+  const qaDragCounterRef = React.useRef(0);
+
+  const isDraggingFromQuickAccess = dragFolderKey === "quick-access" && !!draggedNodeId;
+
+  React.useEffect(() => {
+    const handleGlobalDragEnd = () => {
+      setDraggedNodeId(null);
+      setDragOverNodeId(null);
+      setDragFolderKey(null);
+      setIsDragOverQuickAccess(false);
+      setIsDragOverRemoveZone(false);
+      qaDragCounterRef.current = 0;
+    };
+    window.addEventListener("dragend", handleGlobalDragEnd);
+    return () => window.removeEventListener("dragend", handleGlobalDragEnd);
+  }, []);
 
   React.useEffect(() => {
     setIsMounted(true);
@@ -270,7 +294,7 @@ export function DirectoryGrid({ nodes }: DirectoryGridProps) {
     setSelectedNode(node);
 
     const menuWidth = 195;
-    const menuHeight = 210;
+    const menuHeight = 250;
     const margin = 12;
 
     let x = e.clientX;
@@ -289,6 +313,45 @@ export function DirectoryGrid({ nodes }: DirectoryGridProps) {
       y,
       node,
     });
+  };
+
+  // Quick Access container drag-and-drop handlers
+  const handleQaDragOver = (e: React.DragEvent) => {
+    if (dragFolderKey !== "quick-access") {
+      e.preventDefault();
+      e.dataTransfer.dropEffect = "copy";
+    }
+  };
+
+  const handleQaDragEnter = (e: React.DragEvent) => {
+    if (dragFolderKey !== "quick-access") {
+      e.preventDefault();
+      qaDragCounterRef.current++;
+      setIsDragOverQuickAccess(true);
+    }
+  };
+
+  const handleQaDragLeave = (e: React.DragEvent) => {
+    if (dragFolderKey !== "quick-access") {
+      qaDragCounterRef.current--;
+      if (qaDragCounterRef.current <= 0) {
+        setIsDragOverQuickAccess(false);
+        qaDragCounterRef.current = 0;
+      }
+    }
+  };
+
+  const handleQaDrop = (e: React.DragEvent) => {
+    e.preventDefault();
+    setIsDragOverQuickAccess(false);
+    qaDragCounterRef.current = 0;
+    const sourceId = e.dataTransfer.getData("text/plain") || draggedNodeId;
+    if (sourceId && dragFolderKey !== "quick-access") {
+      addToQuickAccess(sourceId);
+    }
+    setDraggedNodeId(null);
+    setDragOverNodeId(null);
+    setDragFolderKey(null);
   };
 
   // Check if we are at root /home/husain
@@ -355,11 +418,10 @@ export function DirectoryGrid({ nodes }: DirectoryGridProps) {
   }, [nodes, searchQuery, sortOption, deletedNodeIds, customNames, folderOrders, currentPath]);
 
   // Quick Access nodes with custom ordering and delete filtering
-  const quickAccessNames = ["about.md", "projects", "writeups", "resume.pdf"];
   const quickAccessBase =
     isRoot && !searchQuery
-      ? (quickAccessNames
-          .map((name) => nodes.find((n) => n.name === name))
+      ? (quickAccessIds
+          .map((id) => findNodeById(id))
           .filter(Boolean) as FSNode[])
       : [];
 
@@ -544,6 +606,11 @@ export function DirectoryGrid({ nodes }: DirectoryGridProps) {
     const isDragging = draggedNodeId === node.id;
     const isDragOver = dragOverNodeId === node.id && dragFolderKey === folderKey;
     const isJustRestored = justRestoredNodeIds.includes(node.id);
+    const isJustPinned = justPinnedNodeIds.includes(node.id);
+    const isVaultCard =
+      node.name === "personal_vault.md" ||
+      node.name === "vault" ||
+      (node.type === "file" && (node as FSFile).fileType === "vault");
 
     return (
       <div
@@ -567,6 +634,7 @@ export function DirectoryGrid({ nodes }: DirectoryGridProps) {
         }}
         onDrop={(e) => {
           e.preventDefault();
+          e.stopPropagation();
           const sourceId = e.dataTransfer.getData("text/plain") || draggedNodeId;
           if (sourceId && sourceId !== node.id && dragFolderKey === folderKey) {
             handleReorder(
@@ -575,15 +643,22 @@ export function DirectoryGrid({ nodes }: DirectoryGridProps) {
               sourceId,
               node.id
             );
+          } else if (sourceId && dragFolderKey !== folderKey) {
+            addToQuickAccess(sourceId);
           }
           setDraggedNodeId(null);
           setDragOverNodeId(null);
           setDragFolderKey(null);
+          setIsDragOverQuickAccess(false);
+          qaDragCounterRef.current = 0;
         }}
         onDragEnd={() => {
           setDraggedNodeId(null);
           setDragOverNodeId(null);
           setDragFolderKey(null);
+          setIsDragOverQuickAccess(false);
+          setIsDragOverRemoveZone(false);
+          qaDragCounterRef.current = 0;
         }}
         onClick={(e) => {
           e.stopPropagation();
@@ -599,6 +674,8 @@ export function DirectoryGrid({ nodes }: DirectoryGridProps) {
           isAboutTutorialTarget ? "tutorialTargetNode" : ""
         } ${isDragging ? styles.draggedItem : ""} ${isDragOver ? styles.dragOverTarget : ""} ${
           isJustRestored ? styles.itemPopIn : ""
+        } ${isJustPinned ? styles.itemJustPinned : ""} ${
+          isVaultCard ? styles.vaultGridCard : ""
         }`}
         role="button"
         aria-label={`${node.type === "directory" ? "Directory" : "File"}: ${node.name}`}
@@ -609,7 +686,9 @@ export function DirectoryGrid({ nodes }: DirectoryGridProps) {
             onDismiss={() => setHasSeenTutorial(true)}
           />
         )}
-        <Pin size={12} className={styles.pinIconHover} />
+        <div className={styles.qaCardPinBadge} title="Pinned to Quick Access">
+          <Pin size={14} />
+        </div>
         <div className={styles.gridItemTop}>
           <div className={`${styles.gridItemIcon} ${iconClass}`}>
             {getNodeIconElement(node, 48)}
@@ -725,6 +804,7 @@ export function DirectoryGrid({ nodes }: DirectoryGridProps) {
   const renderContextMenu = () => {
     if (!contextMenu.isOpen || !contextMenu.node) return null;
     const node = contextMenu.node;
+    const isPinned = quickAccessIds.includes(node.id);
 
     return (
       <div
@@ -776,6 +856,30 @@ export function DirectoryGrid({ nodes }: DirectoryGridProps) {
           <Copy size={14} />
           <span>Copy Link</span>
         </button>
+
+        {isPinned ? (
+          <button
+            className={styles.contextMenuItem}
+            onClick={() => {
+              removeFromQuickAccess(node.id);
+              setContextMenu((prev) => ({ ...prev, isOpen: false }));
+            }}
+          >
+            <PinOff size={14} />
+            <span>Remove from Quick Access</span>
+          </button>
+        ) : (
+          <button
+            className={styles.contextMenuItem}
+            onClick={() => {
+              addToQuickAccess(node.id);
+              setContextMenu((prev) => ({ ...prev, isOpen: false }));
+            }}
+          >
+            <Pin size={14} />
+            <span>Add to Quick Access</span>
+          </button>
+        )}
 
         <div className={styles.contextMenuDivider} />
 
@@ -868,24 +972,81 @@ export function DirectoryGrid({ nodes }: DirectoryGridProps) {
   if (viewLayout === "grid") {
     return (
       <div className={styles.gridContainer} onClick={() => setSelectedNode(null)}>
-        {isRoot && !searchQuery && quickAccessNodes.length > 0 && (
-          <div className={styles.sectionContainer}>
+        {isRoot && !searchQuery && (
+          <div
+            className={styles.sectionContainer}
+            data-tour="quick-access-section"
+            onDragOver={handleQaDragOver}
+            onDragEnter={handleQaDragEnter}
+            onDragLeave={handleQaDragLeave}
+            onDrop={handleQaDrop}
+          >
             <div
               className={styles.sectionHeader}
               onClick={() => setIsQuickAccessOpen(!isQuickAccessOpen)}
             >
               {isQuickAccessOpen ? <ChevronDown size={14} /> : <ChevronRight size={14} />}
               <span className={styles.sectionTitle}>Quick Access</span>
+              <span className={styles.sectionCount}>({quickAccessNodes.length}/5)</span>
             </div>
             {isQuickAccessOpen && (
               <div
                 className={`${styles.qaGrid} ${
                   !hasSeenTutorial ? styles.qaGridTutorialActive : ""
-                }`}
+                } ${isDragOverQuickAccess ? styles.qaGridDropActive : ""}`}
               >
-                {quickAccessNodes.map(renderQuickAccessNode)}
+                {quickAccessNodes.length > 0 ? (
+                  quickAccessNodes.map(renderQuickAccessNode)
+                ) : (
+                  <div className={styles.qaEmptyPlaceholder}>
+                    <span>No pinned items. Drag items here or use right-click to pin.</span>
+                  </div>
+                )}
               </div>
             )}
+          </div>
+        )}
+
+        {isDraggingFromQuickAccess && (
+          <div
+            className={`${styles.qaRemoveDropZone} ${
+              isDragOverRemoveZone ? styles.qaRemoveDropZoneActive : ""
+            }`}
+            onDragOver={(e) => {
+              e.preventDefault();
+              e.dataTransfer.dropEffect = "move";
+              setIsDragOverRemoveZone(true);
+            }}
+            onDragEnter={(e) => {
+              e.preventDefault();
+              setIsDragOverRemoveZone(true);
+            }}
+            onDragLeave={(e) => {
+              if (!e.currentTarget.contains(e.relatedTarget as Node)) {
+                setIsDragOverRemoveZone(false);
+              }
+            }}
+            onDrop={(e) => {
+              e.preventDefault();
+              e.stopPropagation();
+              const sourceId = e.dataTransfer.getData("text/plain") || draggedNodeId;
+              if (sourceId) {
+                removeFromQuickAccess(sourceId);
+                showToast("Removed from Quick Access");
+              }
+              setDraggedNodeId(null);
+              setDragOverNodeId(null);
+              setDragFolderKey(null);
+              setIsDragOverQuickAccess(false);
+              setIsDragOverRemoveZone(false);
+              qaDragCounterRef.current = 0;
+            }}
+          >
+            <div className={styles.qaRemoveContent}>
+              <PinOff size={16} className={styles.qaRemoveIcon} />
+              <span className={styles.qaRemoveText}>Remove from Quick Access</span>
+            </div>
+            <span className={styles.qaRemoveSubtext}>Drop here to unpin from Quick Access</span>
           </div>
         )}
 
@@ -915,6 +1076,7 @@ export function DirectoryGrid({ nodes }: DirectoryGridProps) {
         )}
 
         <div
+          data-tour="directory-grid"
           className={`${styles.fileGrid} ${
             !isQaShowingAbout && !hasSeenTutorial ? styles.fileGridTutorialActive : ""
           }`}
@@ -928,6 +1090,10 @@ export function DirectoryGrid({ nodes }: DirectoryGridProps) {
             const isDragging = draggedNodeId === node.id;
             const isDragOver = dragOverNodeId === node.id && dragFolderKey === folderKey;
             const isJustRestored = justRestoredNodeIds.includes(node.id);
+            const isVaultCard =
+              node.name === "personal_vault.md" ||
+              node.name === "vault" ||
+              (node.type === "file" && (node as FSFile).fileType === "vault");
 
             return (
               <div
@@ -968,6 +1134,9 @@ export function DirectoryGrid({ nodes }: DirectoryGridProps) {
                   setDraggedNodeId(null);
                   setDragOverNodeId(null);
                   setDragFolderKey(null);
+                  setIsDragOverQuickAccess(false);
+                  setIsDragOverRemoveZone(false);
+                  qaDragCounterRef.current = 0;
                 }}
                 onClick={(e) => {
                   e.stopPropagation();
@@ -985,7 +1154,7 @@ export function DirectoryGrid({ nodes }: DirectoryGridProps) {
                   isDragging ? styles.draggedItem : ""
                 } ${isDragOver ? styles.dragOverTarget : ""} ${
                   isJustRestored ? styles.itemPopIn : ""
-                }`}
+                } ${isVaultCard ? styles.vaultGridCard : ""}`}
                 role="button"
                 aria-label={`${node.type === "directory" ? "Directory" : "File"}: ${node.name}`}
               >
@@ -1049,24 +1218,80 @@ export function DirectoryGrid({ nodes }: DirectoryGridProps) {
   // List Layout (Sharp technical table format)
   return (
     <div className={styles.listContainer} onClick={() => setSelectedNode(null)}>
-      {isRoot && !searchQuery && quickAccessNodes.length > 0 && (
-        <div className={styles.sectionContainer}>
+      {isRoot && !searchQuery && (
+        <div
+          className={styles.sectionContainer}
+          onDragOver={handleQaDragOver}
+          onDragEnter={handleQaDragEnter}
+          onDragLeave={handleQaDragLeave}
+          onDrop={handleQaDrop}
+        >
           <div
             className={styles.sectionHeader}
             onClick={() => setIsQuickAccessOpen(!isQuickAccessOpen)}
           >
             {isQuickAccessOpen ? <ChevronDown size={14} /> : <ChevronRight size={14} />}
             <span className={styles.sectionTitle}>Quick Access</span>
+            <span className={styles.sectionCount}>({quickAccessNodes.length}/5)</span>
           </div>
           {isQuickAccessOpen && (
             <div
               className={`${styles.qaGrid} ${
                 !hasSeenTutorial ? styles.qaGridTutorialActive : ""
-              }`}
+              } ${isDragOverQuickAccess ? styles.qaGridDropActive : ""}`}
             >
-              {quickAccessNodes.map(renderQuickAccessNode)}
+              {quickAccessNodes.length > 0 ? (
+                quickAccessNodes.map(renderQuickAccessNode)
+              ) : (
+                <div className={styles.qaEmptyPlaceholder}>
+                  <span>No pinned items. Drag items here or use right-click to pin.</span>
+                </div>
+              )}
             </div>
           )}
+        </div>
+      )}
+
+      {isDraggingFromQuickAccess && (
+        <div
+          className={`${styles.qaRemoveDropZone} ${
+            isDragOverRemoveZone ? styles.qaRemoveDropZoneActive : ""
+          }`}
+          onDragOver={(e) => {
+            e.preventDefault();
+            e.dataTransfer.dropEffect = "move";
+            setIsDragOverRemoveZone(true);
+          }}
+          onDragEnter={(e) => {
+            e.preventDefault();
+            setIsDragOverRemoveZone(true);
+          }}
+          onDragLeave={(e) => {
+            if (!e.currentTarget.contains(e.relatedTarget as Node)) {
+              setIsDragOverRemoveZone(false);
+            }
+          }}
+          onDrop={(e) => {
+            e.preventDefault();
+            e.stopPropagation();
+            const sourceId = e.dataTransfer.getData("text/plain") || draggedNodeId;
+            if (sourceId) {
+              removeFromQuickAccess(sourceId);
+              showToast("Removed from Quick Access");
+            }
+            setDraggedNodeId(null);
+            setDragOverNodeId(null);
+            setDragFolderKey(null);
+            setIsDragOverQuickAccess(false);
+            setIsDragOverRemoveZone(false);
+            qaDragCounterRef.current = 0;
+          }}
+        >
+          <div className={styles.qaRemoveContent}>
+            <PinOff size={16} className={styles.qaRemoveIcon} />
+            <span className={styles.qaRemoveText}>Remove from Quick Access</span>
+          </div>
+          <span className={styles.qaRemoveSubtext}>Drop here to unpin from Quick Access</span>
         </div>
       )}
 
@@ -1150,6 +1375,9 @@ export function DirectoryGrid({ nodes }: DirectoryGridProps) {
                   setDraggedNodeId(null);
                   setDragOverNodeId(null);
                   setDragFolderKey(null);
+                  setIsDragOverQuickAccess(false);
+                  setIsDragOverRemoveZone(false);
+                  qaDragCounterRef.current = 0;
                 }}
                 onClick={(e) => {
                   e.stopPropagation();

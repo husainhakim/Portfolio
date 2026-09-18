@@ -12,6 +12,8 @@ import { FSNode } from "@/data/filesystemData";
 import { BlogView } from "@/components/views/BlogView";
 import { WriteupsListView } from "@/components/views/WriteupsListView";
 import { ToastNotification } from "./ToastNotification";
+import { InteractiveTour } from "./FeatureDiscovery/InteractiveTour";
+import { FeatureDiscoveryModal } from "./FeatureDiscovery/FeatureDiscoveryModal";
 import styles from "./Gui.module.css";
 
 export function GuiWorkspace() {
@@ -71,6 +73,10 @@ export function GuiWorkspace() {
 
       {/* Global GUI Toast Notification */}
       <ToastNotification />
+
+      {/* Interactive Feature Discovery Spotlight Tour & Features Modal */}
+      <InteractiveTour />
+      <FeatureDiscoveryModal />
     </div>
   );
 }

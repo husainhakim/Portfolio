@@ -36,7 +36,7 @@ export function BreadcrumbBar({ onToggleSidebar }: BreadcrumbBarProps) {
   const breadcrumbs = buildBreadcrumbs(currentPath);
 
   return (
-    <div className={styles.breadcrumbBar}>
+    <div className={styles.breadcrumbBar} data-tour="breadcrumb-bar">
       {/* Navigation Buttons (Back, Forward, Up) */}
       <div className={styles.navControls}>
         <button

@@ -73,6 +73,7 @@ export function SidebarQuickNav({ isOpen, onClose }: SidebarQuickNavProps) {
               }
             }}
             className={`${styles.sidebarNavItem} ${styles.sidebarVaultBtn} ${styles.hasTooltip}`}
+            data-tour="sidebar-vault-btn"
             aria-label="Personal Vault (Confidential)"
           >
             <div className={styles.sidebarNavLeft} style={{ alignItems: 'center' }}>
@@ -83,7 +84,7 @@ export function SidebarQuickNav({ isOpen, onClose }: SidebarQuickNavProps) {
                 <span className={styles.vaultNavLabel}>Personal Vault</span>
                 <span className={styles.dontClickBadge}>
                   <span className={styles.dontClickDot} />
-                  <span>don&apos;t click</span>
+                  <span>me beyond the resume</span>
                   <span className={styles.dontClickShimmer} />
                 </span>
               </div>

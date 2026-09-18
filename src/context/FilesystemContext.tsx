@@ -58,7 +58,19 @@ interface FilesystemContextType {
   handleCopyNode: (node: FSNode) => void;
   handleDeleteNode: (node: FSNode) => void;
   justRestoredNodeIds: string[];
+  // Quick Access Pinning State
+  quickAccessIds: string[];
+  addToQuickAccess: (nodeId: string) => void;
+  removeFromQuickAccess: (nodeId: string) => void;
+  justPinnedNodeIds: string[];
 }
+
+export const DEFAULT_QUICK_ACCESS_IDS = [
+  "about-file",
+  "projects-dir",
+  "writeups-dir",
+  "resume-pdf",
+];
 
 const PUNCHLINE_MESSAGES: Record<string, string> = {
   "resume.pdf": "Bold move deleting the one thing that gets me hired 💀",
@@ -106,6 +118,8 @@ export function FilesystemProvider({ children }: { children: React.ReactNode }) 
   const [customNames, setCustomNames] = useState<Record<string, string>>({});
   const [deletedNodeIds, setDeletedNodeIds] = useState<string[]>([]);
   const [folderOrders, setFolderOrders] = useState<Record<string, string[]>>({});
+  const [quickAccessIds, setQuickAccessIds] = useState<string[]>(DEFAULT_QUICK_ACCESS_IDS);
+  const [justPinnedNodeIds, setJustPinnedNodeIds] = useState<string[]>([]);
 
   // Toast & auto-restore state
   const [toastMessage, setToastMessage] = useState<string | null>(null);
@@ -219,6 +233,28 @@ export function FilesystemProvider({ children }: { children: React.ReactNode }) 
 
   const setExplicitFolderOrder = useCallback((folderKey: string, newOrderedIds: string[]) => {
     setFolderOrders((prev) => ({ ...prev, [folderKey]: newOrderedIds }));
+  }, []);
+
+  const addToQuickAccess = useCallback(
+    (nodeId: string) => {
+      setQuickAccessIds((prev) => {
+        if (prev.includes(nodeId)) return prev;
+        if (prev.length >= 5) {
+          showToast("Quick Access is full — remove one first");
+          return prev;
+        }
+        setJustPinnedNodeIds((current) => [...current, nodeId]);
+        setTimeout(() => {
+          setJustPinnedNodeIds((current) => current.filter((id) => id !== nodeId));
+        }, 800);
+        return [...prev, nodeId];
+      });
+    },
+    [showToast]
+  );
+
+  const removeFromQuickAccess = useCallback((nodeId: string) => {
+    setQuickAccessIds((prev) => prev.filter((id) => id !== nodeId));
   }, []);
 
   const resetModifications = useCallback(() => {
@@ -415,6 +451,10 @@ export function FilesystemProvider({ children }: { children: React.ReactNode }) 
         handleCopyNode,
         handleDeleteNode,
         justRestoredNodeIds,
+        quickAccessIds,
+        addToQuickAccess,
+        removeFromQuickAccess,
+        justPinnedNodeIds,
       }}
     >
       {children}

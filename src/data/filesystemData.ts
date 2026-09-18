@@ -509,3 +509,16 @@ export function generateTree(node: FSDirectory = VIRTUAL_FS, prefix: string = ""
   });
   return lines;
 }
+
+export function findNodeById(id: string, root: FSDirectory = VIRTUAL_FS): FSNode | null {
+  if (root.id === id) return root;
+  for (const child of root.children) {
+    if (child.id === id) return child;
+    if (child.type === "directory") {
+      const found = findNodeById(id, child as FSDirectory);
+      if (found) return found;
+    }
+  }
+  return null;
+}
+

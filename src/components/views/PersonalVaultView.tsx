@@ -11,9 +11,9 @@ const VALID_ANSWERS: Record<string, string[]> = {
 };
 
 const QUESTIONS = [
-  { key: "q1", label: "What was my major or field of study before security?" },
-  { key: "q2", label: "Which language did I write my first 'Hello World' in?" },
-  { key: "q3", label: "What's one thing I thought I'd become instead of a developer?" },
+  { key: "q1", label: "What was my major or field of study before Computer Science?" },
+  { key: "q2", label: "Which programming language did I write my first 'Hello World' in?" },
+  { key: "q3", label: "What's one thing I thought I'd become if i was not in Cyber Security?" },
 ];
 
 function normalize(input: string): string {
@@ -46,12 +46,23 @@ export function PersonalVaultView() {
   const [error, setError] = useState("");
   const [showHint, setShowHint] = useState(false);
   const [statusText, setStatusText] = useState("[>] ENGAGING PRIMARY LOCKING MECHANISM...");
+  const [portalContainer, setPortalContainer] = useState<HTMLElement | null>(null);
   const firstInputRef = useRef<HTMLInputElement>(null);
   const overlayRef = useRef<HTMLDivElement>(null);
   const timersRef = useRef<NodeJS.Timeout[]>([]);
 
   useEffect(() => {
     setMounted(true);
+    const container = document.createElement("div");
+    container.className = "vault-portal-root";
+    document.body.appendChild(container);
+    setPortalContainer(container);
+
+    return () => {
+      if (container.parentNode) {
+        container.parentNode.removeChild(container);
+      }
+    };
   }, []);
 
   // Cleanup timers on unmount
@@ -69,10 +80,11 @@ export function PersonalVaultView() {
     timersRef.current.forEach(clearTimeout);
     timersRef.current = [];
     setPhase("dissolve");
-    setTimeout(() => {
+    const t = setTimeout(() => {
       setIsUnlocked(true);
       setPhase("idle");
     }, 420);
+    timersRef.current.push(t);
   }, []);
 
   // Focus trap & escape listener
@@ -901,7 +913,7 @@ export function PersonalVaultView() {
         </div>
       );
 
-      return mounted && typeof document !== "undefined" ? createPortal(animStage, document.body) : null;
+      return mounted && portalContainer ? createPortal(animStage, portalContainer) : null;
     }
 
     // Standard Clean Light Neutral Challenge Modal
@@ -1000,14 +1012,14 @@ export function PersonalVaultView() {
               )}
 
               {/* Disclaimer */}
-              <p className={styles.vaultNote}>not real security, just a personal touch 🙂</p>
+              <p className={styles.vaultNote}>Not a security feature. Just a little personality. 🙂</p>
             </div>
           </div>
         </div>
       </div>
     );
 
-    return mounted && typeof document !== "undefined" ? createPortal(lockOverlay, document.body) : null;
+    return mounted && portalContainer ? createPortal(lockOverlay, portalContainer) : null;
   }
 
   // ── Unlocked Content ──

@@ -1173,7 +1173,9 @@
   flex-direction: column;
   background: var(--bg-subtle, #f7f6f4);
   border: 1px solid var(--border-default, #c9c4b5);
+  border-top: 2px solid #ef4444;
   box-shadow:
+    0 0 24px rgba(239, 68, 68, 0.18),
     0 1px 3px rgba(0, 0, 0, 0.05),
     0 20px 48px rgba(0, 0, 0, 0.14);
   animation: vPanelIn 0.24s cubic-bezier(0.16, 1, 0.3, 1);
@@ -1263,19 +1265,27 @@
   gap: 14px;
 }
 
-/* Plain red lock icon — no background box, no dashed border, no pulsing glow */
+/* Glowing red lock icon container */
 .vaultLockCircle {
   display: flex;
   align-items: center;
   justify-content: center;
-  width: auto;
-  height: auto;
+  width: 46px;
+  height: 46px;
+  border-radius: 50%;
   padding: 0;
   flex-shrink: 0;
-  color: #dc2626;
-  background: transparent;
-  border: none;
-  box-shadow: none;
+  color: #ef4444;
+  background: rgba(239, 68, 68, 0.14);
+  border: 1px solid rgba(239, 68, 68, 0.4);
+  box-shadow: 0 0 14px rgba(239, 68, 68, 0.28);
+}
+
+:global([data-theme="dark"]) .vaultLockCircle {
+  color: #f87171;
+  background: rgba(239, 68, 68, 0.2);
+  border-color: rgba(239, 68, 68, 0.55);
+  box-shadow: 0 0 16px rgba(239, 68, 68, 0.35);
 }
 
 .vaultLockMeta {
@@ -1290,23 +1300,34 @@
   gap: 9px;
 }
 
-/* "ENCRYPTED" label: red with subtle light-red tint */
+/* "ENCRYPTED" label: red with glowing border */
 .vaultLockLabel {
   font-family: var(--font-mono);
   font-size: 12px;
   font-weight: 700;
   color: #dc2626;
   letter-spacing: 0.1em;
-  background: rgba(220, 38, 38, 0.08);
-  border: 1px solid rgba(220, 38, 38, 0.22);
-  padding: 2px 7px;
+  background: rgba(220, 38, 38, 0.12);
+  border: 1px solid rgba(220, 38, 38, 0.38);
+  box-shadow: 0 0 8px rgba(220, 38, 38, 0.2);
+  padding: 2px 8px;
+  border-radius: 4px;
   display: inline-block;
+}
+
+:global([data-theme="dark"]) .vaultLockLabel {
+  color: #fca5a5;
+  background: rgba(220, 38, 38, 0.2);
+  border-color: rgba(220, 38, 38, 0.5);
+  box-shadow: 0 0 10px rgba(220, 38, 38, 0.3);
 }
 
 .vaultLockSub {
   font-family: var(--font-mono);
-  font-size: 12px;
-  color: #8a8a8a;
+  font-size: 13.5px;
+  font-weight: 500;
+  color: #334155;
+  letter-spacing: 0.01em;
 }
 
 /* Questions container — rhythm: distinct gap of 16px */
@@ -1498,11 +1519,11 @@
   animation: vFadeIn 0.2s ease-out;
 }
 
-/* Disclaimer text: mid-gray (#8a8a8a) */
+/* Disclaimer text: matching vaultLockSub tone (#334155) */
 .vaultNote {
   font-family: var(--font-mono);
   font-size: 10.5px;
-  color: #8a8a8a;
+  color: #334155;
   text-align: center;
   margin-top: -2px;
 }
@@ -1869,8 +1890,9 @@
   color: #ef4444;
 }
 
-:global([data-theme="dark"]) .vaultLockSub {
-  color: var(--text-muted, #626875);
+:global([data-theme="dark"]) .vaultLockSub,
+:global([data-theme="dark"]) .vaultNote {
+  color: #cbd5e1;
 }
 
 :global([data-theme="dark"]) .vaultQ {

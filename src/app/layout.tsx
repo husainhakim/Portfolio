@@ -2,6 +2,7 @@ import type { Metadata, Viewport } from "next";
 import "./globals.css";
 import { ThemeProvider } from "@/context/ThemeContext";
 import { FilesystemProvider } from "@/context/FilesystemContext";
+import { TourProvider } from "@/context/TourContext";
 import { Header } from "@/components/Header";
 import { PROFILE_DATA } from "@/data/profileData";
 import { SITE_URL, SITE_CONFIG } from "@/lib/siteConfig";
@@ -199,10 +200,12 @@ export default function RootLayout({
       <body>
         <ThemeProvider>
           <FilesystemProvider>
-            <div className="app-shell">
-              <Header />
-              <div className="workspace-main">{children}</div>
-            </div>
+            <TourProvider>
+              <div className="app-shell">
+                <Header />
+                <div className="workspace-main">{children}</div>
+              </div>
+            </TourProvider>
           </FilesystemProvider>
         </ThemeProvider>
       </body>

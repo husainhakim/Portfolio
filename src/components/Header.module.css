@@ -132,25 +132,50 @@
   position: relative;
 }
 
-/* HERO MODE SWITCHER HUD */
+/* HERO MODE SWITCHER HUD — Blue ambient glowing frame matching Personal Vault style */
 .heroModeSwitch {
   display: inline-flex;
   align-items: center;
   gap: 2px;
-  background: var(--bg-panel);
-  border: 1px solid var(--border-strong);
+  background: linear-gradient(135deg, rgba(14, 165, 233, 0.10), rgba(59, 130, 246, 0.04));
+  border: 1px solid rgba(14, 165, 233, 0.45);
   border-radius: var(--radius-md);
   padding: 2px;
   position: relative;
+  box-shadow: 0 0 12px rgba(14, 165, 233, 0.22), inset 0 0 8px rgba(14, 165, 233, 0.05);
+  animation: modePulseGlow 3.2s ease-in-out infinite;
+  transition: all 0.25s cubic-bezier(0.16, 1, 0.3, 1);
+}
+
+:global([data-theme="dark"]) .heroModeSwitch {
+  background: linear-gradient(135deg, rgba(14, 165, 233, 0.16), rgba(30, 58, 138, 0.10));
+  border-color: rgba(14, 165, 233, 0.55);
+  box-shadow: 0 0 14px rgba(14, 165, 233, 0.28), inset 0 0 10px rgba(14, 165, 233, 0.08);
+}
+
+@keyframes modePulseGlow {
+  0%, 100% {
+    box-shadow: 0 0 10px rgba(14, 165, 233, 0.2), inset 0 0 6px rgba(14, 165, 233, 0.04);
+    border-color: rgba(14, 165, 233, 0.45);
+  }
+  50% {
+    box-shadow: 0 0 18px rgba(14, 165, 233, 0.4), inset 0 0 12px rgba(14, 165, 233, 0.12);
+    border-color: rgba(14, 165, 233, 0.75);
+  }
+}
+
+.heroModeSwitch:hover {
+  border-color: rgba(14, 165, 233, 0.85);
+  box-shadow: 0 0 20px rgba(14, 165, 233, 0.45), inset 0 0 12px rgba(14, 165, 233, 0.15);
 }
 
 .modeSwitchLabel {
   font-family: var(--font-mono);
   font-size: 10px;
   font-weight: 700;
-  color: var(--text-muted);
+  color: var(--accent-primary, #0ea5e9);
   padding: 0 6px;
-  letter-spacing: 0.06em;
+  letter-spacing: 0.08em;
   user-select: none;
 }
 
@@ -208,11 +233,11 @@
 .hotkeyTag {
   font-family: var(--font-mono);
   font-size: 9.5px;
-  font-weight: 600;
-  color: var(--text-muted);
+  font-weight: 700;
+  color: var(--accent-primary, #0ea5e9);
   padding: 2px 5px;
-  background: var(--bg-surface);
-  border: 1px solid var(--border-subtle);
+  background: rgba(14, 165, 233, 0.08);
+  border: 1px solid rgba(14, 165, 233, 0.3);
   border-radius: 2px;
   margin-left: 2px;
 }

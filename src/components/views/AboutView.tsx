@@ -96,10 +96,10 @@ export function AboutView() {
           Profile Summary
         </h2>
         <div className={styles.textBlock} style={{ display: 'flex', flexDirection: 'column', gap: '16px', lineHeight: '1.6', color: 'var(--text-secondary)' }}>
-          <p>I&apos;m a Computer Science student currently building my way into offensive security and ethical hacking.</p>
+          <p>I&apos;m a Computer Science student currently building my way into cybersecurity.</p>
           <p>Before CS, I was in a PCMB stream — Physics, Chemistry, Maths, Biology — which, looking back, explains why I approach problems the way I do. That background gave me a very systems-level way of thinking about things.</p>
           <p>My interest in cybersecurity started with wanting to understand what actually happens underneath the things I use every day — how computers communicate, how operating systems work, what happens behind a command in the terminal, and where systems can go wrong.</p>
-          <p>That curiosity eventually led me toward ethical hacking.</p>
+          <p>That curiosity eventually led me toward cybersecurity.</p>
         </div>
       </div>
 

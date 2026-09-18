@@ -1164,6 +1164,14 @@
   color: var(--text-primary);
 }
 
+.sectionCount {
+  font-size: 11px;
+  font-family: var(--font-mono);
+  color: var(--text-muted);
+  font-weight: 500;
+  margin-left: 2px;
+}
+
 .qaTabs {
   display: flex;
   align-items: center;
@@ -1213,12 +1221,127 @@
 }
 
 .qaGridTutorialActive {
-  margin-top: 75px;
+  margin-top: 130px;
   position: relative;
 }
 
+.qaGridDropActive {
+  outline: 2px dashed var(--accent-primary) !important;
+  outline-offset: 4px;
+  background: rgba(14, 165, 233, 0.05);
+  border-radius: var(--radius-md);
+  transition: all 0.2s ease;
+}
+
+.qaEmptyPlaceholder {
+  grid-column: 1 / -1;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  padding: 24px;
+  border: 1px dashed var(--border-default);
+  border-radius: var(--radius-md);
+  color: var(--text-muted);
+  font-size: 12px;
+  font-family: var(--font-mono);
+  background: var(--bg-surface);
+  text-align: center;
+  user-select: none;
+}
+
+.qaCardPinBadge {
+  position: absolute;
+  top: 9px;
+  right: 9px;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  width: 26px;
+  height: 26px;
+  border-radius: 7px;
+  background: rgba(14, 165, 233, 0.16);
+  border: 1px solid rgba(14, 165, 233, 0.4);
+  color: var(--accent-primary);
+  transform: rotate(45deg);
+  pointer-events: none;
+  z-index: 3;
+  transition: all 0.2s cubic-bezier(0.16, 1, 0.3, 1);
+  box-shadow: 0 2px 6px rgba(0, 0, 0, 0.2);
+}
+
+.gridItemCard:hover .qaCardPinBadge {
+  background: rgba(14, 165, 233, 0.28);
+  border-color: var(--accent-primary);
+  color: #38bdf8;
+  transform: rotate(45deg) scale(1.1);
+  box-shadow: 0 0 12px rgba(14, 165, 233, 0.5);
+}
+
+/* Dynamic Remove Drop Zone when dragging from Quick Access */
+.qaRemoveDropZone {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
+  gap: 5px;
+  padding: 16px 20px;
+  margin: 8px 0 14px 0;
+  border: 2px dashed rgba(239, 68, 68, 0.55);
+  border-radius: var(--radius-md);
+  background: rgba(239, 68, 68, 0.08);
+  color: #ef4444;
+  cursor: copy;
+  transition: all 0.2s cubic-bezier(0.16, 1, 0.3, 1);
+  animation: qaRemoveSlideIn 250ms cubic-bezier(0.16, 1, 0.3, 1) forwards;
+  user-select: none;
+}
+
+@keyframes qaRemoveSlideIn {
+  0% {
+    opacity: 0;
+    transform: translateY(-8px) scale(0.98);
+  }
+
+  100% {
+    opacity: 1;
+    transform: translateY(0) scale(1);
+  }
+}
+
+.qaRemoveDropZoneActive {
+  border-color: #ef4444 !important;
+  border-style: solid !important;
+  background: rgba(239, 68, 68, 0.18) !important;
+  box-shadow: 0 0 24px rgba(239, 68, 68, 0.3), inset 0 0 14px rgba(239, 68, 68, 0.12);
+  transform: scale(1.015);
+}
+
+.qaRemoveContent {
+  display: flex;
+  align-items: center;
+  gap: 8px;
+  font-family: var(--font-sans);
+  font-size: 13.5px;
+  font-weight: 700;
+  letter-spacing: 0.01em;
+}
+
+.qaRemoveIcon {
+  transition: transform 0.2s ease;
+}
+
+.qaRemoveDropZoneActive .qaRemoveIcon {
+  transform: scale(1.25) rotate(-15deg);
+}
+
+.qaRemoveSubtext {
+  font-size: 11.5px;
+  font-family: var(--font-mono);
+  color: rgba(239, 68, 68, 0.85);
+}
+
 .fileGridTutorialActive {
-  margin-top: 75px;
+  margin-top: 130px;
   position: relative;
 }
 
@@ -2209,26 +2332,40 @@
 
 .sidebarVaultBtn {
   position: relative;
-  background: linear-gradient(135deg, rgba(239, 68, 68, 0.05), rgba(220, 38, 38, 0.02));
-  border: 1px dashed rgba(239, 68, 68, 0.3) !important;
+  background: linear-gradient(135deg, rgba(239, 68, 68, 0.12), rgba(244, 63, 94, 0.05));
+  border: 1px solid rgba(239, 68, 68, 0.45) !important;
   border-radius: var(--radius-md);
   padding: 6px 10px !important;
   margin: 2px 0;
-  transition: all 0.2s cubic-bezier(0.16, 1, 0.3, 1);
+  transition: all 0.25s cubic-bezier(0.16, 1, 0.3, 1);
   overflow: visible;
   cursor: pointer;
+  box-shadow: 0 0 12px rgba(239, 68, 68, 0.22), inset 0 0 8px rgba(239, 68, 68, 0.06);
+  animation: vaultPulseGlow 3.2s ease-in-out infinite;
 }
 
 :global([data-theme="dark"]) .sidebarVaultBtn {
-  background: linear-gradient(135deg, rgba(239, 68, 68, 0.08), rgba(185, 28, 28, 0.03));
-  border-color: rgba(239, 68, 68, 0.35) !important;
+  background: linear-gradient(135deg, rgba(239, 68, 68, 0.18), rgba(220, 38, 38, 0.08));
+  border-color: rgba(239, 68, 68, 0.55) !important;
+  box-shadow: 0 0 14px rgba(239, 68, 68, 0.28), inset 0 0 10px rgba(239, 68, 68, 0.08);
+}
+
+@keyframes vaultPulseGlow {
+  0%, 100% {
+    box-shadow: 0 0 10px rgba(239, 68, 68, 0.2), inset 0 0 6px rgba(239, 68, 68, 0.04);
+    border-color: rgba(239, 68, 68, 0.45);
+  }
+  50% {
+    box-shadow: 0 0 18px rgba(239, 68, 68, 0.38), inset 0 0 12px rgba(239, 68, 68, 0.12);
+    border-color: rgba(239, 68, 68, 0.7);
+  }
 }
 
 .sidebarVaultBtn:hover {
-  background: linear-gradient(135deg, rgba(239, 68, 68, 0.16), rgba(220, 38, 38, 0.08)) !important;
+  background: linear-gradient(135deg, rgba(239, 68, 68, 0.24), rgba(220, 38, 38, 0.12)) !important;
   border-style: solid !important;
-  border-color: rgba(239, 68, 68, 0.65) !important;
-  box-shadow: 0 0 14px rgba(239, 68, 68, 0.22), inset 0 0 8px rgba(239, 68, 68, 0.06);
+  border-color: rgba(239, 68, 68, 0.85) !important;
+  box-shadow: 0 0 20px rgba(239, 68, 68, 0.48), inset 0 0 12px rgba(239, 68, 68, 0.15);
   transform: translateX(2px);
   z-index: 100;
 }
@@ -2240,26 +2377,29 @@
   width: 24px;
   height: 24px;
   border-radius: 4px;
-  background: rgba(239, 68, 68, 0.12);
-  border: 1px solid rgba(239, 68, 68, 0.25);
+  background: rgba(239, 68, 68, 0.18);
+  border: 1px solid rgba(239, 68, 68, 0.45);
+  box-shadow: 0 0 8px rgba(239, 68, 68, 0.28);
   flex-shrink: 0;
   transition: all 0.2s ease;
 }
 
 .sidebarVaultBtn:hover .vaultIconWrapper {
-  background: rgba(239, 68, 68, 0.22);
-  border-color: rgba(239, 68, 68, 0.55);
-  box-shadow: 0 0 10px rgba(239, 68, 68, 0.35);
+  background: rgba(239, 68, 68, 0.3);
+  border-color: rgba(239, 68, 68, 0.75);
+  box-shadow: 0 0 12px rgba(239, 68, 68, 0.5);
 }
 
 .vaultLockIcon {
   color: #ef4444;
-  transition: transform 0.25s cubic-bezier(0.34, 1.56, 0.64, 1), color 0.2s ease;
+  filter: drop-shadow(0 0 4px rgba(239, 68, 68, 0.5));
+  transition: transform 0.25s cubic-bezier(0.34, 1.56, 0.64, 1), color 0.2s ease, filter 0.2s ease;
 }
 
 .sidebarVaultBtn:hover .vaultLockIcon {
   transform: scale(1.15) rotate(-8deg);
-  color: #f87171;
+  color: #ffffff;
+  filter: drop-shadow(0 0 6px rgba(239, 68, 68, 0.8));
 }
 
 .vaultTextGroup {
@@ -2281,33 +2421,36 @@
   display: inline-flex;
   align-items: center;
   gap: 4px;
-  padding: 1px 6px;
+  padding: 1px 7px;
   border-radius: 9999px;
-  background: rgba(239, 68, 68, 0.12);
-  border: 1px solid rgba(239, 68, 68, 0.3);
+  background: rgba(239, 68, 68, 0.16);
+  border: 1px solid rgba(239, 68, 68, 0.45);
+  box-shadow: 0 0 8px rgba(239, 68, 68, 0.24);
   font-family: var(--font-mono);
-  font-size: 10.5px;
+  font-size: 11.25px;
   font-weight: 700;
   letter-spacing: 0.04em;
-  color: #ef4444;
+  color: #dc2626;
   text-transform: lowercase;
   position: relative;
   overflow: hidden;
   width: fit-content;
+  white-space: nowrap;
   transition: all 0.2s ease;
 }
 
 :global([data-theme="dark"]) .dontClickBadge {
   color: #fca5a5;
-  background: rgba(239, 68, 68, 0.18);
-  border-color: rgba(239, 68, 68, 0.45);
+  background: rgba(239, 68, 68, 0.22);
+  border-color: rgba(239, 68, 68, 0.55);
+  box-shadow: 0 0 10px rgba(239, 68, 68, 0.3);
 }
 
 .sidebarVaultBtn:hover .dontClickBadge {
-  background: rgba(239, 68, 68, 0.3);
-  border-color: rgba(239, 68, 68, 0.7);
+  background: rgba(239, 68, 68, 0.35);
+  border-color: rgba(239, 68, 68, 0.8);
   color: #ffffff;
-  box-shadow: 0 0 10px rgba(239, 68, 68, 0.4);
+  box-shadow: 0 0 12px rgba(239, 68, 68, 0.5);
 }
 
 .dontClickDot {
@@ -2315,14 +2458,14 @@
   height: 5px;
   border-radius: 50%;
   background-color: #ef4444;
-  box-shadow: 0 0 6px #ef4444;
+  box-shadow: 0 0 8px #ef4444;
   animation: pulseBeacon 1.4s infinite ease-in-out;
   flex-shrink: 0;
 }
 
 .sidebarVaultBtn:hover .dontClickDot {
   background-color: #ffffff;
-  box-shadow: 0 0 6px #ffffff;
+  box-shadow: 0 0 8px #ffffff;
 }
 
 @keyframes pulseBeacon {
@@ -2396,6 +2539,64 @@
 
 .vaultIcon {
   color: #ef4444;
+  filter: drop-shadow(0 0 5px rgba(239, 68, 68, 0.5));
+}
+
+.vaultGridCard {
+  border-color: rgba(239, 68, 68, 0.4) !important;
+  background: linear-gradient(135deg, rgba(239, 68, 68, 0.07), transparent) !important;
+  box-shadow: 0 0 12px rgba(239, 68, 68, 0.16) !important;
+}
+
+:global([data-theme="dark"]) .vaultGridCard {
+  border-color: rgba(239, 68, 68, 0.5) !important;
+  background: linear-gradient(135deg, rgba(239, 68, 68, 0.14), transparent) !important;
+  box-shadow: 0 0 14px rgba(239, 68, 68, 0.24) !important;
+}
+
+.vaultGridCard:hover {
+  border-color: rgba(239, 68, 68, 0.8) !important;
+  box-shadow: 0 0 20px rgba(239, 68, 68, 0.38) !important;
+}
+
+/* ==========================================================================
+   FEATURE DISCOVERY & TOUR BUTTONS
+   ========================================================================== */
+
+.ribbonTourBtn {
+  color: var(--accent-primary) !important;
+  font-weight: 600 !important;
+  background: rgba(14, 165, 233, 0.08) !important;
+  border-color: rgba(14, 165, 233, 0.35) !important;
+  transition: all 0.2s ease;
+}
+
+.ribbonTourBtn:hover {
+  background: rgba(14, 165, 233, 0.18) !important;
+  border-color: var(--accent-primary) !important;
+  box-shadow: 0 0 10px rgba(14, 165, 233, 0.3) !important;
+}
+
+.statusTourBtn {
+  display: inline-flex;
+  align-items: center;
+  gap: 5px;
+  background: rgba(14, 165, 233, 0.08);
+  border: 1px solid rgba(14, 165, 233, 0.25);
+  padding: 2px 7px;
+  border-radius: 4px;
+  cursor: pointer;
+  color: var(--accent-primary);
+  font-family: var(--font-mono);
+  font-size: 11px;
+  font-weight: 600;
+  transition: all 0.15s ease;
+}
+
+.statusTourBtn:hover {
+  background: rgba(14, 165, 233, 0.2);
+  border-color: rgba(14, 165, 233, 0.5);
+  box-shadow: 0 0 8px rgba(14, 165, 233, 0.25);
 }
 
 /* ==========================================================================
@@ -2427,8 +2628,17 @@
 }
 
 @keyframes pulseReset {
-  0%, 100% { opacity: 1; transform: scale(1); }
-  50% { opacity: 0.4; transform: scale(0.75); }
+
+  0%,
+  100% {
+    opacity: 1;
+    transform: scale(1);
+  }
+
+  50% {
+    opacity: 0.4;
+    transform: scale(0.75);
+  }
 }
 
 /* ==========================================================================
@@ -2458,6 +2668,7 @@
     opacity: 0;
     transform: scale(0.96);
   }
+
   to {
     opacity: 1;
     transform: scale(1);
@@ -2569,11 +2780,27 @@
   animation: cardPopIn 380ms cubic-bezier(0.175, 0.885, 0.32, 1.275) forwards !important;
 }
 
+.itemJustPinned {
+  animation: cardPopIn 380ms cubic-bezier(0.175, 0.885, 0.32, 1.275) forwards,
+    quickAccessGlow 800ms ease-out forwards !important;
+}
+
+@keyframes quickAccessGlow {
+  0% {
+    box-shadow: 0 0 0 2px var(--accent-primary), 0 0 16px rgba(14, 165, 233, 0.5);
+  }
+
+  100% {
+    box-shadow: none;
+  }
+}
+
 @keyframes cardPopIn {
   0% {
     opacity: 0;
     transform: scale(0.84);
   }
+
   100% {
     opacity: 1;
     transform: scale(1);
@@ -2829,6 +3056,7 @@
     opacity: 0;
     transform: translate(-50%, 8px) scale(0.97);
   }
+
   to {
     opacity: 1;
     transform: translate(-50%, 0) scale(1);

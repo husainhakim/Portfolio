@@ -16,8 +16,10 @@ import {
   Share2,
   FileEdit,
   ChevronDown,
-  RotateCcw
+  RotateCcw,
+  Sparkles,
 } from "lucide-react";
+import { useTour } from "@/context/TourContext";
 import styles from "./Gui.module.css";
 
 const ICON_SIZE = 15;
@@ -25,6 +27,7 @@ const CHEVRON_SIZE = 11;
 const STROKE_WIDTH = 1.8;
 
 export function RibbonToolbar() {
+  const { openHelpModal } = useTour();
   const {
     viewLayout,
     setViewLayout,
@@ -140,6 +143,20 @@ export function RibbonToolbar() {
       <div className={styles.ribbonGroup}>
         <button className={styles.ribbonBtn} title="See more" disabled>
           <MoreHorizontal size={ICON_SIZE} strokeWidth={STROKE_WIDTH} />
+        </button>
+      </div>
+
+      <div className={styles.ribbonDivider} />
+
+      {/* Feature Discovery & Interactive Tour */}
+      <div className={styles.ribbonGroup}>
+        <button
+          className={`${styles.ribbonBtnWithLabel} ${styles.ribbonTourBtn}`}
+          title="Interactive Tour & Features Cheatsheet"
+          onClick={openHelpModal}
+        >
+          <Sparkles size={ICON_SIZE} strokeWidth={STROKE_WIDTH} />
+          <span>Tips &amp; Features</span>
         </button>
       </div>
     </div>
