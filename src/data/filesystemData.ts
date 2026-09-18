@@ -19,6 +19,7 @@ export interface BaseFSNode {
   owner: string;
   group: string;
   updatedAt: string;
+  createdAt?: string;
   description?: string;
 }
 
