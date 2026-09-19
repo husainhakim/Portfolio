@@ -120,7 +120,7 @@ $ python3 start.py --no-browser`,
       "Integrate automated vulnerability scanning against discovered open ports.",
       "Add custom webhook alerts for unrecognized device connections.",
     ],
-    writeupPath: "/home/husain/writeups/network-scanner.md"
+    writeupPath: "/home/husain/writeups/network-device-scanner.md",
   },
   {
     id: "passguard",
