@@ -9,8 +9,8 @@ export const FALLBACK_URL = "https://husainhakim.vercel.app";
 export const SITE_CONFIG = {
   name: PROFILE_DATA.name,
   handle: PROFILE_DATA.handle,
-  title: `${PROFILE_DATA.name} — ${PROFILE_DATA.title}`,
-  shortTitle: "Husain Hakim Portfolio",
+  title: "Portfolio - Husain Hakim",
+  shortTitle: "Portfolio - Husain Hakim",
   description:
     "Interactive cybersecurity workspace & offensive security portfolio of Husain Hakim. Featuring penetration testing research, SUID privilege escalation, custom reconnaissance utilities, and backend engineering.",
   url: SITE_URL,

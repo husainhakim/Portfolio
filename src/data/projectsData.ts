@@ -187,7 +187,7 @@ $ python3 start.py --no-browser`,
     summary:
       "QuickRef is an offline, terminal-first command reference tool built to eliminate context-switching while learning Linux, networking, Git, and cybersecurity. It delivers fast, clean, structured command lookups directly in the terminal.",
     problemStatement:
-      "While learning Linux and networking fundamentals, I kept losing focus every time I had to leave the terminal to look up command syntax. man pages are too dense for a quick refresher, and existing tools like tldr aren't tailored to how I actually learn. So I built my own — a fully offline personal knowledge base I could query instantly without breaking flow.",
+      "While learning Linux and networking fundamentals, I kept losing focus every time I had to leave the terminal to look up command syntax. man pages are too dense for a quick refresher, and existing tools like tldr aren't tailored to how I actually learn. So I built my own: a fully offline personal knowledge base I could query instantly without breaking flow.",
     architectureDetails: [
       "Data Layer: JSON-based data layer for entirely offline, zero latency lookups.",
       "Core Logic: Built with standard library Python (no heavy dependencies) to keep it lightweight.",

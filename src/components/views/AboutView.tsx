@@ -97,8 +97,8 @@ export function AboutView() {
         </h2>
         <div className={styles.textBlock} style={{ display: 'flex', flexDirection: 'column', gap: '16px', lineHeight: '1.6', color: 'var(--text-secondary)' }}>
           <p>I&apos;m a Computer Science student currently building my way into cybersecurity.</p>
-          <p>Before CS, I was in a PCMB stream — Physics, Chemistry, Maths, Biology — which, looking back, explains why I approach problems the way I do. That background gave me a very systems-level way of thinking about things.</p>
-          <p>My interest in cybersecurity started with wanting to understand what actually happens underneath the things I use every day — how computers communicate, how operating systems work, what happens behind a command in the terminal, and where systems can go wrong.</p>
+          <p>Before CS, I was in a PCMB stream (Physics, Chemistry, Maths, Biology), which, looking back, explains why I approach problems the way I do. That background gave me a very systems-level way of thinking about things.</p>
+          <p>My interest in cybersecurity started with wanting to understand what actually happens underneath the things I use every day: how computers communicate, how operating systems work, what happens behind a command in the terminal, and where systems can go wrong.</p>
           <p>That curiosity eventually led me toward cybersecurity.</p>
         </div>
       </div>
@@ -165,7 +165,7 @@ export function AboutView() {
         <div className={styles.textBlock} style={{ display: 'flex', flexDirection: 'column', gap: '12px', lineHeight: '1.6', color: 'var(--text-secondary)' }}>
           <p>My immediate goal is simple:</p>
           <p><strong>Get really good at the fundamentals.</strong></p>
-          <p>When I was younger, I was convinced I&apos;d become a pilot — the idea of flying always fascinated me. Turns out I ended up navigating networks instead of airspace, but that same curiosity about how complex systems work carried over.</p>
+          <p>When I was younger, I was convinced I&apos;d become a pilot since the idea of flying always fascinated me. Turns out I ended up navigating networks instead of airspace, but that same curiosity about how complex systems work carried over.</p>
           <p>I want to keep progressing through networking, Linux, web security, reconnaissance, exploitation, and privilege escalation, while turning what I learn into actual projects and writeups.</p>
           <p>Eventually, I want to explore areas like Active Directory, red teaming, vulnerability research, and more advanced offensive security.</p>
           <p>I don&apos;t have my entire career mapped out yet, and I don&apos;t think I need to.</p>

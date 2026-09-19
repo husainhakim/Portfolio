@@ -20,8 +20,8 @@ export const viewport: Viewport = {
 export const metadata: Metadata = {
   metadataBase: new URL(SITE_URL),
   title: {
-    default: `${PROFILE_DATA.name} — ${PROFILE_DATA.title}`,
-    template: `%s | ${PROFILE_DATA.name}`,
+    default: "Portfolio - Husain Hakim",
+    template: "%s",
   },
   description: SITE_CONFIG.description,
   keywords: SITE_CONFIG.keywords,
@@ -40,21 +40,21 @@ export const metadata: Metadata = {
     type: "website",
     locale: "en_US",
     url: SITE_URL,
-    title: `${PROFILE_DATA.name} — ${PROFILE_DATA.title}`,
+    title: "Portfolio - Husain Hakim",
     description: SITE_CONFIG.description,
-    siteName: `${PROFILE_DATA.name} — Offensive Security Workspace`,
+    siteName: "Portfolio - Husain Hakim",
     images: [
       {
         url: "/opengraph-image",
         width: 1200,
         height: 630,
-        alt: `${PROFILE_DATA.name} — Offensive Security Workspace`,
+        alt: "Portfolio - Husain Hakim",
       },
     ],
   },
   twitter: {
     card: "summary_large_image",
-    title: `${PROFILE_DATA.name} — ${PROFILE_DATA.title}`,
+    title: "Portfolio - Husain Hakim",
     description: SITE_CONFIG.description,
     creator: "@Husain533",
     images: ["/opengraph-image"],

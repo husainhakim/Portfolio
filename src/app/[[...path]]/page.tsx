@@ -60,13 +60,13 @@ export async function generateMetadata({
   // 1. Root Homepage
   if (pathArray.length === 0) {
     return {
-      title: `${PROFILE_DATA.name} — ${PROFILE_DATA.title}`,
+      title: "Portfolio - Husain Hakim",
       description: SITE_CONFIG.description,
       alternates: {
         canonical: canonicalUrl,
       },
       openGraph: {
-        title: `${PROFILE_DATA.name} — ${PROFILE_DATA.title}`,
+        title: "Portfolio - Husain Hakim",
         description: SITE_CONFIG.description,
         url: canonicalUrl,
         type: "profile",
@@ -244,7 +244,7 @@ export async function generateMetadata({
 
   // Fallback
   return {
-    title: `${PROFILE_DATA.name} — ${PROFILE_DATA.title}`,
+    title: "Portfolio - Husain Hakim",
     description: SITE_CONFIG.description,
     alternates: { canonical: canonicalUrl },
   };
