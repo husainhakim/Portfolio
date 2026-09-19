@@ -135,7 +135,7 @@ export function FilesystemProvider({ children }: { children: React.ReactNode }) 
     Object.keys(folderOrders).length > 0 ||
     restoreTimersRef.current.size > 0;
 
-  const showToast = useCallback((message: string, duration = 3000) => {
+  const showToast = useCallback((message: string, duration = 5000) => {
     if (toastTimerRef.current) clearTimeout(toastTimerRef.current);
     setToastMessage(message);
     toastTimerRef.current = setTimeout(() => {
@@ -205,10 +205,10 @@ export function FilesystemProvider({ children }: { children: React.ReactNode }) 
       // 2. Soft-delete immediately
       deleteNode(node.id);
 
-      // 3. Show punchline toast (persisting for 4.5s)
-      showToast(getDeletePunchline(node.name), 4500);
+      // 3. Show punchline toast (persisting for 8s)
+      showToast(getDeletePunchline(node.name), 8000);
 
-      // 4. Set 5-second countdown to auto-restore
+      // 4. Set 8-second countdown to auto-restore
       const timer = setTimeout(() => {
         restoreNode(node.id);
         restoreTimersRef.current.delete(node.id);
@@ -218,7 +218,7 @@ export function FilesystemProvider({ children }: { children: React.ReactNode }) 
         setTimeout(() => {
           setJustRestoredNodeIds((prev) => prev.filter((id) => id !== node.id));
         }, 450);
-      }, 5000);
+      }, 8000);
 
       restoreTimersRef.current.set(node.id, timer);
     },
