@@ -71,7 +71,7 @@ export const ACHIEVEMENTS: Achievement[] = [
     id: "master_of_disguise",
     title: "Master of Disguise",
     description: "Assigned a custom alias to a file or folder in the workspace.",
-    hint: "Who says names are set in stone? Bestow a new identity upon an unsuspecting asset.",
+    hint: "Identity is everything. Sometimes, all it takes is a new name.",
     iconName: "Tag",
     category: "customization",
     points: 50,
