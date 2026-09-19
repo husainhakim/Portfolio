@@ -20,11 +20,13 @@ import {
   ArrowDown,
   LayoutGrid,
 } from "lucide-react";
+import { useAchievements } from "@/context/AchievementContext";
 import styles from "./Terminal.module.css";
 
 export function Terminal() {
   const { currentPath, navigate, openFile, setMode } = useFilesystem();
   const { theme, toggleTheme, setTheme } = useTheme();
+  const { unlock } = useAchievements();
 
   const [input, setInput] = useState<string>("");
   const [history, setHistory] = useState<CommandOutput[]>([
@@ -45,6 +47,11 @@ Type 'gui' to toggle back to the GUI workspace at any time.`,
 
   const inputRef = useRef<HTMLInputElement>(null);
   const terminalBottomRef = useRef<HTMLDivElement>(null);
+
+  // Trigger old_school achievement on terminal mount
+  useEffect(() => {
+    unlock("old_school");
+  }, [unlock]);
 
   // Focus input automatically on mount and path change
   useEffect(() => {

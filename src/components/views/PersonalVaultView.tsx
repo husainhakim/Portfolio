@@ -3,6 +3,7 @@ import { createPortal } from "react-dom";
 import styles from "./Views.module.css";
 import { Lock, Unlock, ShieldAlert, AlertCircle, HelpCircle, Terminal, Compass, Brain } from "lucide-react";
 import { useTheme } from "@/context/ThemeContext";
+import { useAchievements } from "@/context/AchievementContext";
 
 const VALID_ANSWERS: Record<string, string[]> = {
   q1: ["pcmb", "physics chemistry maths biology", "pcmb stream", "science pcmb"],
@@ -37,16 +38,17 @@ export type VaultStep = "wheel_turn" | "bolts_retract" | "door_open";
 
 export function PersonalVaultView() {
   const { theme } = useTheme();
+  const { unlock } = useAchievements();
   const isDark = theme === "dark";
   const [isUnlocked, setIsUnlocked] = useState(false);
   const [mounted, setMounted] = useState(false);
   const [phase, setPhase] = useState<VaultPhase>("idle");
-  const [vaultStep, setVaultStep] = useState<VaultStep>("wheel_turn");
   const [answers, setAnswers] = useState({ q1: "", q2: "", q3: "" });
   const [error, setError] = useState("");
   const [showHint, setShowHint] = useState(false);
   const [statusText, setStatusText] = useState("[>] ENGAGING PRIMARY LOCKING MECHANISM...");
   const [portalContainer, setPortalContainer] = useState<HTMLElement | null>(null);
+  const [vaultStep, setVaultStep] = useState<VaultStep>("wheel_turn");
   const firstInputRef = useRef<HTMLInputElement>(null);
   const overlayRef = useRef<HTMLDivElement>(null);
   const timersRef = useRef<NodeJS.Timeout[]>([]);
@@ -117,6 +119,7 @@ export function PersonalVaultView() {
     const anyCorrect = QUESTIONS.some(q => checkAnswer(q.key, answers[q.key as keyof typeof answers]));
     if (anyCorrect) {
       setError("");
+      unlock("vault_breaker");
 
       // Respect prefers-reduced-motion
       const prefersReducedMotion =

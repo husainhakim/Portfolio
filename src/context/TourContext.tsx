@@ -2,6 +2,7 @@
 
 import React, { createContext, useContext, useState, useEffect, useCallback } from "react";
 import { TOUR_STEPS, TourStep } from "@/components/gui/FeatureDiscovery/tourStepsData";
+import { useAchievements } from "@/context/AchievementContext";
 
 export const TOUR_STORAGE_KEY = "hasSeenCyberWorkstationTour";
 
@@ -23,6 +24,7 @@ interface TourContextType {
 const TourContext = createContext<TourContextType | undefined>(undefined);
 
 export function TourProvider({ children }: { children: React.ReactNode }) {
+  const { unlock } = useAchievements();
   const [isTourActive, setIsTourActive] = useState(false);
   const [currentStepIndex, setCurrentStepIndex] = useState(0);
   const [isHelpModalOpen, setIsHelpModalOpen] = useState(false);
@@ -59,9 +61,10 @@ export function TourProvider({ children }: { children: React.ReactNode }) {
     if (currentStepIndex < TOUR_STEPS.length - 1) {
       setCurrentStepIndex((prev) => prev + 1);
     } else {
+      unlock("tour_completer");
       endTour();
     }
-  }, [currentStepIndex, endTour]);
+  }, [currentStepIndex, endTour, unlock]);
 
   const prevStep = useCallback(() => {
     if (currentStepIndex > 0) {

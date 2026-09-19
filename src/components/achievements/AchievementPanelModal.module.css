@@ -1,0 +1,373 @@
+/* AchievementPanelModal.module.css - Brutalist OS-Themed Trophy Modal */
+
+.modalOverlay {
+  position: fixed;
+  top: 0;
+  left: 0;
+  right: 0;
+  bottom: 0;
+  background: rgba(0, 0, 0, 0.65);
+  backdrop-filter: blur(4px);
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  z-index: 99999;
+  padding: 16px;
+  animation: fadeIn 0.15s ease-out;
+}
+
+.modalContainer {
+  background: var(--bg-surface);
+  border: 1px solid var(--border-strong);
+  border-top: 2px solid #f59e0b;
+  width: 720px;
+  max-width: 100%;
+  max-height: 85vh;
+  display: flex;
+  flex-direction: column;
+  box-shadow: 0 16px 40px rgba(0, 0, 0, 0.4);
+  font-family: var(--font-mono);
+  animation: modalScaleUp 0.18s cubic-bezier(0.16, 1, 0.3, 1) forwards;
+  overflow: hidden;
+}
+
+:global([data-theme="dark"]) .modalContainer {
+  border-top-color: #fbbf24;
+  box-shadow: 0 20px 50px rgba(0, 0, 0, 0.85);
+}
+
+.modalHeader {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  padding: 12px 18px;
+  background: var(--bg-panel);
+  border-bottom: 1px solid var(--border-default);
+}
+
+.headerTitleGroup {
+  display: flex;
+  align-items: center;
+  gap: 10px;
+}
+
+.headerIcon {
+  color: #f59e0b;
+  flex-shrink: 0;
+}
+
+:global([data-theme="dark"]) .headerIcon {
+  color: #fbbf24;
+}
+
+.headerTitle {
+  font-size: 13.5px;
+  font-weight: 700;
+  text-transform: uppercase;
+  letter-spacing: 0.05em;
+  color: var(--text-primary);
+}
+
+.headerCloseBtn {
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  width: 24px;
+  height: 24px;
+  background: transparent;
+  border: 1px solid transparent;
+  border-radius: var(--radius-sm);
+  color: var(--text-muted);
+  cursor: pointer;
+  transition: all 0.1s ease;
+}
+
+.headerCloseBtn:hover {
+  background: var(--bg-panel-hover);
+  color: var(--text-primary);
+  border-color: var(--border-default);
+}
+
+/* Progress HUD Bar */
+.progressHud {
+  background: var(--bg-surface);
+  border-bottom: 1px solid var(--border-default);
+  padding: 14px 18px;
+  display: flex;
+  flex-direction: column;
+  gap: 8px;
+}
+
+.progressTopRow {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  font-size: 11.5px;
+}
+
+.progressLabel {
+  font-weight: 700;
+  color: var(--text-primary);
+}
+
+.progressScore {
+  color: #f59e0b;
+  font-weight: 700;
+}
+
+:global([data-theme="dark"]) .progressScore {
+  color: #fbbf24;
+}
+
+.progressTrack {
+  width: 100%;
+  height: 6px;
+  background: var(--bg-panel);
+  border: 1px solid var(--border-subtle);
+  overflow: hidden;
+}
+
+.progressBarFill {
+  height: 100%;
+  background: linear-gradient(90deg, #f59e0b, #ef4444);
+  transition: width 0.3s ease;
+}
+
+:global([data-theme="dark"]) .progressBarFill {
+  background: linear-gradient(90deg, #fbbf24, #f87171);
+}
+
+/* Filter Tabs */
+.filterRow {
+  display: flex;
+  align-items: center;
+  gap: 6px;
+  padding: 10px 18px;
+  background: var(--bg-subtle);
+  border-bottom: 1px solid var(--border-subtle);
+}
+
+.filterBtn {
+  font-family: var(--font-mono);
+  font-size: 11px;
+  font-weight: 600;
+  padding: 3px 9px;
+  background: var(--bg-panel);
+  border: 1px solid var(--border-default);
+  color: var(--text-secondary);
+  cursor: pointer;
+  transition: all 0.1s ease;
+}
+
+.filterBtn:hover {
+  background: var(--bg-panel-hover);
+  color: var(--text-primary);
+}
+
+.filterBtnActive {
+  background: var(--accent-primary) !important;
+  color: #ffffff !important;
+  border-color: var(--accent-primary) !important;
+  font-weight: 700;
+}
+
+/* Scrollable Cards Grid */
+.modalBody {
+  flex: 1;
+  overflow-y: auto;
+  padding: 14px 18px;
+  display: grid;
+  grid-template-columns: 1fr;
+  gap: 10px;
+}
+
+.achievementCard {
+  background: var(--bg-surface);
+  border: 1px solid var(--border-default);
+  padding: 12px 14px;
+  display: flex;
+  align-items: flex-start;
+  gap: 14px;
+  transition: border-color 0.12s ease;
+}
+
+.cardUnlocked {
+  border-left: 3px solid #f59e0b;
+}
+
+:global([data-theme="dark"]) .cardUnlocked {
+  border-left-color: #fbbf24;
+}
+
+.cardLocked {
+  border-left: 3px solid var(--border-subtle);
+  opacity: 0.65;
+  background: var(--bg-subtle);
+}
+
+.cardIconCol {
+  width: 40px;
+  height: 40px;
+  border-radius: var(--radius-sm);
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  flex-shrink: 0;
+  border: 1px solid var(--border-default);
+}
+
+.iconUnlocked {
+  background: rgba(245, 158, 11, 0.12);
+  border-color: rgba(245, 158, 11, 0.4);
+  color: #f59e0b;
+}
+
+:global([data-theme="dark"]) .iconUnlocked {
+  background: rgba(251, 191, 36, 0.15);
+  border-color: rgba(251, 191, 36, 0.45);
+  color: #fbbf24;
+}
+
+.iconLocked {
+  background: var(--bg-panel);
+  color: var(--text-muted);
+}
+
+.cardContent {
+  flex: 1;
+  display: flex;
+  flex-direction: column;
+  gap: 3px;
+}
+
+.cardTopMeta {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  flex-wrap: wrap;
+  gap: 6px;
+}
+
+.cardTitle {
+  font-size: 13.5px;
+  font-weight: 700;
+  color: var(--text-primary);
+  font-family: var(--font-sans);
+}
+
+.cardLockedTitle {
+  font-size: 13px;
+  font-weight: 700;
+  color: var(--text-muted);
+  font-family: var(--font-mono);
+  letter-spacing: 0.08em;
+}
+
+.cardBadge {
+  font-size: 10px;
+  font-weight: 700;
+  padding: 1px 6px;
+  border-radius: 2px;
+  text-transform: uppercase;
+}
+
+.badgeUnlocked {
+  background: rgba(245, 158, 11, 0.12);
+  color: #f59e0b;
+  border: 1px solid rgba(245, 158, 11, 0.3);
+}
+
+:global([data-theme="dark"]) .badgeUnlocked {
+  color: #fbbf24;
+  border-color: rgba(251, 191, 36, 0.4);
+}
+
+.badgeLocked {
+  background: var(--bg-panel);
+  color: var(--text-muted);
+  border: 1px solid var(--border-subtle);
+}
+
+.cardDesc {
+  font-size: 12px;
+  line-height: 1.45;
+  color: var(--text-secondary);
+}
+
+.cardHint {
+  font-size: 11.5px;
+  line-height: 1.4;
+  color: var(--text-muted);
+  font-style: italic;
+}
+
+.cardFooterMeta {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  margin-top: 4px;
+  padding-top: 4px;
+  border-top: 1px dashed var(--border-subtle);
+  font-size: 10.5px;
+  color: var(--text-muted);
+}
+
+.cardTimestamp {
+  color: var(--accent-primary);
+  font-weight: 500;
+}
+
+.cardPoints {
+  font-weight: 700;
+}
+
+/* Modal Footer */
+.modalFooter {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  padding: 10px 18px;
+  background: var(--bg-panel);
+  border-top: 1px solid var(--border-default);
+  font-size: 11px;
+}
+
+.resetBtn {
+  font-family: var(--font-mono);
+  font-size: 11px;
+  font-weight: 600;
+  padding: 3px 8px;
+  background: transparent;
+  border: 1px solid var(--border-default);
+  color: var(--text-muted);
+  cursor: pointer;
+  transition: all 0.1s ease;
+}
+
+.resetBtn:hover {
+  background: var(--bg-panel-hover);
+  color: #ef4444;
+  border-color: #ef4444;
+}
+
+@keyframes fadeIn {
+  from { opacity: 0; }
+  to { opacity: 1; }
+}
+
+@keyframes modalScaleUp {
+  from {
+    opacity: 0;
+    transform: scale(0.95) translateY(6px);
+  }
+  to {
+    opacity: 1;
+    transform: scale(1) translateY(0);
+  }
+}
+
+@media (max-width: 600px) {
+  .modalContainer {
+    max-height: 92vh;
+  }
+}

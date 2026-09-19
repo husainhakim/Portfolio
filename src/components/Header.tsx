@@ -11,7 +11,9 @@ import {
   Sun,
   Moon,
   FileText,
+  Trophy,
 } from "lucide-react";
+import { useAchievements } from "@/context/AchievementContext";
 import styles from "./Header.module.css";
 
 const FULL_NAME = "Husain Hakim";
@@ -26,6 +28,14 @@ interface DecryptChar {
 export function Header() {
   const { mode, toggleMode, navigate } = useFilesystem();
   const { theme, toggleTheme, mounted } = useTheme();
+  const {
+    unlockedCount,
+    totalCount,
+    openPanel,
+    unlock,
+    trophyBounceKey,
+    trophyButtonRef,
+  } = useAchievements();
 
   // Physical switch flipping state
   const [isFlipping, setIsFlipping] = useState(false);
@@ -97,6 +107,7 @@ export function Header() {
 
   const handleSwitchClick = () => {
     setIsFlipping(true);
+    unlock("seen_the_light");
     toggleTheme();
     setTimeout(() => {
       setIsFlipping(false);
@@ -195,6 +206,29 @@ export function Header() {
             <span className={styles.hotkeyTag} title="Toggle with Alt+T">Alt+T</span>
           </div>
         </div>
+
+        {/* Achievements / Trophies Button */}
+        <button
+          id="header-trophy-button"
+          ref={trophyButtonRef}
+          onClick={openPanel}
+          key={`trophy-btn-${trophyBounceKey}`}
+          className={`${styles.trophyButton} ${
+            unlockedCount > 0 ? styles.trophyButtonUnlocked : ""
+          } ${trophyBounceKey > 0 ? styles.trophyLandingBounce : ""}`}
+          title={`Achievements (${unlockedCount}/${totalCount} Unlocked)`}
+          aria-label={`Achievements (${unlockedCount}/${totalCount} Unlocked)`}
+        >
+          <Trophy size={13} />
+          {unlockedCount > 0 && (
+            <span
+              key={`badge-${unlockedCount}`}
+              className={`${styles.trophyBadge} ${styles.trophyBadgePop}`}
+            >
+              {unlockedCount}/{totalCount}
+            </span>
+          )}
+        </button>
 
         {/* Physical Mechanical Light Switch */}
         <button

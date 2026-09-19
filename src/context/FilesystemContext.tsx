@@ -11,6 +11,7 @@ import {
   normalizePath,
 } from "@/data/filesystemData";
 import { useRouter, usePathname } from "next/navigation";
+import { useAchievements } from "@/context/AchievementContext";
 
 type WorkspaceMode = "gui" | "cli";
 type ViewLayout = "grid" | "list";
@@ -105,6 +106,7 @@ const FilesystemContext = createContext<FilesystemContextType | undefined>(undef
 export function FilesystemProvider({ children }: { children: React.ReactNode }) {
   const router = useRouter();
   const pathname = usePathname();
+  const { unlock } = useAchievements();
 
   const [mode, setModeState] = useState<WorkspaceMode>("gui");
   const [cliPath, setCliPath] = useState<string>(ROOT_PATH);
@@ -120,12 +122,12 @@ export function FilesystemProvider({ children }: { children: React.ReactNode }) 
   const [folderOrders, setFolderOrders] = useState<Record<string, string[]>>({});
   const [quickAccessIds, setQuickAccessIds] = useState<string[]>(DEFAULT_QUICK_ACCESS_IDS);
   const [justPinnedNodeIds, setJustPinnedNodeIds] = useState<string[]>([]);
+  const [justRestoredNodeIds, setJustRestoredNodeIds] = useState<string[]>([]);
 
   // Toast & auto-restore state
   const [toastMessage, setToastMessage] = useState<string | null>(null);
   const toastTimerRef = React.useRef<NodeJS.Timeout | null>(null);
   const restoreTimersRef = React.useRef<Map<string, NodeJS.Timeout>>(new Map());
-  const [justRestoredNodeIds, setJustRestoredNodeIds] = useState<string[]>([]);
 
   const isModified =
     Object.keys(customNames).length > 0 ||
@@ -133,7 +135,7 @@ export function FilesystemProvider({ children }: { children: React.ReactNode }) 
     Object.keys(folderOrders).length > 0 ||
     restoreTimersRef.current.size > 0;
 
-  const showToast = useCallback((message: string, duration = 2500) => {
+  const showToast = useCallback((message: string, duration = 3000) => {
     if (toastTimerRef.current) clearTimeout(toastTimerRef.current);
     setToastMessage(message);
     toastTimerRef.current = setTimeout(() => {
@@ -185,6 +187,14 @@ export function FilesystemProvider({ children }: { children: React.ReactNode }) 
         return;
       }
 
+      // Achievement triggers for deleting About.md or Contact-info.md
+      const nameLower = node.name.toLowerCase();
+      if (nameLower === "about.md" || node.id === "about-file") {
+        unlock("identity_thief");
+      } else if (nameLower === "contact-info.md" || node.id === "contact-file") {
+        unlock("ghosted");
+      }
+
       // 1. Reset timer if this item was already mid-countdown
       const existing = restoreTimersRef.current.get(node.id);
       if (existing) {
@@ -212,45 +222,72 @@ export function FilesystemProvider({ children }: { children: React.ReactNode }) 
 
       restoreTimersRef.current.set(node.id, timer);
     },
-    [deleteNode, restoreNode, showToast]
+    [deleteNode, restoreNode, showToast, unlock]
   );
 
-  const reorderNodes = useCallback((folderKey: string, sourceId: string, targetId: string) => {
-    if (sourceId === targetId) return;
-    setFolderOrders((prev) => {
-      const current = prev[folderKey] || [];
-      const newOrder = [...current];
-      const sourceIndex = newOrder.indexOf(sourceId);
-      const targetIndex = newOrder.indexOf(targetId);
+  const quickAccessIdsRef = React.useRef<string[]>(quickAccessIds);
+  useEffect(() => {
+    quickAccessIdsRef.current = quickAccessIds;
+  }, [quickAccessIds]);
 
-      if (sourceIndex !== -1 && targetIndex !== -1) {
-        newOrder.splice(sourceIndex, 1);
-        newOrder.splice(targetIndex, 0, sourceId);
+  const reorderNodes = useCallback(
+    (folderKey: string, sourceId: string, targetId: string) => {
+      if (sourceId === targetId) return;
+      let didReorder = false;
+      setFolderOrders((prev) => {
+        const current = prev[folderKey] || [];
+        const newOrder = [...current];
+        const sourceIndex = newOrder.indexOf(sourceId);
+        const targetIndex = newOrder.indexOf(targetId);
+
+        if (sourceIndex !== -1 && targetIndex !== -1) {
+          newOrder.splice(sourceIndex, 1);
+          newOrder.splice(targetIndex, 0, sourceId);
+          didReorder = true;
+          return { ...prev, [folderKey]: newOrder };
+        }
+        return prev;
+      });
+      if (didReorder) {
+        unlock("file_shuffler");
       }
-      return { ...prev, [folderKey]: newOrder };
-    });
-  }, []);
+    },
+    [unlock]
+  );
 
-  const setExplicitFolderOrder = useCallback((folderKey: string, newOrderedIds: string[]) => {
-    setFolderOrders((prev) => ({ ...prev, [folderKey]: newOrderedIds }));
-  }, []);
+  const setExplicitFolderOrder = useCallback(
+    (folderKey: string, newOrderedIds: string[]) => {
+      setFolderOrders((prev) => ({ ...prev, [folderKey]: newOrderedIds }));
+      unlock("file_shuffler");
+    },
+    [unlock]
+  );
 
   const addToQuickAccess = useCallback(
     (nodeId: string) => {
-      setQuickAccessIds((prev) => {
-        if (prev.includes(nodeId)) return prev;
-        if (prev.length >= 5) {
-          showToast("Quick Access is full — remove one first");
-          return prev;
-        }
-        setJustPinnedNodeIds((current) => [...current, nodeId]);
-        setTimeout(() => {
-          setJustPinnedNodeIds((current) => current.filter((id) => id !== nodeId));
-        }, 800);
-        return [...prev, nodeId];
-      });
+      const current = quickAccessIdsRef.current;
+      if (current.includes(nodeId)) return;
+
+      if (current.length >= 5) {
+        showToast("Quick Access is full — remove one first");
+        unlock("hoarder");
+        return;
+      }
+
+      if (current.length === 4) {
+        unlock("hoarder");
+      }
+
+      setJustPinnedNodeIds((prev) => [...prev, nodeId]);
+      setTimeout(() => {
+        setJustPinnedNodeIds((prev) => prev.filter((id) => id !== nodeId));
+      }, 800);
+
+      setQuickAccessIds((prev) =>
+        prev.includes(nodeId) || prev.length >= 5 ? prev : [...prev, nodeId]
+      );
     },
-    [showToast]
+    [showToast, unlock]
   );
 
   const removeFromQuickAccess = useCallback((nodeId: string) => {
@@ -347,26 +384,28 @@ export function FilesystemProvider({ children }: { children: React.ReactNode }) 
     setModeState(newMode);
     modeRef.current = newMode;
     if (newMode === "cli") {
+      unlock("old_school");
       setCliPath(guiCurrentPath);
       router.push("/");
     } else {
       const urlPath = cliPath === ROOT_PATH ? "/" : cliPath;
       router.push(urlPath);
     }
-  }, [guiCurrentPath, cliPath, router]);
+  }, [guiCurrentPath, cliPath, router, unlock]);
 
   const toggleMode = useCallback(() => {
     const nextMode = modeRef.current === "gui" ? "cli" : "gui";
     setModeState(nextMode);
     modeRef.current = nextMode;
     if (nextMode === "cli") {
+      unlock("old_school");
       setCliPath(guiCurrentPath);
       router.push("/");
     } else {
       const urlPath = cliPath === ROOT_PATH ? "/" : cliPath;
       router.push(urlPath);
     }
-  }, [guiCurrentPath, cliPath, router]);
+  }, [guiCurrentPath, cliPath, router, unlock]);
 
   const goBack = useCallback(() => {
     router.back();
