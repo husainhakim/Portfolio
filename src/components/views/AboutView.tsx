@@ -23,7 +23,7 @@ export function AboutView() {
         <div className={styles.avatarWrapper}>
           <Image
             src={PROFILE_DATA.avatarUrl}
-            alt="Husain Hakim - Cybersecurity Student & Offensive Security Researcher Avatar"
+            alt="Husain Hakim - Cybersecurity Student & Offensive/Defensive Security Researcher Avatar"
             width={120}
             height={120}
             className={styles.avatarImage}
@@ -35,7 +35,7 @@ export function AboutView() {
         <div className={styles.profileMeta}>
           <div className={styles.badgeRow}>
             <span className="badge badge-writeup">Cybersecurity</span>
-            <span className="badge badge-default">Offensive Security</span>
+            <span className="badge badge-default">Offensive & Defensive Security</span>
             <span className={styles.locationBadge}>
               <MapPin size={12} />
               {PROFILE_DATA.location}
@@ -167,7 +167,7 @@ export function AboutView() {
           <p><strong>Get really good at the fundamentals.</strong></p>
           <p>When I was younger, I was convinced I&apos;d become a pilot since the idea of flying always fascinated me. Turns out I ended up navigating networks instead of airspace, but that same curiosity about how complex systems work carried over.</p>
           <p>I want to keep progressing through networking, Linux, web security, reconnaissance, exploitation, and privilege escalation, while turning what I learn into actual projects and writeups.</p>
-          <p>Eventually, I want to explore areas like Active Directory, red teaming, vulnerability research, and more advanced offensive security.</p>
+          <p>Eventually, I want to explore areas like Active Directory, red & blue teaming, vulnerability research, and advanced offensive and defensive security.</p>
           <p>I don&apos;t have my entire career mapped out yet, and I don&apos;t think I need to.</p>
           <p>For now, I want to keep learning, keep breaking things in environments where I&apos;m allowed to, understand why they broke, and get better at putting them back together.</p>
           <p>That&apos;s the direction I&apos;m heading in.</p>

@@ -96,9 +96,9 @@ export const VIRTUAL_FS: FSDirectory = {
       updatedAt: "2026-08-23",
       description: "Personal background, education, and technical mindset",
       content: `# Husain Hakim
-**Cybersecurity Student | Offensive Security & Tool Development**
+**Cybersecurity Student | Offensive & Defensive Security**
 
-Dedicated to ethical hacking, offensive security, and technical systems research. I specialize in bridging the gap between low-level systems programming and modern application security.
+Dedicated to offensive and defensive security, ethical hacking, vulnerability research, and systems engineering. I specialize in bridging the gap between low-level systems programming, secure defense, and modern application security.
 
 ## Core Interests
 - Penetration testing methodologies & automated reconnaissance
@@ -127,7 +127,7 @@ Currently focused on building bespoke security tools (like CYBER // SONAR and Fi
       owner: "husain",
       group: "staff",
       updatedAt: "2025-02-15",
-      description: "Offensive security tools, network scanners, and analyzers",
+      description: "Offensive & defensive security tools, network scanners, and analyzers",
       children: [
         {
           id: "proj-fid",
@@ -416,7 +416,7 @@ Currently focused on building bespoke security tools (like CYBER // SONAR and Fi
 // Filesystem Navigation Utilities
 export function normalizePath(path: string): string {
   if (!path || path === "~" || path === "/~" || path === "/" || path === "/home") return ROOT_PATH;
-  
+
   if (path.startsWith("~/")) {
     path = ROOT_PATH + path.slice(1);
   } else if (!path.startsWith("/")) {
@@ -445,7 +445,7 @@ export function normalizePath(path: string): string {
     resolved = ROOT_PATH + resolved;
   }
 
-  // Common alias mappings
+  // Common alias mappings 
   if (resolved === "/home/husain/about") return "/home/husain/about.md";
   if (resolved === "/home/husain/skills") return "/home/husain/skills.md";
   if (resolved === "/home/husain/contact") return "/home/husain/contact-info.md";
@@ -467,7 +467,7 @@ export function findNodeByPath(path: string, root: FSDirectory = VIRTUAL_FS): FS
     const segment = relative[i];
     const isLast = i === relative.length - 1;
     if (current.type !== "directory") return null;
-    
+
     // Look for exact match or match with .md appended
     let found: FSNode | undefined = current.children.find((child) => child.name === segment);
     if (!found && isLast) {

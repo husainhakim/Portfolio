@@ -24,7 +24,7 @@ export function AboutTutorialBadge({ onDismiss, variant = "quick-access" }: Abou
         const timer = setTimeout(() => setIsVisible(true), 350);
         return () => clearTimeout(timer);
       }
-    } catch (_) {}
+    } catch (_) { }
   }, []);
 
   const handleDismiss = useCallback(
@@ -36,7 +36,7 @@ export function AboutTutorialBadge({ onDismiss, variant = "quick-access" }: Abou
       setIsDismissing(true);
       try {
         localStorage.setItem(ABOUT_TUTORIAL_KEY, "1");
-      } catch (_) {}
+      } catch (_) { }
       setTimeout(() => {
         setIsVisible(false);
         if (onDismiss) onDismiss();
@@ -49,9 +49,8 @@ export function AboutTutorialBadge({ onDismiss, variant = "quick-access" }: Abou
 
   return (
     <div
-      className={`${styles.tutorialWrapper} ${variant === "quick-access" ? styles.qaPos : styles.gridPos} ${
-        isDismissing ? styles.dismissing : ""
-      }`}
+      className={`${styles.tutorialWrapper} ${variant === "quick-access" ? styles.qaPos : styles.gridPos} ${isDismissing ? styles.dismissing : ""
+        }`}
       role="tooltip"
       aria-label="Tutorial Quest: Double click about.md to begin"
       onClick={(e) => e.stopPropagation()}

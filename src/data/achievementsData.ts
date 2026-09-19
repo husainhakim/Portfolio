@@ -15,15 +15,15 @@ export interface Achievement {
   description: string;
   hint: string;
   iconName:
-    | "Unlock"
-    | "UserX"
-    | "MailX"
-    | "Move"
-    | "SunMoon"
-    | "Terminal"
-    | "Pin"
-    | "Compass"
-    | "Crown";
+  | "Unlock"
+  | "UserX"
+  | "MailX"
+  | "Move"
+  | "SunMoon"
+  | "Terminal"
+  | "Pin"
+  | "Compass"
+  | "Crown";
   category: "security" | "exploration" | "customization" | "mastery";
   points: number;
 }
@@ -60,7 +60,7 @@ export const ACHIEVEMENTS: Achievement[] = [
     id: "file_shuffler",
     title: "File Shuffler",
     description: "Reorganized filesystem nodes using drag-and-drop positioning.",
-    hint: "Break the default order — rearrange the furniture in this directory.",
+    hint: "Break the default order. Rearrange the furniture in this directory.",
     iconName: "Move",
     category: "customization",
     points: 50,
@@ -78,7 +78,7 @@ export const ACHIEVEMENTS: Achievement[] = [
     id: "old_school",
     title: "Old School Hacker",
     description: "Engaged the interactive terminal shell in CLI workspace mode.",
-    hint: "Real hackers don't need a mouse. Return to the raw command line.",
+    hint: "Real developers don't need GUI.",
     iconName: "Terminal",
     category: "exploration",
     points: 50,
@@ -96,7 +96,7 @@ export const ACHIEVEMENTS: Achievement[] = [
     id: "tour_completer",
     title: "Grand Tourer",
     description: "Completed the interactive workstation tour from start to finish.",
-    hint: "Walk the guided path across every corner of this operating system.",
+    hint: "Walk the guided path across every corner of this workstation.",
     iconName: "Compass",
     category: "exploration",
     points: 100,

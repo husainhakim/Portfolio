@@ -1,10 +1,10 @@
-# Husain Hakim — Offensive Security Portfolio
+# Husain Hakim — Offensive & Defensive Security Portfolio
 
 ## 1. Project Objective
 
 Build a highly polished, professional personal portfolio for **Husain Hakim**, a:
 
-> **Cybersecurity Student | Offensive Security**
+> **Cybersecurity Student | Offensive & Defensive Security**
 
 The portfolio should communicate a clear interest in **white-hat hacking, ethical hacking, penetration testing, vulnerability research, reconnaissance, exploitation, and security research**.
 
@@ -139,9 +139,9 @@ Display prominently:
 
 Professional positioning:
 
-**Cybersecurity Student | Offensive Security**
+**Cybersecurity Student | Offensive & Defensive Security**
 
-The portfolio should communicate that Husain is developing his skills toward ethical hacking / offensive security.
+The portfolio should communicate that Husain is developing his skills across offensive security (ethical hacking, penetration testing) and defensive security (system hardening, network analysis, secure tooling).
 
 Do not claim:
 
@@ -289,7 +289,7 @@ Projects should be presented as evidence of progression.
 
 Do not falsely rebrand existing projects as penetration-testing projects.
 
-Future offensive-security projects can be added later without restructuring the application.
+Future offensive and defensive security projects can be added later without restructuring the application.
 
 ---
 
@@ -393,7 +393,7 @@ Create:
 /home/husain/learning/
 ```
 
-This should represent Husain's progression toward offensive security.
+This should represent Husain's progression toward offensive and defensive security.
 
 The learning path should visually communicate:
 
@@ -416,7 +416,7 @@ Privilege Escalation
     ↓
 Active Directory
     ↓
-Advanced Offensive Security
+Advanced Offensive & Defensive Security
 ```
 
 Do NOT pretend all of these are completed.
@@ -474,7 +474,7 @@ This should explain:
 - Current education
 - Interest in cybersecurity
 - Interest in white-hat / ethical hacking
-- Offensive-security direction
+- Offensive & defensive security direction
 - Technical areas being explored
 
 Keep it professional and concise.
@@ -848,7 +848,7 @@ Implement:
 
 Root metadata should represent:
 
-**Husain Hakim — Cybersecurity Student | Offensive Security**
+**Husain Hakim — Cybersecurity Student | Offensive & Defensive Security**
 
 Do not stuff keywords.
 
@@ -941,7 +941,7 @@ Again, do not fabricate completed features.
 
 # 31. Future Expansion
 
-The architecture must make it easy to add future offensive-security projects such as:
+The architecture must make it easy to add future offensive and defensive security projects such as:
 
 ```text
 recon-tool/
@@ -964,7 +964,7 @@ The portfolio should communicate interest in:
 
 - White-hat hacking
 - Ethical hacking
-- Offensive security
+- Offensive & defensive security
 - Penetration testing
 - Reconnaissance
 - Enumeration
@@ -988,7 +988,7 @@ rather than:
 
 # 33. Content Safety / Authorization
 
-All offensive-security content represented by the portfolio should be framed around:
+All security content represented by the portfolio should be framed around:
 
 - Authorized testing
 - Personal labs
@@ -1084,7 +1084,7 @@ The first screen should immediately show:
 
 **Husain Hakim**
 
-**Cybersecurity Student | Offensive Security**
+**Cybersecurity Student | Offensive & Defensive Security**
 
 and the virtual filesystem.
 

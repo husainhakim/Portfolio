@@ -2,10 +2,10 @@ import { MetadataRoute } from "next";
 
 export default function manifest(): MetadataRoute.Manifest {
   return {
-    name: "Husain Hakim — Offensive Security Portfolio",
+    name: "Husain Hakim — Offensive & Defensive Security Portfolio",
     short_name: "Husain Hakim",
     description:
-      "Cybersecurity workspace & offensive security portfolio of Husain Hakim.",
+      "Cybersecurity workspace & offensive/defensive security portfolio of Husain Hakim.",
     start_url: "/",
     display: "standalone",
     background_color: "#101114",

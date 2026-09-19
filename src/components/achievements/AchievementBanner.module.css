@@ -57,8 +57,13 @@
 }
 
 @keyframes shimmerGlow {
-  0% { background-position: 0% 0%; }
-  100% { background-position: 200% 0%; }
+  0% {
+    background-position: 0% 0%;
+  }
+
+  100% {
+    background-position: 200% 0%;
+  }
 }
 
 .cardTopRow {
@@ -147,10 +152,12 @@
     transform: scale(0.6);
     opacity: 0;
   }
+
   70% {
     transform: scale(1.06);
     opacity: 1;
   }
+
   100% {
     transform: scale(1);
     opacity: 1;
@@ -163,6 +170,7 @@
     animation: none !important;
     transform: none !important;
   }
+
   .cardGlowBar {
     animation: none !important;
   }

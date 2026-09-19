@@ -140,7 +140,7 @@ export function Header() {
           <div className={styles.brandAvatar}>
             <Image
               src="/husain.jpg"
-              alt="Husain Hakim - Cybersecurity Student & Offensive Security Researcher"
+              alt="Husain Hakim - Cybersecurity Student & Offensive/Defensive Security Researcher"
               width={38}
               height={38}
               className={styles.avatarImage}
@@ -194,9 +194,8 @@ export function Header() {
             <button
               id="mode-btn-cli"
               onClick={handleCliClick}
-              className={`${styles.heroModeBtn} ${styles.heroModeBtnCli} ${
-                mode === "cli" ? styles.heroModeBtnActiveCli : ""
-              }`}
+              className={`${styles.heroModeBtn} ${styles.heroModeBtnCli} ${mode === "cli" ? styles.heroModeBtnActiveCli : ""
+                }`}
               title="Switch to CLI Interactive Shell (Alt+T)"
               aria-pressed={mode === "cli"}
             >
@@ -213,9 +212,8 @@ export function Header() {
           ref={trophyButtonRef}
           onClick={openPanel}
           key={`trophy-btn-${trophyBounceKey}`}
-          className={`${styles.trophyButton} ${
-            unlockedCount > 0 ? styles.trophyButtonUnlocked : ""
-          } ${trophyBounceKey > 0 ? styles.trophyLandingBounce : ""}`}
+          className={`${styles.trophyButton} ${unlockedCount > 0 ? styles.trophyButtonUnlocked : ""
+            } ${trophyBounceKey > 0 ? styles.trophyLandingBounce : ""}`}
           title={`Achievements (${unlockedCount}/${totalCount} Unlocked)`}
           aria-label={`Achievements (${unlockedCount}/${totalCount} Unlocked)`}
         >
@@ -233,9 +231,8 @@ export function Header() {
         {/* Physical Mechanical Light Switch */}
         <button
           onClick={handleSwitchClick}
-          className={`${styles.lightSwitchHousing} ${
-            isDark ? styles.lightSwitchDark : styles.lightSwitchLight
-          } ${isFlipping ? styles.lightSwitchFlipping : ""}`}
+          className={`${styles.lightSwitchHousing} ${isDark ? styles.lightSwitchDark : styles.lightSwitchLight
+            } ${isFlipping ? styles.lightSwitchFlipping : ""}`}
           title={`Switch to ${isDark ? "Light" : "Dark"} Mode`}
           aria-label={`Toggle Theme (Currently ${isDark ? "Dark" : "Light"} Mode)`}
           aria-pressed={isDark}

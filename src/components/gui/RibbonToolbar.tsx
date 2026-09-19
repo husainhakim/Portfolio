@@ -2,15 +2,15 @@
 
 import React from "react";
 import { useFilesystem } from "@/context/FilesystemContext";
-import { 
-  Scissors, 
-  Copy, 
-  ClipboardPaste, 
-  Trash2, 
-  ArrowDownUp, 
-  LayoutGrid, 
-  List, 
-  Filter, 
+import {
+  Scissors,
+  Copy,
+  ClipboardPaste,
+  Trash2,
+  ArrowDownUp,
+  LayoutGrid,
+  List,
+  Filter,
   MoreHorizontal,
   Plus,
   Share2,

@@ -24,9 +24,9 @@ export function WriteupsListView() {
 
       <div className={styles.blogsGrid}>
         {WRITEUPS_DATA.map((writeup) => (
-          <div 
-            key={writeup.id} 
-            className={styles.blogCard} 
+          <div
+            key={writeup.id}
+            className={styles.blogCard}
             onClick={() => navigate(`/home/husain/writeups/${writeup.slug}.md`)}
             style={{ cursor: 'pointer' }}
           >
@@ -54,12 +54,12 @@ export function WriteupsListView() {
                 </span>
               ))}
             </div>
-            
+
             <div className={styles.blogCardFooter} style={{ borderTop: "1px dashed var(--border-color)", marginTop: "16px", paddingTop: "12px" }}>
-               <div style={{ display: 'flex', alignItems: 'center', gap: '8px', color: 'var(--text-primary)', fontSize: '12px', fontWeight: '500' }}>
-                 <span>Read Writeup</span>
-                 <ArrowRight size={14} />
-               </div>
+              <div style={{ display: 'flex', alignItems: 'center', gap: '8px', color: 'var(--text-primary)', fontSize: '12px', fontWeight: '500' }}>
+                <span>Read Writeup</span>
+                <ArrowRight size={14} />
+              </div>
             </div>
           </div>
         ))}

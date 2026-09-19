@@ -145,8 +145,8 @@ export function AchievementProvider({
         trophyButtonRef.current ||
         (typeof document !== "undefined"
           ? (document.getElementById(
-              "header-trophy-button"
-            ) as HTMLButtonElement | null)
+            "header-trophy-button"
+          ) as HTMLButtonElement | null)
           : null);
 
       const vpW = window.innerWidth;

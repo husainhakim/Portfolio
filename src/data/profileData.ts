@@ -34,7 +34,7 @@ export interface ProfileData {
 export const PROFILE_DATA: ProfileData = {
   name: "Husain Hakim",
   handle: "husainhakim",
-  title: "Cybersecurity Student | Offensive Security",
+  title: "Cybersecurity Student | Offensive & Defensive Security",
   subtitle: "Ethical Hacking • Vulnerability Research • Technical Systems",
   statusLine: "LEARN → BUILD → TEST → DOCUMENT",
   location: "Mumbai, India",
@@ -46,7 +46,7 @@ export const PROFILE_DATA: ProfileData = {
   avatarUrl: "/husain.jpg",
   resumeUrl: "/resume.pdf",
   summary:
-    "Cybersecurity student focused on offensive security, ethical hacking, and vulnerability discovery. Passionate about understanding low-level systems, network architecture, and software internals to identify flaws, build defensive utilities, and document technical findings through structured labs and writeups.",
+    "Cybersecurity student focused on offensive and defensive security, ethical hacking, vulnerability discovery, and system hardening. Passionate about understanding low-level systems, network architecture, and software internals to identify flaws, build defensive utilities, and document technical findings through structured labs and writeups.",
   corePillars: [
     "Reconnaissance & Asset Discovery",
     "Network Protocol Analysis & Scanning",
@@ -87,7 +87,7 @@ export const PROFILE_DATA: ProfileData = {
   ],
   mindset: {
     philosophy:
-      "Offensive security is not about indiscriminate exploitation; it is the discipline of deeply understanding complex systems so thoroughly that deviations, misconfigurations, and logic vulnerabilities become evident. Progression is built on systematic experimentation in authorized lab environments.",
+      "Security is not about indiscriminate exploitation; it is the discipline of deeply understanding complex systems so thoroughly that vulnerabilities are discovered, defenses are hardened, and misconfigurations are prevented. Progression is built on systematic experimentation across offensive testing and defensive engineering in authorized lab environments.",
     focusAreas: [
       "Ethical Hacking & Penetration Testing Methodologies",
       "Network Discovery, Port Auditing & Service Fingerprinting",

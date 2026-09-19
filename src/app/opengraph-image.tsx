@@ -1,6 +1,6 @@
 import { ImageResponse } from "next/og";
 
-export const alt = "Husain Hakim — Offensive Security & Cybersecurity Workspace";
+export const alt = "Husain Hakim — Offensive & Defensive Security Workspace";
 export const size = {
   width: 1200,
   height: 630,
@@ -87,7 +87,7 @@ export default function OpenGraphImage() {
               fontFamily: "monospace",
             }}
           >
-            OFFENSIVE SECURITY LAB
+            OFFENSIVE & DEFENSIVE LAB
           </div>
         </div>
 
@@ -112,7 +112,7 @@ export default function OpenGraphImage() {
               fontFamily: "monospace",
             }}
           >
-            Cybersecurity Student | Offensive Security
+            Cybersecurity Student | Offensive & Defensive Security
           </div>
 
           <div

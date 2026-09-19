@@ -89,7 +89,7 @@ export default function RootLayout({
     "@type": "Person",
     "@id": `${SITE_URL}/#person`,
     name: PROFILE_DATA.name,
-    jobTitle: "Cybersecurity Student & Offensive Security Researcher",
+    jobTitle: "Cybersecurity Student & Offensive/Defensive Security Researcher",
     description: PROFILE_DATA.summary,
     url: SITE_URL,
     image: `${SITE_URL}/husain.jpg`,
@@ -118,6 +118,7 @@ export default function RootLayout({
     ],
     knowsAbout: [
       "Offensive Security",
+      "Defensive Security",
       "Ethical Hacking",
       "Penetration Testing",
       "Network Protocol Dissection",
@@ -133,7 +134,7 @@ export default function RootLayout({
     "@id": `${SITE_URL}/#service`,
     name: "Husain Hakim — Cybersecurity & Vulnerability Research Consulting",
     description:
-      "Offensive security research, penetration testing, network reconnaissance, and security audit services based in Mumbai, India.",
+      "Offensive and defensive security research, penetration testing, network reconnaissance, and security audit services based in Mumbai, India.",
     url: SITE_URL,
     image: `${SITE_URL}/husain.jpg`,
     telephone: "+91-9999999999",

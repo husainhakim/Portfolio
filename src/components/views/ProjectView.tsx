@@ -218,7 +218,7 @@ export function ProjectView({ project }: ProjectViewProps) {
             <span className={styles.authorRole}>Technical Details</span>
             <span className={styles.authorName}>Want to see how this works under the hood?</span>
           </div>
-          <button 
+          <button
             className={styles.primaryActionButton}
             onClick={() => navigate(project.writeupPath as string)}
           >

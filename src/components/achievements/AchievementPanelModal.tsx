@@ -117,25 +117,22 @@ export function AchievementPanelModal() {
         <div className={styles.filterRow}>
           <button
             onClick={() => setFilter("all")}
-            className={`${styles.filterBtn} ${
-              filter === "all" ? styles.filterBtnActive : ""
-            }`}
+            className={`${styles.filterBtn} ${filter === "all" ? styles.filterBtnActive : ""
+              }`}
           >
             All ({totalCount})
           </button>
           <button
             onClick={() => setFilter("unlocked")}
-            className={`${styles.filterBtn} ${
-              filter === "unlocked" ? styles.filterBtnActive : ""
-            }`}
+            className={`${styles.filterBtn} ${filter === "unlocked" ? styles.filterBtnActive : ""
+              }`}
           >
             Unlocked ({unlockedCount})
           </button>
           <button
             onClick={() => setFilter("locked")}
-            className={`${styles.filterBtn} ${
-              filter === "locked" ? styles.filterBtnActive : ""
-            }`}
+            className={`${styles.filterBtn} ${filter === "locked" ? styles.filterBtnActive : ""
+              }`}
           >
             Locked ({totalCount - unlockedCount})
           </button>
@@ -150,14 +147,12 @@ export function AchievementPanelModal() {
             return (
               <div
                 key={ach.id}
-                className={`${styles.achievementCard} ${
-                  isAchUnlocked ? styles.cardUnlocked : styles.cardLocked
-                }`}
+                className={`${styles.achievementCard} ${isAchUnlocked ? styles.cardUnlocked : styles.cardLocked
+                  }`}
               >
                 <div
-                  className={`${styles.cardIconCol} ${
-                    isAchUnlocked ? styles.iconUnlocked : styles.iconLocked
-                  }`}
+                  className={`${styles.cardIconCol} ${isAchUnlocked ? styles.iconUnlocked : styles.iconLocked
+                    }`}
                 >
                   <AchievementIcon
                     name={ach.iconName}
@@ -175,11 +170,10 @@ export function AchievementPanelModal() {
                     )}
 
                     <span
-                      className={`${styles.cardBadge} ${
-                        isAchUnlocked
+                      className={`${styles.cardBadge} ${isAchUnlocked
                           ? styles.badgeUnlocked
                           : styles.badgeLocked
-                      }`}
+                        }`}
                     >
                       {isAchUnlocked ? "UNLOCKED" : "LOCKED"}
                     </span>

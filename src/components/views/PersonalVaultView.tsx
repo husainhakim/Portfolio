@@ -742,9 +742,8 @@ export function PersonalVaultView() {
 
             {/* 3. The Massive Circular Vault Door (Swings open to the left in 3D) */}
             <div
-              className={`${styles.vaultDoorDoor} ${
-                vaultStep === "door_open" ? styles.vaultDoorDoorOpen : ""
-              }`}
+              className={`${styles.vaultDoorDoor} ${vaultStep === "door_open" ? styles.vaultDoorDoorOpen : ""
+                }`}
             >
               <svg
                 className={styles.vaultDoorSvg}
@@ -808,9 +807,8 @@ export function PersonalVaultView() {
                         fill="url(#boltChromeGrad)"
                         stroke={isDark ? "#334155" : "#64748b"}
                         strokeWidth="1.2"
-                        className={`${styles.vaultBolt} ${
-                          vaultStep !== "wheel_turn" ? styles.vaultBoltRetracted : ""
-                        }`}
+                        className={`${styles.vaultBolt} ${vaultStep !== "wheel_turn" ? styles.vaultBoltRetracted : ""
+                          }`}
                       />
                     </g>
                   ))}
@@ -859,9 +857,8 @@ export function PersonalVaultView() {
 
                 {/* --- C. Heavy Chrome 4-Spoke Central Wheel (Spins 360°) --- */}
                 <g
-                  className={`${styles.vaultWheelGroup} ${
-                    vaultStep !== "wheel_turn" ? styles.vaultWheelSpun : ""
-                  }`}
+                  className={`${styles.vaultWheelGroup} ${vaultStep !== "wheel_turn" ? styles.vaultWheelSpun : ""
+                    }`}
                 >
                   {/* Wheel Outer Ring */}
                   <circle

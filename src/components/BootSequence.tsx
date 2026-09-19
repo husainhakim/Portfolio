@@ -13,7 +13,7 @@ const BOOT_LINES = [
   { text: "[    0.110450] Initializing memory encryption & secure isolation...", delay: 180 },
   { text: "[    0.245010] [OK] Mounted virtual root VFS at /home/husain", delay: 240 },
   { text: "[    0.412030] [OK] Loaded toolchains: scapy, libpcap, zxcvbn-v2, binwalk", delay: 320 },
-  { text: "[    0.620000] [OK] Initializing offensive security lab environment...", delay: 420 },
+  { text: "[    0.620000] [OK] Initializing offensive & defensive security lab environment...", delay: 420 },
   { text: "[    0.850000] [OK] Authenticated operator: husain (uid=1000, gid=1000)", delay: 540 },
   { text: "[    1.050000] [OK] Virtual filesystem synchronized with CLI & GUI buses.", delay: 680 },
   { text: "[    1.250000] > Starting Husain Hakim Cybersecurity Workspace...", delay: 820 },

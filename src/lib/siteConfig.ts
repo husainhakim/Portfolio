@@ -12,13 +12,14 @@ export const SITE_CONFIG = {
   title: "Portfolio - Husain Hakim",
   shortTitle: "Portfolio - Husain Hakim",
   description:
-    "Interactive cybersecurity workspace & offensive security portfolio of Husain Hakim. Featuring penetration testing research, SUID privilege escalation, custom reconnaissance utilities, and backend engineering.",
+    "Interactive cybersecurity workspace & offensive and defensive security portfolio of Husain Hakim. Featuring penetration testing research, SUID privilege escalation, system defense, custom reconnaissance utilities, and backend engineering.",
   url: SITE_URL,
   ogImage: `${SITE_URL}/opengraph-image`,
   keywords: [
     "Husain Hakim",
     "Cybersecurity Portfolio",
     "Offensive Security",
+    "Defensive Security",
     "Ethical Hacking",
     "Penetration Testing",
     "SUID Privilege Escalation",

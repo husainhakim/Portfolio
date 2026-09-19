@@ -31,7 +31,7 @@ export function ContactView() {
         </div>
         <h1 className={styles.projectTitle}>Contact & Technical Inquiries</h1>
         <p className={styles.projectTagline}>
-          Reach out for offensive security discussions, collaborative lab research, software engineering opportunities, or technical inquiries.
+          Reach out for offensive and defensive security discussions, collaborative lab research, software engineering opportunities, or technical inquiries.
         </p>
       </div>
 

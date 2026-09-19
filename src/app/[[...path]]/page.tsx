@@ -80,7 +80,7 @@ export async function generateMetadata({
   if (segment0 === "about") {
     const title = "About Husain Hakim — Cybersecurity & Systems Mindset";
     const description =
-      "Background, education at ITM Skills University, offensive security philosophy, and technical methodologies of Husain Hakim.";
+      "Background, education at ITM Skills University, offensive and defensive security philosophy, and technical methodologies of Husain Hakim.";
     return {
       title,
       description,
@@ -95,7 +95,7 @@ export async function generateMetadata({
       const slug = pathArray[1];
       const project = PROJECTS_DATA.find((p) => p.slug === slug);
       if (project) {
-        const title = `${project.name} — Offensive Security Tooling`;
+        const title = `${project.name} — Security Tooling`;
         const description = project.summary;
         return {
           title,
@@ -149,7 +149,7 @@ export async function generateMetadata({
 
     const title = "Security Research & Lab Writeups — Husain Hakim";
     const description =
-      "Technical offensive security writeups on SUID binary privilege escalation, network scanning methodologies, and defense architectures.";
+      "Technical offensive and defensive security writeups on SUID binary privilege escalation, network scanning methodologies, and defense architectures.";
     return {
       title,
       description,
@@ -372,16 +372,16 @@ export default async function Page({ params }: PageProps) {
   let semanticDescription = PROFILE_DATA.summary;
 
   if (activeProject) {
-    semanticHeading = `${activeProject.name} — Offensive Security Tool`;
+    semanticHeading = `${activeProject.name} — Security Tool`;
     semanticDescription = activeProject.summary;
   } else if (activeWriteup) {
     semanticHeading = `${activeWriteup.title} — Security Writeup`;
     semanticDescription = activeWriteup.summary;
   } else if (pathArray[0] === "about") {
-    semanticHeading = `About ${PROFILE_DATA.name} — Offensive Security & Systems`;
+    semanticHeading = `About ${PROFILE_DATA.name} — Offensive & Defensive Security`;
     semanticDescription = PROFILE_DATA.summary;
   } else if (pathArray[0] === "projects") {
-    semanticHeading = `Offensive Security & Systems Engineering Projects`;
+    semanticHeading = `Offensive & Defensive Security Projects`;
     semanticDescription = "Directory of security utilities and network tools.";
   } else if (pathArray[0] === "writeups") {
     semanticHeading = `Cybersecurity Research & Penetration Testing Writeups`;

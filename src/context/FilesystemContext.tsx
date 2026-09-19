@@ -169,7 +169,7 @@ export function FilesystemProvider({ children }: { children: React.ReactNode }) 
       if (typeof window === "undefined") return;
       const url = `${window.location.origin}${node.path}`;
       if (navigator.clipboard?.writeText) {
-        navigator.clipboard.writeText(url).catch(() => {});
+        navigator.clipboard.writeText(url).catch(() => { });
       }
       showToast("Link copied to clipboard");
     },

@@ -29,7 +29,7 @@ export function PreviewPanel() {
         setSelectedNode(null);
       }
     };
-    
+
     if (selectedNode) {
       window.addEventListener("keydown", handleKeyDown);
       return () => window.removeEventListener("keydown", handleKeyDown);
@@ -48,7 +48,7 @@ export function PreviewPanel() {
             <div className={styles.previewHeader}>
               <Image
                 src={PROFILE_DATA.avatarUrl}
-                alt="Husain Hakim - Cybersecurity Student & Offensive Security Researcher Avatar"
+                alt="Husain Hakim - Cybersecurity Student & Offensive/Defensive Security Researcher Avatar"
                 width={64}
                 height={64}
                 className={styles.previewAvatar}
@@ -60,7 +60,7 @@ export function PreviewPanel() {
               </div>
             </div>
             <p className={styles.previewDesc}>{PROFILE_DATA.summary}</p>
-            
+
             <div className={styles.previewGroup}>
               <h4>ACADEMIC PATHWAY</h4>
               <div className={styles.previewGroupItem}>
@@ -68,7 +68,7 @@ export function PreviewPanel() {
                 <span className={styles.pgSub}>2023 – 2027 (Expected May 2027)</span>
               </div>
             </div>
-            
+
             <div className={styles.previewGroup}>
               <h4>OPERATING PHILOSOPHY</h4>
               <div className={styles.previewGroupItem}>
@@ -90,7 +90,7 @@ export function PreviewPanel() {
             <p className={styles.previewDesc}>
               Official CV detailing cybersecurity focus, backend engineering at LetsUpgrade (Sept 2025 – July 2026), B.Tech in Computer Science at ITM Skills University, security tooling, and competitive programming.
             </p>
-            
+
             <div className={styles.previewGrid}>
               <div className={styles.previewGridItem}>
                 <span className={styles.pgLabel}>Role</span>
@@ -208,7 +208,7 @@ export function PreviewPanel() {
               <span className={styles.previewTag}>CHANNELS</span>
             </div>
             <p className={styles.previewDesc}>
-              Available for offensive security roles, bug bounty collaborations, and technical discussions.
+              Available for offensive and defensive security roles, bug bounty collaborations, and technical discussions.
             </p>
             <div className={styles.previewGroup}>
               <h4>REACH OUT</h4>
@@ -237,7 +237,7 @@ export function PreviewPanel() {
             {selectedNode.description && (
               <p className={styles.previewDesc}>{selectedNode.description}</p>
             )}
-            
+
             <div className={styles.previewMetaTable}>
               <div className={styles.pmRow}>
                 <span className={styles.pmLabel}>Size</span>
@@ -263,9 +263,9 @@ export function PreviewPanel() {
 
   return (
     <div className={styles.previewPanel}>
-      <button 
-        className={styles.previewCloseBtn} 
-        onClick={() => setSelectedNode(null)} 
+      <button
+        className={styles.previewCloseBtn}
+        onClick={() => setSelectedNode(null)}
         title="Close Preview"
       >
         <X size={18} />

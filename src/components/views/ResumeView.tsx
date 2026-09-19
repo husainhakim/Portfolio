@@ -46,7 +46,7 @@ export function ResumeView() {
 
         <h1 className={styles.projectTitle}>Husain Hakim — Technical Resume</h1>
         <p className={styles.projectTagline}>
-          Official CV detailing offensive security learning, web application security & vulnerability discovery, backend engineering at LetsUpgrade, university education at ITM Skills University, and security tooling projects.
+          Official CV detailing offensive & defensive security learning, web application security & vulnerability discovery, backend engineering at LetsUpgrade, university education at ITM Skills University, and security tooling projects.
         </p>
       </div>
 

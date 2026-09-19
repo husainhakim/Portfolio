@@ -63,9 +63,9 @@ export function BlogView() {
       <div className={styles.blogsGrid}>
         {filteredBlogs.length > 0 ? (
           filteredBlogs.map((blog) => (
-            <div 
-              key={blog.id} 
-              className={styles.blogCard} 
+            <div
+              key={blog.id}
+              className={styles.blogCard}
               onClick={() => navigate(`/home/husain/blogs/${blog.slug + '.md'}`)}
               style={{ cursor: 'pointer' }}
             >

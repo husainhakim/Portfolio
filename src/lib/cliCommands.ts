@@ -73,7 +73,7 @@ export function executeCommand(
     case "about":
       return {
         text: `# Husain Hakim
-**Cybersecurity Student | Offensive Security**
+**Cybersecurity Student | Offensive & Defensive Security**
 
 Dedicated to ethical hacking, offensive security, and technical systems research.
 
@@ -95,14 +95,14 @@ Available Navigation & System Commands:
   pwd              Print name of current working directory
   cat <file>       Display file content, project details, or writeups
   tree             Display hierarchical tree structure of filesystem
-  whoami           Display operator identity and offensive security focus
+  whoami           Display operator identity and offensive & defensive security focus
   clear            Clear terminal screen
   history          Display current session command history
   theme [mode]     Switch workspace theme (dark, light, toggle)
   gui / exit       Switch interface back to GUI Workspace Mode
 
 Direct Domain Commands:
-  projects         List all offensive security tools & projects
+  projects         List all offensive & defensive security tools and projects
   writeups         List all technical security writeups & lab reports
   blogs            List Medium engineering & security articles
   skills           Display technical proficiencies and soft skills
@@ -400,7 +400,7 @@ Tip: Type 'contact' to open clickable links in GUI mode.`,
         (p) => `• [${p.status}] ${p.name.padEnd(24, " ")} | ${p.tagline} (cd ~/projects/${p.slug})`
       );
       return {
-        text: `Offensive Security Tools & Research Projects:
+        text: `Offensive & Defensive Security Tools & Projects:
 --------------------------------------------------------------------------------
 ${list.join("\n")}
 
