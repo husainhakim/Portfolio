@@ -11,13 +11,81 @@ import {
   Sun,
   Moon,
   FileText,
-  X,
 } from "lucide-react";
 import styles from "./Header.module.css";
+
+const FULL_NAME = "Husain Hakim";
+const FULL_SUBTITLE = "White Hat Hacking & Network Security & Backend Development";
+const GLITCH_CHARS = ["0", "1", "#", "$", "@", "%", "&", "*", "!", "?", "<", ">", "/", "{", "}", "~"];
+
+interface DecryptChar {
+  char: string;
+  isGlitch: boolean;
+}
 
 export function Header() {
   const { mode, toggleMode, navigate } = useFilesystem();
   const { theme, toggleTheme, mounted } = useTheme();
+
+  // Physical switch flipping state
+  const [isFlipping, setIsFlipping] = useState(false);
+
+  // Typing and Subtitle Glitch states
+  const [typedName, setTypedName] = useState("");
+  const [subtitleChars, setSubtitleChars] = useState<DecryptChar[]>([]);
+  const [isTyping, setIsTyping] = useState(true);
+
+  useEffect(() => {
+    // Check prefers-reduced-motion
+    const prefersReducedMotion =
+      typeof window !== "undefined" &&
+      window.matchMedia("(prefers-reduced-motion: reduce)").matches;
+
+    if (prefersReducedMotion) {
+      setTypedName(FULL_NAME);
+      setSubtitleChars(FULL_SUBTITLE.split("").map((c) => ({ char: c, isGlitch: false })));
+      setIsTyping(false);
+      return;
+    }
+
+    // Step 1: Rapid name typing
+    let nameIdx = 0;
+    const nameTimer = setInterval(() => {
+      nameIdx++;
+      setTypedName(FULL_NAME.slice(0, nameIdx));
+
+      if (nameIdx >= FULL_NAME.length) {
+        clearInterval(nameTimer);
+
+        // Step 2: Progressive Subtitle Decrypt
+        let progress = 0;
+        const decryptTimer = setInterval(() => {
+          progress += 5; // ~20 ticks * 25ms = ~500ms
+          const resolvedCount = Math.floor((progress / 100) * FULL_SUBTITLE.length);
+
+          const chars: DecryptChar[] = FULL_SUBTITLE.split("").map((realChar, idx) => {
+            if (idx < resolvedCount || realChar === " " || realChar === "&") {
+              return { char: realChar, isGlitch: false };
+            }
+            const randomGlitch = GLITCH_CHARS[Math.floor(Math.random() * GLITCH_CHARS.length)];
+            return { char: randomGlitch, isGlitch: true };
+          });
+
+          setSubtitleChars(chars);
+
+          if (progress >= 100) {
+            clearInterval(decryptTimer);
+            setSubtitleChars(FULL_SUBTITLE.split("").map((c) => ({ char: c, isGlitch: false })));
+            setIsTyping(false);
+          }
+        }, 25);
+      }
+    }, 22);
+
+    return () => {
+      clearInterval(nameTimer);
+    };
+  }, []);
 
   const handleGuiClick = useCallback(() => {
     if (mode !== "gui") toggleMode();
@@ -26,6 +94,14 @@ export function Header() {
   const handleCliClick = useCallback(() => {
     if (mode !== "cli") toggleMode();
   }, [mode, toggleMode]);
+
+  const handleSwitchClick = () => {
+    setIsFlipping(true);
+    toggleTheme();
+    setTimeout(() => {
+      setIsFlipping(false);
+    }, 360);
+  };
 
   // Global hotkey: Alt+T or Ctrl+` to toggle GUI/CLI mode
   useEffect(() => {
@@ -38,6 +114,8 @@ export function Header() {
     window.addEventListener("keydown", handleHotkey);
     return () => window.removeEventListener("keydown", handleHotkey);
   }, [toggleMode]);
+
+  const isDark = mounted && theme === "dark";
 
   return (
     <header className={styles.header}>
@@ -58,8 +136,25 @@ export function Header() {
             />
           </div>
           <div className={styles.brandText}>
-            <span className={styles.brandNameLarge}>Husain Hakim</span>
-            <span className={styles.brandSubLarge}>White Hat Hacking &amp; Network Security &amp; Backend Development</span>
+            <span className={styles.brandNameLarge}>
+              {typedName || (isTyping ? "" : FULL_NAME)}
+              {isTyping && <span className={styles.brandCursor}>_</span>}
+            </span>
+            <span className={styles.brandSubLarge}>
+              {subtitleChars.length > 0 ? (
+                subtitleChars.map((item, idx) =>
+                  item.isGlitch ? (
+                    <span key={idx} className={styles.redGlitchChar}>
+                      {item.char}
+                    </span>
+                  ) : (
+                    <span key={idx}>{item.char}</span>
+                  )
+                )
+              ) : (
+                <span>{FULL_SUBTITLE}</span>
+              )}
+            </span>
           </div>
         </button>
       </div>
@@ -101,14 +196,19 @@ export function Header() {
           </div>
         </div>
 
-        {/* Theme Switcher */}
+        {/* Physical Mechanical Light Switch */}
         <button
-          onClick={toggleTheme}
-          className={styles.iconActionButton}
-          title={`Switch to ${!mounted || theme === "light" ? "Dark" : "Light"} Mode`}
-          aria-label="Toggle Theme"
+          onClick={handleSwitchClick}
+          className={`${styles.lightSwitchHousing} ${
+            isDark ? styles.lightSwitchDark : styles.lightSwitchLight
+          } ${isFlipping ? styles.lightSwitchFlipping : ""}`}
+          title={`Switch to ${isDark ? "Light" : "Dark"} Mode`}
+          aria-label={`Toggle Theme (Currently ${isDark ? "Dark" : "Light"} Mode)`}
+          aria-pressed={isDark}
         >
-          {!mounted || theme === "light" ? <Moon size={15} /> : <Sun size={15} />}
+          <div className={styles.lightSwitchRocker}>
+            {isDark ? <Moon size={12} /> : <Sun size={12} />}
+          </div>
         </button>
 
         {/* Resume Quick Access */}

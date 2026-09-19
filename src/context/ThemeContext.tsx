@@ -18,15 +18,11 @@ export function ThemeProvider({ children }: { children: React.ReactNode }) {
   const [mounted, setMounted] = useState(false);
 
   useEffect(() => {
-    // Check localStorage or system preference
-    const savedTheme = localStorage.getItem("workspace_theme") as Theme | null;
-    if (savedTheme === "light" || savedTheme === "dark") {
-      setThemeState(savedTheme);
-      document.documentElement.setAttribute("data-theme", savedTheme);
-    } else {
-      setThemeState("light");
-      document.documentElement.setAttribute("data-theme", "light");
-    }
+    // Read the already-applied data-theme from documentElement or localStorage
+    const applied = (document.documentElement.getAttribute("data-theme") ||
+      localStorage.getItem("workspace_theme") ||
+      "light") as Theme;
+    setThemeState(applied);
     setMounted(true);
   }, []);
 
@@ -38,7 +34,41 @@ export function ThemeProvider({ children }: { children: React.ReactNode }) {
 
   const toggleTheme = () => {
     const nextTheme = theme === "dark" ? "light" : "dark";
+
+    if (typeof window === "undefined") {
+      setTheme(nextTheme);
+      return;
+    }
+
+    // Respect prefers-reduced-motion
+    const prefersReducedMotion = window.matchMedia(
+      "(prefers-reduced-motion: reduce)"
+    ).matches;
+
+    if (prefersReducedMotion) {
+      setTheme(nextTheme);
+      return;
+    }
+
+    // Use document.startViewTransition if supported
+    const doc = document as unknown as {
+      startViewTransition?: (cb: () => void) => void;
+      documentElement: HTMLElement;
+    };
+
+    if (typeof doc.startViewTransition === "function") {
+      doc.startViewTransition(() => {
+        setTheme(nextTheme);
+      });
+      return;
+    }
+
+    // Fallback: transient class on root element
+    doc.documentElement.classList.add("theme-transitioning");
     setTheme(nextTheme);
+    setTimeout(() => {
+      doc.documentElement.classList.remove("theme-transitioning");
+    }, 380);
   };
 
   return (

@@ -1,0 +1,458 @@
+/* SkillsView.module.css - Security / Vulnerability Scanner Themed Skills View */
+
+.scannerContainer {
+  display: flex;
+  flex-direction: column;
+  gap: 16px;
+  width: 100%;
+  max-width: 100%;
+  margin: 0 auto;
+  padding: 4px 4px 40px 4px;
+  font-family: var(--font-mono);
+  color: var(--text-primary);
+  user-select: text;
+}
+
+/* Header Scanner HUD */
+.scannerHud {
+  background: var(--bg-surface);
+  border: 1px solid var(--border-default);
+  border-top: 2px solid var(--scan-accent-red, #d32f2f);
+  padding: 16px 18px;
+  display: flex;
+  flex-direction: column;
+  gap: 12px;
+}
+
+[data-theme="dark"] .scannerHud {
+  border-top-color: var(--scan-accent-red, #ff5252);
+}
+
+.hudTopRow {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  flex-wrap: wrap;
+  gap: 10px;
+}
+
+.hudMetaGroup {
+  display: flex;
+  align-items: center;
+  gap: 10px;
+  flex-wrap: wrap;
+}
+
+.scannerTitle {
+  font-size: 15px;
+  font-weight: 700;
+  letter-spacing: -0.01em;
+  color: var(--text-primary);
+  display: flex;
+  align-items: center;
+  gap: 8px;
+  text-transform: uppercase;
+}
+
+.scannerIcon {
+  color: var(--scan-accent-red, #d32f2f);
+  flex-shrink: 0;
+}
+
+[data-theme="dark"] .scannerIcon {
+  color: var(--scan-accent-red, #ff5252);
+}
+
+.targetBadge {
+  font-size: 11px;
+  color: var(--text-secondary);
+  background: var(--bg-panel);
+  border: 1px solid var(--border-subtle);
+  padding: 2px 7px;
+}
+
+.targetHighlight {
+  color: var(--text-primary);
+  font-weight: 600;
+}
+
+.hudControls {
+  display: flex;
+  align-items: center;
+  gap: 8px;
+}
+
+.hudStatusBadge {
+  display: inline-flex;
+  align-items: center;
+  gap: 6px;
+  font-size: 11px;
+  font-weight: 700;
+  padding: 3px 8px;
+  border: 1px solid var(--border-default);
+}
+
+.statusScanning {
+  background: rgba(211, 47, 47, 0.08);
+  border-color: rgba(211, 47, 47, 0.3);
+  color: var(--scan-accent-red, #d32f2f);
+}
+
+[data-theme="dark"] .statusScanning {
+  background: rgba(255, 82, 82, 0.12);
+  border-color: rgba(255, 82, 82, 0.4);
+  color: var(--scan-accent-red, #ff5252);
+}
+
+.statusComplete {
+  background: var(--status-success-bg, rgba(21, 115, 60, 0.1));
+  border-color: var(--status-success, #15733c);
+  color: var(--status-success, #15733c);
+}
+
+[data-theme="dark"] .statusComplete {
+  color: #3fb950;
+  border-color: rgba(63, 185, 80, 0.4);
+}
+
+.pulsingDot {
+  width: 7px;
+  height: 7px;
+  border-radius: 50%;
+  background: var(--scan-accent-red, #d32f2f);
+  animation: pulseDot 1s infinite alternate ease-in-out;
+}
+
+[data-theme="dark"] .pulsingDot {
+  background: var(--scan-accent-red, #ff5252);
+}
+
+@keyframes pulseDot {
+  0% {
+    opacity: 0.3;
+    transform: scale(0.85);
+  }
+
+  100% {
+    opacity: 1;
+    transform: scale(1.25);
+  }
+}
+
+.actionButton {
+  display: inline-flex;
+  align-items: center;
+  gap: 5px;
+  font-family: var(--font-mono);
+  font-size: 11.5px;
+  font-weight: 600;
+  padding: 3px 9px;
+  background: var(--bg-panel);
+  border: 1px solid var(--border-default);
+  color: var(--text-primary);
+  cursor: pointer;
+  transition: all 0.1s ease;
+}
+
+.actionButton:hover {
+  background: var(--bg-panel-hover);
+  border-color: var(--border-strong);
+}
+
+.actionButtonAccent {
+  background: var(--scan-accent-red, #d32f2f);
+  border-color: var(--scan-accent-red, #d32f2f);
+  color: #ffffff;
+}
+
+.actionButtonAccent:hover {
+  filter: brightness(1.1);
+}
+
+[data-theme="dark"] .actionButtonAccent {
+  background: #c92a2a;
+  border-color: #c92a2a;
+}
+
+/* Progress bar */
+.progressContainer {
+  display: flex;
+  flex-direction: column;
+  gap: 5px;
+}
+
+.progressTrack {
+  width: 100%;
+  height: 6px;
+  background: var(--bg-panel);
+  border: 1px solid var(--border-subtle);
+  overflow: hidden;
+}
+
+.progressBarFill {
+  height: 100%;
+  background: var(--scan-accent-red, #d32f2f);
+  transition: width 0.12s linear;
+}
+
+[data-theme="dark"] .progressBarFill {
+  background: var(--scan-accent-red, #ff5252);
+}
+
+.progressStatsRow {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  font-size: 11px;
+  color: var(--text-muted);
+}
+
+.skipHint {
+  font-size: 10.5px;
+  color: var(--text-muted);
+  font-style: italic;
+}
+
+/* Console Header Output Block */
+.consoleInitCard {
+  background: var(--bg-surface);
+  border: 1px solid var(--border-default);
+  padding: 14px 18px;
+  display: flex;
+  flex-direction: column;
+  gap: 6px;
+  font-size: 12.5px;
+  line-height: 1.5;
+}
+
+.logLine {
+  display: flex;
+  align-items: flex-start;
+  gap: 8px;
+  animation: scanLineIn 0.18s cubic-bezier(0.16, 1, 0.3, 1) forwards;
+}
+
+.prefixAsterisk {
+  color: var(--scan-accent-red, #d32f2f);
+  font-weight: 700;
+  flex-shrink: 0;
+}
+
+[data-theme="dark"] .prefixAsterisk {
+  color: var(--scan-accent-red, #ff5252);
+}
+
+.prefixPlus {
+  color: var(--scan-accent-red, #d32f2f);
+  font-weight: 700;
+  flex-shrink: 0;
+}
+
+[data-theme="dark"] .prefixPlus {
+  color: var(--scan-accent-red, #ff5252);
+}
+
+.prefixCategory {
+  color: var(--accent-primary);
+  font-weight: 700;
+  flex-shrink: 0;
+}
+
+.prefixCheck {
+  color: var(--status-success, #15733c);
+  font-weight: 700;
+  flex-shrink: 0;
+}
+
+[data-theme="dark"] .prefixCheck {
+  color: #3fb950;
+}
+
+.logTextSecondary {
+  color: var(--text-secondary);
+}
+
+/* Categories Grid (Masonry Multi-Column Layout) */
+.categoriesGrid {
+  column-count: 2;
+  column-gap: 14px;
+}
+
+@media (max-width: 860px) {
+  .categoriesGrid {
+    column-count: 1;
+  }
+}
+
+.categoryCard {
+  background: var(--bg-surface);
+  border: 1px solid var(--border-default);
+  display: flex;
+  flex-direction: column;
+  break-inside: avoid;
+  page-break-inside: avoid;
+  margin-bottom: 14px;
+  height: fit-content;
+  animation: scanLineIn 0.2s cubic-bezier(0.16, 1, 0.3, 1) forwards;
+  transition: border-color 0.15s ease;
+}
+
+.categoryCard:hover {
+  border-color: var(--border-strong);
+}
+
+.categoryHeader {
+  background: var(--bg-panel);
+  border-bottom: 1px solid var(--border-default);
+  padding: 10px 14px;
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+}
+
+.categoryTitleGroup {
+  display: flex;
+  align-items: center;
+  gap: 6px;
+  font-size: 12px;
+  font-weight: 700;
+  text-transform: uppercase;
+  letter-spacing: 0.04em;
+  color: var(--text-primary);
+}
+
+.categoryBadge {
+  font-size: 10px;
+  font-weight: 600;
+  color: var(--text-muted);
+  background: var(--bg-surface);
+  border: 1px solid var(--border-subtle);
+  padding: 1px 5px;
+}
+
+.skillsList {
+  display: flex;
+  flex-direction: column;
+  padding: 10px 14px;
+  gap: 6px;
+}
+
+.skillItem {
+  display: flex;
+  align-items: center;
+  gap: 8px;
+  font-size: 12.5px;
+  line-height: 1.4;
+  padding: 3px 0;
+  border-bottom: 1px dashed var(--border-subtle);
+  animation: scanLineIn 0.18s cubic-bezier(0.16, 1, 0.3, 1) forwards;
+}
+
+.skillItem:last-child {
+  border-bottom: none;
+}
+
+.detectedLabel {
+  color: var(--text-muted);
+  font-size: 11.5px;
+  font-weight: 500;
+}
+
+.skillName {
+  color: var(--text-primary);
+  font-weight: 600;
+  flex: 1;
+}
+
+/* Completion Card */
+.completionCard {
+  background: var(--bg-surface);
+  border: 1px solid var(--status-success, #15733c);
+  border-left: 4px solid var(--status-success, #15733c);
+  padding: 16px 20px;
+  display: flex;
+  flex-direction: column;
+  gap: 8px;
+  animation: scanLineIn 0.25s cubic-bezier(0.16, 1, 0.3, 1) forwards;
+}
+
+[data-theme="dark"] .completionCard {
+  border-color: #3fb950;
+  border-left-color: #3fb950;
+  background: rgba(63, 185, 80, 0.04);
+}
+
+.completionTitleRow {
+  display: flex;
+  align-items: center;
+  gap: 8px;
+  font-size: 13.5px;
+  font-weight: 700;
+  color: var(--text-primary);
+}
+
+.completionSubtext {
+  font-size: 12px;
+  color: var(--text-secondary);
+  line-height: 1.5;
+  padding-left: 24px;
+}
+
+/* Search filter bar in completed mode */
+.filterBar {
+  display: flex;
+  align-items: center;
+  gap: 8px;
+  background: var(--bg-panel);
+  border: 1px solid var(--border-default);
+  padding: 6px 12px;
+  margin-bottom: 2px;
+}
+
+.filterInput {
+  flex: 1;
+  background: transparent;
+  border: none;
+  font-family: var(--font-mono);
+  font-size: 12px;
+  color: var(--text-primary);
+  outline: none;
+}
+
+.filterInput::placeholder {
+  color: var(--text-muted);
+}
+
+.filterCount {
+  font-size: 11px;
+  color: var(--text-muted);
+}
+
+/* Animation keyframes */
+@keyframes scanLineIn {
+  0% {
+    opacity: 0;
+    transform: translateX(-6px);
+  }
+
+  100% {
+    opacity: 1;
+    transform: translateX(0);
+  }
+}
+
+/* Accessibility */
+@media (prefers-reduced-motion: reduce) {
+
+  .logLine,
+  .categoryCard,
+  .skillItem,
+  .completionCard,
+  .progressBarFill,
+  .pulsingDot {
+    animation: none !important;
+    transition: none !important;
+    transform: none !important;
+    opacity: 1 !important;
+  }
+}

@@ -256,7 +256,7 @@ import { findNodeByPath, VIRTUAL_FS } from "@/data/filesystemData";
 function isValidPath(pathArray: string[]): boolean {
   if (pathArray.length === 0) return true;
   const seg0 = pathArray[0].toLowerCase();
-  
+
   if (seg0 === "about" || seg0 === "skills" || seg0 === "experience" || seg0 === "contact" || seg0 === "vault") {
     return pathArray.length === 1;
   }

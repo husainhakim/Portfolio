@@ -53,6 +53,37 @@
   --statusbar-height: 26px;
 }
 
+/* Smooth View Transition and Crossfade for Theme Switch */
+::view-transition-old(root),
+::view-transition-new(root) {
+  animation-duration: 0.35s;
+  animation-timing-function: cubic-bezier(0.4, 0, 0.2, 1);
+}
+
+.theme-transitioning,
+.theme-transitioning *,
+.theme-transitioning *::before,
+.theme-transitioning *::after {
+  transition: background-color 0.35s cubic-bezier(0.4, 0, 0.2, 1),
+    border-color 0.35s cubic-bezier(0.4, 0, 0.2, 1),
+    color 0.25s cubic-bezier(0.4, 0, 0.2, 1),
+    box-shadow 0.35s cubic-bezier(0.4, 0, 0.2, 1) !important;
+  transition-delay: 0s !important;
+}
+
+@media (prefers-reduced-motion: reduce) {
+
+  ::view-transition-old(root),
+  ::view-transition-new(root) {
+    animation: none !important;
+  }
+
+  .theme-transitioning,
+  .theme-transitioning * {
+    transition: none !important;
+  }
+}
+
 /* Dark Theme (Deep Charcoal / Terminal Workstation with Unified Blue Accents) */
 [data-theme="dark"] {
   --bg-app: #0a0b0d;
@@ -92,7 +123,8 @@
 /* ==========================================================================
    WINDOWS 11 EXPLORER RESKIN OVERRIDES (GUI MODE ONLY)
    ========================================================================== */
-:root .explorer-theme, [data-theme="light"] .explorer-theme {
+:root .explorer-theme,
+[data-theme="light"] .explorer-theme {
   --bg-app: #f3f3f3;
   --bg-surface: #ffffff;
   --bg-panel: #f3f3f3;
@@ -109,7 +141,7 @@
   --text-muted: #6e6e6e;
 
   /* Windows Blue Accent overrides */
-  --accent-surface: rgba(0, 103, 192, 0.08); 
+  --accent-surface: rgba(0, 103, 192, 0.08);
   --accent-primary: #0067C0;
   --accent-hover: #005096;
 }
@@ -131,7 +163,7 @@
   --text-muted: #a0a0a0;
 
   /* Windows Blue Accent overrides */
-  --accent-surface: rgba(76, 168, 255, 0.15); 
+  --accent-surface: rgba(76, 168, 255, 0.15);
   --accent-primary: #4CA8FF;
   --accent-hover: #1990FF;
 }
@@ -320,18 +352,24 @@ textarea:focus-visible {
 }
 
 @keyframes targetBeaconPulse {
-  0%, 100% {
+
+  0%,
+  100% {
     box-shadow: 0 0 0 2px rgba(0, 120, 212, 0.6), 0 0 16px rgba(0, 120, 212, 0.3);
   }
+
   50% {
     box-shadow: 0 0 0 4px rgba(0, 120, 212, 0.3), 0 0 26px rgba(0, 120, 212, 0.55);
   }
 }
 
 @keyframes darkTargetBeaconPulse {
-  0%, 100% {
+
+  0%,
+  100% {
     box-shadow: 0 0 0 2px rgba(56, 189, 248, 0.7), 0 0 18px rgba(56, 189, 248, 0.35);
   }
+
   50% {
     box-shadow: 0 0 0 4px rgba(56, 189, 248, 0.35), 0 0 30px rgba(56, 189, 248, 0.6);
   }
@@ -343,6 +381,7 @@ textarea:focus-visible {
     opacity: 0;
     transform: translateY(2px);
   }
+
   to {
     opacity: 1;
     transform: translateY(0);
