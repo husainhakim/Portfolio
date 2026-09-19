@@ -4,6 +4,7 @@ import {
   UserX,
   MailX,
   Move,
+  Tag,
   SunMoon,
   Terminal,
   Pin,
@@ -40,6 +41,8 @@ export function AchievementIcon({
       return <MailX size={size} className={className} />;
     case "Move":
       return <Move size={size} className={className} />;
+    case "Tag":
+      return <Tag size={size} className={className} />;
     case "SunMoon":
       return <SunMoon size={size} className={className} />;
     case "Terminal":

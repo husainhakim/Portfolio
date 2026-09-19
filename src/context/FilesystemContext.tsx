@@ -143,17 +143,23 @@ export function FilesystemProvider({ children }: { children: React.ReactNode }) 
     }, duration);
   }, []);
 
-  const renameNode = useCallback((nodeId: string, newName: string) => {
-    setCustomNames((prev) => {
+  const renameNode = useCallback(
+    (nodeId: string, newName: string) => {
       const trimmed = newName.trim();
-      if (!trimmed) {
-        const next = { ...prev };
-        delete next[nodeId];
-        return next;
+      if (trimmed) {
+        unlock("master_of_disguise");
       }
-      return { ...prev, [nodeId]: trimmed };
-    });
-  }, []);
+      setCustomNames((prev) => {
+        if (!trimmed) {
+          const next = { ...prev };
+          delete next[nodeId];
+          return next;
+        }
+        return { ...prev, [nodeId]: trimmed };
+      });
+    },
+    [unlock]
+  );
 
   const deleteNode = useCallback((nodeId: string) => {
     setDeletedNodeIds((prev) => (prev.includes(nodeId) ? prev : [...prev, nodeId]));

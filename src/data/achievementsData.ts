@@ -3,6 +3,7 @@ export type AchievementId =
   | "identity_thief"
   | "ghosted"
   | "file_shuffler"
+  | "master_of_disguise"
   | "seen_the_light"
   | "old_school"
   | "hoarder"
@@ -19,6 +20,7 @@ export interface Achievement {
   | "UserX"
   | "MailX"
   | "Move"
+  | "Tag"
   | "SunMoon"
   | "Terminal"
   | "Pin"
@@ -66,6 +68,15 @@ export const ACHIEVEMENTS: Achievement[] = [
     points: 50,
   },
   {
+    id: "master_of_disguise",
+    title: "Master of Disguise",
+    description: "Assigned a custom alias to a file or folder in the workspace.",
+    hint: "Who says names are set in stone? Bestow a new identity upon an unsuspecting asset.",
+    iconName: "Tag",
+    category: "customization",
+    points: 50,
+  },
+  {
     id: "seen_the_light",
     title: "Seen the Light",
     description: "Flipped the physical light switch between Light and Dark mode.",
@@ -104,7 +115,7 @@ export const ACHIEVEMENTS: Achievement[] = [
   {
     id: "completionist",
     title: "Master of Systems",
-    description: "Discovered every hidden secret and unlocked all 8 workspace trophies.",
+    description: "Discovered every hidden secret and unlocked all 9 workspace trophies.",
     hint: "Claim every secret the system has to offer. 100% synchronization required.",
     iconName: "Crown",
     category: "mastery",
