@@ -409,6 +409,77 @@ That is why I keep following the loop: **LEARN → BUILD → TEST → DOCUMENT**
       size: 4890,
       updatedAt: "2025-02-14",
       description: "Categorized breakdown of technical tools, languages, and soft skills",
+      content: `# Technical Skills & Competencies
+**Husain Hakim | Cybersecurity Student & Backend Developer**
+
+## Programming Languages
+- Python
+- JavaScript
+- C++
+
+## Networking & Infrastructure
+- TCP/IP & Network Protocols
+- Subnetting & CIDR
+- DNS & DHCP
+- NAT / PAT
+- VLANs
+- Network Scanning & Enumeration
+- Network Traffic Analysis
+
+## Linux & Systems
+- Linux Administration
+- Linux CLI
+- File Permissions & Ownership
+- User & Group Management
+- Process & Service Management
+- SSH
+- Filesystem & Mount Management
+- Bash/Shell
+
+## Development / Backend
+- React.js
+- Node.js
+- Express.js
+- REST API Development
+- MongoDB
+- SQL
+- MERN Stack
+- Event-Driven Backend Development
+- API Testing
+- Django
+- FastAPI
+
+## Cybersecurity
+- ARP Spoof Detection
+- JWT Security Analysis
+- SUID/Privilege Escalation Auditing
+- Vulnerability Scanning & Enumeration
+
+## DevOps / Engineering
+- Git
+- GitHub
+- CI/CD
+- Jenkins
+- Docker
+- Vercel
+- MongoDB Atlas
+- Automated Testing
+- RabbitMQ
+
+## Testing & Tools
+- Postman
+- VS Code
+- Selenium
+- Cypress
+- JMeter
+- OpenCV
+
+## Soft Skills
+- Problem-Solving
+- Team Collaboration
+- Critical Thinking
+- Time Management
+- Adaptability`,
     },
 
     // 📁 experience/
@@ -435,7 +506,49 @@ That is why I keep following the loop: **LEARN → BUILD → TEST → DOCUMENT**
           group: "staff",
           size: 2980,
           updatedAt: "2025-02-10",
-          description: "Backend Engineer at LetsUpgrade (Sept 2025 – Present)",
+          description: "Backend Engineer at LetsUpgrade (Sept 2025 - Present)",
+          content: `# Backend Developer - LetsUpgrade Edtech Pvt Ltd
+
+- **Role:** Backend Developer
+- **Organization:** LetsUpgrade Edtech Pvt Ltd
+- **Engagement Type:** Full-Time / Internship
+- **Period:** Sept 2025 - July 2026 (10 Months)
+- **Location:** Mumbai, India (Hybrid)
+
+## Executive Summary
+Core backend developer responsible for architecting scalable microservices, re-engineering database trigger infrastructure into resilient event-driven workers, and maintaining production services supporting high-throughput educational workflows.
+
+## Technologies & Stack
+- Node.js
+- Express.js
+- MongoDB Atlas
+- Distributed Event Architecture
+- RESTful APIs
+- FastAPI
+- Django
+- Postman
+
+## Key Responsibilities
+- Migrated 30+ MongoDB Atlas Triggers to Node.js event-driven services, reducing infrastructure costs by up to 95% while improving scalability and maintainability.
+- Developed and maintained backend services for a platform with 300+ REST APIs and 10M+ MongoDB documents, delivering production features and working with large-scale data systems.
+- Collaborated cross-functionally with product managers and frontend teams to translate technical requirements into robust database schemas and high-performance API endpoints.
+- Implemented stringent server-side payload validation, sanitized database queries, and tuned indexing strategies to eliminate query bottlenecks.
+- Authored comprehensive API documentation and Postman collections to ensure smooth client and mobile client integration.
+
+## Technical Impact & Metrics
+### ~95% Cost Reduction
+Successfully migrated 30+ MongoDB Atlas triggers into decoupled Node.js event listeners, mitigating cloud trigger execution overhead and reducing infrastructure compute expenses.
+
+### 300+ REST APIs & 10M+ Docs
+Developed and maintained backend services for a platform with 300+ REST APIs and 10M+ MongoDB documents, delivering production features and working with large-scale data systems.
+
+### Client Architecture Meetings
+Actively participated in core client meetings to capture technical requirements, bridging the gap between business needs and robust backend architectural solutions.
+
+## Key Engineering Takeaways
+- Deep understanding of distributed backend systems, event loops, and asynchronous I/O at production scale.
+- Practical experience in defensive API design, ensuring authorization checks and payload validation are strictly enforced at the service tier.
+- Experience optimizing high-concurrency database queries against large datasets.`,
         },
       ],
     },

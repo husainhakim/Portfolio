@@ -3,6 +3,9 @@ import { FSNode, FSFile, FSDirectory } from "@/data/filesystemData";
 import { PROJECTS_DATA } from "@/data/projectsData";
 import { WRITEUPS_DATA } from "@/data/writeupsData";
 import { BLOGS_DATA } from "@/data/blogsData";
+import { EXPERIENCE_DATA } from "@/data/experienceData";
+import { SKILLS_DATA } from "@/data/skillsData";
+import { PROFILE_DATA } from "@/data/profileData";
 
 /**
  * Resolves the raw Markdown / text representation for any virtual file.
@@ -10,6 +13,59 @@ import { BLOGS_DATA } from "@/data/blogsData";
 export function getNodeContent(node: FSFile): string {
   if (node.content) {
     return node.content;
+  }
+
+  // Experience files
+  if (node.fileType === "experience" || node.dataRef === "letsupgrade-backend" || node.name.includes("letsupgrade")) {
+    const exp = EXPERIENCE_DATA.find((e) => e.id === (node.dataRef || "letsupgrade-backend")) || EXPERIENCE_DATA[0];
+    if (exp) {
+      return `# ${exp.role} - ${exp.organization}
+
+- **Role:** ${exp.role}
+- **Organization:** ${exp.organization}
+- **Engagement Type:** ${exp.type}
+- **Period:** ${exp.period} (${exp.duration})
+- **Location:** ${exp.location}
+
+## Executive Summary
+${exp.summary}
+
+## Technologies & Stack
+${exp.technologies.map((t) => `- ${t}`).join("\n")}
+
+## Key Responsibilities
+${exp.responsibilities.map((r) => `- ${r}`).join("\n")}
+
+## Technical Impact & Metrics
+${exp.technicalImpact.map((impact) => `### ${impact.metric}\n${impact.description}`).join("\n\n")}
+
+## Key Engineering Takeaways
+${exp.keyTakeaways.map((k) => `- ${k}`).join("\n")}`;
+    }
+  }
+
+  // Skills file
+  if (node.fileType === "skills" || node.name.toLowerCase().includes("skills")) {
+    return `# Technical Skills & Competencies
+**Husain Hakim | Cybersecurity Student & Backend Developer**
+
+${SKILLS_DATA.map((cat) => `## ${cat.category}\n${cat.skills.map((s) => `- ${s}`).join("\n")}`).join("\n\n")}`;
+  }
+
+  // Contact info file
+  if (node.fileType === "contact" || node.name.toLowerCase().includes("contact")) {
+    return `# Contact Information
+**Husain Hakim | Cybersecurity Student & Offensive/Defensive Security**
+
+- **Email:** ${PROFILE_DATA.email}
+- **GitHub:** ${PROFILE_DATA.github}
+- **LinkedIn:** ${PROFILE_DATA.linkedin}
+- **X (Twitter):** ${PROFILE_DATA.x}
+- **Portfolio:** ${PROFILE_DATA.portfolio}
+- **Location:** ${PROFILE_DATA.location}
+
+## Preferred Communication
+Feel free to reach out via Email or LinkedIn for cybersecurity discussions, collaboration on security tools, or backend engineering opportunities.`;
   }
 
   if (node.fileType === "project" && node.dataRef) {
