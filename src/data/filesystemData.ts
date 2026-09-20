@@ -426,6 +426,11 @@ That is why I keep following the loop: **LEARN → BUILD → TEST → DOCUMENT**
       content: `# Technical Skills & Competencies
 **Husain Hakim | Cybersecurity Student & Backend Developer**
 
+- **Medium**: https://medium.com/@husainhakim
+- **GitHub**: https://github.com/husainhakim
+- **LinkedIn**: https://www.linkedin.com/in/husainhakim/
+- **Email**: husain.m.hakim.533@gmail.com
+
 ## Programming Languages
 - Python
 - JavaScript
@@ -579,13 +584,15 @@ Actively participated in core client meetings to capture technical requirements,
       group: "staff",
       size: 890,
       updatedAt: "2026-08-25",
-      description: "Direct email, GitHub, and LinkedIn links",
+      description: "Direct email, GitHub, LinkedIn, Medium, and X links",
       content: `# Contact Information
 
 - **Email**: husain.m.hakim.533@gmail.com
 - **GitHub**: https://github.com/husainhakim
 - **LinkedIn**: https://www.linkedin.com/in/husainhakim/
-- **X (Twitter)**: https://x.com/Husain533`,
+- **Medium**: https://medium.com/@husainhakim
+- **X (Twitter)**: https://x.com/Husain533
+- **Portfolio**: https://husainhakim.me`,
     },
 
     // 📄 resume.pdf

@@ -37,6 +37,7 @@ export const SITE_CONFIG = {
     email: PROFILE_DATA.email,
     github: PROFILE_DATA.github,
     linkedin: PROFILE_DATA.linkedin,
+    medium: PROFILE_DATA.medium,
     x: PROFILE_DATA.x,
   },
   location: {

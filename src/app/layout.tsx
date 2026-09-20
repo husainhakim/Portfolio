@@ -100,6 +100,7 @@ export default function RootLayout({
     sameAs: [
       PROFILE_DATA.github,
       PROFILE_DATA.linkedin,
+      PROFILE_DATA.medium,
       PROFILE_DATA.x,
     ],
     address: {

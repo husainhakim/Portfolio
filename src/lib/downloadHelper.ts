@@ -49,6 +49,11 @@ ${exp.keyTakeaways.map((k) => `- ${k}`).join("\n")}`;
     return `# Technical Skills & Competencies
 **Husain Hakim | Cybersecurity Student & Backend Developer**
 
+- **Medium:** ${PROFILE_DATA.medium}
+- **GitHub:** ${PROFILE_DATA.github}
+- **LinkedIn:** ${PROFILE_DATA.linkedin}
+- **Email:** ${PROFILE_DATA.email}
+
 ${SKILLS_DATA.map((cat) => `## ${cat.category}\n${cat.skills.map((s) => `- ${s}`).join("\n")}`).join("\n\n")}`;
   }
 
@@ -60,12 +65,13 @@ ${SKILLS_DATA.map((cat) => `## ${cat.category}\n${cat.skills.map((s) => `- ${s}`
 - **Email:** ${PROFILE_DATA.email}
 - **GitHub:** ${PROFILE_DATA.github}
 - **LinkedIn:** ${PROFILE_DATA.linkedin}
+- **Medium:** ${PROFILE_DATA.medium}
 - **X (Twitter):** ${PROFILE_DATA.x}
 - **Portfolio:** ${PROFILE_DATA.portfolio}
 - **Location:** ${PROFILE_DATA.location}
 
 ## Preferred Communication
-Feel free to reach out via Email or LinkedIn for cybersecurity discussions, collaboration on security tools, or backend engineering opportunities.`;
+Feel free to reach out via Email, LinkedIn, or Medium for cybersecurity discussions, collaboration on security tools, or backend engineering opportunities.`;
   }
 
   if (node.fileType === "project" && node.dataRef) {

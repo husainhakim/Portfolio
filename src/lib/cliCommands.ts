@@ -111,7 +111,7 @@ Direct Domain Commands:
   skills           Display technical proficiencies and soft skills
   experience       Display professional engineering & leadership background
   resume           Access / download the official PDF resume
-  contact          Display email, GitHub, and LinkedIn channels
+  contact          Display email, GitHub, LinkedIn, Medium, and X channels
   about            Display personal background and interests
 
 Tip: Use [TAB] for path/command auto-completion, [↑/↓] for command history.`,
@@ -375,12 +375,14 @@ ${list.join("\n\n")}`,
         return {
           text: `Contact & Public Channels:
 --------------------------------------------------------------------------------
-• Email: husain.hakim.offsec@example.com (PGP Key Available)
-• GitHub: https://github.com/husainhakim
-• LinkedIn: https://linkedin.com/in/husainhakim
-• Medium: https://medium.com/@husain.hakim
+• Email: ${PROFILE_DATA.email}
+• GitHub: ${PROFILE_DATA.github}
+• LinkedIn: ${PROFILE_DATA.linkedin}
+• Medium: ${PROFILE_DATA.medium}
+• X (Twitter): ${PROFILE_DATA.x}
+• Portfolio: ${PROFILE_DATA.portfolio}
 
-Tip: Type 'contact' to open clickable links in GUI mode.`,
+Tip: Type 'contact' to view all direct channels.`,
         };
       }
 
@@ -530,10 +532,11 @@ Link: /resume.pdf`,
       return {
         text: `Contact & Public Channels:
 --------------------------------------------------------------------------------
-Email:    ${PROFILE_DATA.email} (mailto:${PROFILE_DATA.email})
-GitHub:   ${PROFILE_DATA.github}
-LinkedIn: ${PROFILE_DATA.linkedin}
-X:        ${PROFILE_DATA.x}
+Email:     ${PROFILE_DATA.email} (mailto:${PROFILE_DATA.email})
+GitHub:    ${PROFILE_DATA.github}
+LinkedIn:  ${PROFILE_DATA.linkedin}
+Medium:    ${PROFILE_DATA.medium}
+X:         ${PROFILE_DATA.x}
 Portfolio: ${PROFILE_DATA.portfolio}`,
       };
     }

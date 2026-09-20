@@ -17,7 +17,7 @@ import {
   Crosshair,
   ArrowRight,
 } from "lucide-react";
-import { GithubIcon, LinkedinIcon, TwitterIcon } from "@/components/ui/Icons";
+import { GithubIcon, LinkedinIcon, MediumIcon, TwitterIcon } from "@/components/ui/Icons";
 import styles from "./Views.module.css";
 
 export function AboutView() {
@@ -79,6 +79,16 @@ export function AboutView() {
             >
               <LinkedinIcon size={14} />
               <span>LinkedIn</span>
+            </a>
+            <a
+              href={PROFILE_DATA.medium}
+              target="_blank"
+              rel="noopener noreferrer"
+              className={styles.iconLink}
+              title="Medium Profile"
+            >
+              <MediumIcon size={14} />
+              <span>Medium</span>
             </a>
             <a
               href={PROFILE_DATA.x}

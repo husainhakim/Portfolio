@@ -10,7 +10,7 @@ import {
   Lock,
   Mail,
 } from "lucide-react";
-import { GithubIcon, LinkedinIcon } from "@/components/ui/Icons";
+import { GithubIcon, LinkedinIcon, MediumIcon } from "@/components/ui/Icons";
 import { PROFILE_DATA } from "@/data/profileData";
 import { Win11Folder, Win11Pdf } from "./Win11Icons";
 import { findNodeByPath, FSFile } from "@/data/filesystemData";
@@ -209,6 +209,16 @@ export function SidebarQuickNav({ isOpen, onClose }: SidebarQuickNavProps) {
               aria-label="LinkedIn Profile"
             >
               <LinkedinIcon size={17} />
+            </a>
+            <a
+              href={PROFILE_DATA.medium}
+              target="_blank"
+              rel="noopener noreferrer"
+              className={styles.sidebarSocialBtn}
+              title="Medium Profile (@husainhakim)"
+              aria-label="Medium Profile"
+            >
+              <MediumIcon size={17} />
             </a>
             <a
               href={`mailto:${PROFILE_DATA.email}`}

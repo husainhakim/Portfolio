@@ -17,6 +17,7 @@ export interface ProfileData {
   email: string;
   github: string;
   linkedin: string;
+  medium: string;
   x: string;
   portfolio: string;
   avatarUrl: string;
@@ -41,6 +42,7 @@ export const PROFILE_DATA: ProfileData = {
   email: "husain.m.hakim.533@gmail.com",
   github: "https://github.com/husainhakim",
   linkedin: "https://www.linkedin.com/in/husainhakim/",
+  medium: "https://medium.com/@husainhakim",
   x: "https://x.com/Husain533",
   portfolio: "https://husainhakim.me",
   avatarUrl: "/husain.jpg",

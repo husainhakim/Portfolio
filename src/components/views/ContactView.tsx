@@ -10,7 +10,7 @@ import {
   ExternalLink,
   Shield,
 } from "lucide-react";
-import { GithubIcon, LinkedinIcon, TwitterIcon } from "@/components/ui/Icons";
+import { GithubIcon, LinkedinIcon, MediumIcon, TwitterIcon } from "@/components/ui/Icons";
 import styles from "./Views.module.css";
 
 export function ContactView() {
@@ -112,6 +112,28 @@ export function ContactView() {
               >
                 <ExternalLink size={13} />
                 <span>Open LinkedIn</span>
+              </a>
+            </div>
+          </div>
+        </div>
+
+        {/* Medium Card */}
+        <div className={styles.contactCard}>
+          <div className={styles.contactCardIcon}>
+            <MediumIcon size={22} />
+          </div>
+          <div className={styles.contactCardBody}>
+            <span className={styles.contactCardLabel}>Technical Publications & Articles</span>
+            <div className={styles.contactCardValue}>medium.com/@husainhakim</div>
+            <div className={styles.contactCardActions}>
+              <a
+                href={PROFILE_DATA.medium}
+                target="_blank"
+                rel="noopener noreferrer"
+                className={styles.contactActionPrimary}
+              >
+                <ExternalLink size={13} />
+                <span>Open Medium Profile</span>
               </a>
             </div>
           </div>
