@@ -209,6 +209,7 @@ export function Header() {
         {/* Achievements / Trophies Button */}
         <button
           id="header-trophy-button"
+          data-tour="trophy-btn"
           ref={trophyButtonRef}
           onClick={openPanel}
           key={`trophy-btn-${trophyBounceKey}`}

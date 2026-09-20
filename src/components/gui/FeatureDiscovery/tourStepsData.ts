@@ -12,7 +12,7 @@ export const TOUR_STEPS: TourStep[] = [
   {
     id: "navigation",
     title: "Simulated Linux Workstation",
-    badge: "Step 1 of 6",
+    badge: "Step 1 of 7",
     description:
       "This portfolio functions as an interactive Linux desktop filesystem (/home/husain). Navigate via breadcrumbs, browse directories, or use search to find anything instantly.",
     targetSelector: '[data-tour="breadcrumb-bar"]',
@@ -26,7 +26,7 @@ export const TOUR_STEPS: TourStep[] = [
   {
     id: "quick-access",
     title: "Quick Access & Pinning Gestures",
-    badge: "Step 2 of 6",
+    badge: "Step 2 of 7",
     description:
       "Keep your most important files within arm's reach. Quick Access supports up to 5 pinned items with rich drag-and-drop gestures.",
     targetSelector: '[data-tour="quick-access-section"]',
@@ -38,9 +38,9 @@ export const TOUR_STEPS: TourStep[] = [
     ],
   },
   {
-    id: "file-operations",
+    id: "file-ops",
     title: "Card Reordering & Context Menu",
-    badge: "Step 3 of 6",
+    badge: "Step 3 of 7",
     description:
       "You have full control over the workstation. Rearrange items, inspect details, rename files, or clean up your workspace.",
     targetSelector: '[data-tour="directory-grid"]',
@@ -54,7 +54,7 @@ export const TOUR_STEPS: TourStep[] = [
   {
     id: "personal-vault",
     title: "The Personal Vault ('me beyond the resume')",
-    badge: "Step 4 of 6",
+    badge: "Step 4 of 7",
     description:
       "A locked confidential archive containing Husain's unfiltered personal thoughts, side pursuits, and stories that don't belong on a standard CV.",
     targetSelector: '[data-tour="sidebar-vault-btn"]',
@@ -68,7 +68,7 @@ export const TOUR_STEPS: TourStep[] = [
   {
     id: "cli-terminal",
     title: "Interactive CLI Terminal Shell",
-    badge: "Step 5 of 6",
+    badge: "Step 5 of 7",
     description:
       "Prefer a keyboard-driven terminal? Switch to the full simulated Linux shell anytime to run commands against the virtual filesystem.",
     targetSelector: '[data-tour="mode-switch"]',
@@ -80,9 +80,23 @@ export const TOUR_STEPS: TourStep[] = [
     ],
   },
   {
+    id: "achievements",
+    title: "Trophy System & Hidden Easter Eggs",
+    badge: "Step 6 of 7",
+    description:
+      "Explore, inspect, and hack around to unlock hidden achievements. The trophy icon tracks your progress and unlocks badges as you discover secret features.",
+    targetSelector: '[data-tour="trophy-btn"]',
+    preferredPosition: "bottom",
+    featureTips: [
+      "Click the trophy icon in the header anytime to view your achievement showcase",
+      "Unlock badges by executing terminal commands, finding secret files, and discovering easter eggs",
+      "Completing this tour unlocks the 'Grand Tourer' achievement badge!",
+    ],
+  },
+  {
     id: "shortcuts",
     title: "Keyboard Shortcuts & System Telemetry",
-    badge: "Step 6 of 6",
+    badge: "Step 7 of 7",
     description:
       "Engineered for desktop power users. Control everything with familiar keyboard shortcuts and check system authentication telemetry.",
     targetSelector: '[data-tour="status-bar"]',

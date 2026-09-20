@@ -17,6 +17,7 @@ import {
   FolderTree,
   Command,
   Terminal as TerminalIcon,
+  Trophy,
 } from "lucide-react";
 import styles from "./FeatureDiscoveryModal.module.css";
 
@@ -261,6 +262,24 @@ export function FeatureDiscoveryModal() {
                   </p>
                   <span className={styles.cardBadge}>
                     Hotkey: Alt+T / Ctrl+`
+                  </span>
+                </div>
+              )}
+
+              {/* Trophy & Achievement System */}
+              {(activeTab === "all") && (
+                <div className={styles.featureCard} style={{ borderColor: "rgba(234, 179, 8, 0.4)" }}>
+                  <div className={styles.cardTop}>
+                    <div className={styles.cardIconBox} style={{ color: "#eab308", background: "rgba(234, 179, 8, 0.15)" }}>
+                      <Trophy size={16} />
+                    </div>
+                    <h4 className={styles.cardTitle}>Trophy &amp; Achievement System</h4>
+                  </div>
+                  <p className={styles.cardDescription}>
+                    Click the trophy button in the header bar anytime. Explore the system, run secret CLI commands, inspect hidden files, and unlock all 7 achievement badges.
+                  </p>
+                  <span className={styles.cardBadge} style={{ color: "#eab308", borderColor: "rgba(234, 179, 8, 0.4)" }}>
+                    7 Secret Badges
                   </span>
                 </div>
               )}
