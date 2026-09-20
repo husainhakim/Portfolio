@@ -316,7 +316,7 @@ export function FeatureDiscoveryModal() {
                 </tr>
                 <tr>
                   <td><span className={styles.keyBadge}>Right Click</span></td>
-                  <td>Display context actions (Pin, Rename, Delete, Download)</td>
+                  <td>Display context actions (Pin, Rename, Delete, Download, Copy Link)</td>
                   <td>Cards</td>
                 </tr>
                 <tr>

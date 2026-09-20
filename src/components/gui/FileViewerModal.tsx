@@ -17,6 +17,7 @@ import { ContactView } from "@/components/views/ContactView";
 import { ResumeView } from "@/components/views/ResumeView";
 import { PersonalVaultView } from "@/components/views/PersonalVaultView";
 import { formatFileSize } from "@/lib/fileHelpers";
+import { downloadNode } from "@/lib/downloadHelper";
 import {
   X,
   FileText,
@@ -142,6 +143,17 @@ export function FileViewerModal() {
 
           <div className={styles.modalHeaderRight}>
             <span className={styles.modalPermsBadge}>{openedFile.permissions}</span>
+            {openedFile.fileType !== "vault" && (
+              <button
+                onClick={() => downloadNode(openedFile)}
+                className={styles.modalBackBtn}
+                title="Download file"
+                style={{ padding: "4px 8px", fontSize: "12px", gap: "4px" }}
+              >
+                <Download size={14} />
+                <span>Download</span>
+              </button>
+            )}
             <button
               onClick={closeFile}
               className={styles.modalCloseBtn}

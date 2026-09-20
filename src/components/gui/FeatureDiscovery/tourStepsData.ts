@@ -47,7 +47,7 @@ export const TOUR_STEPS: TourStep[] = [
     preferredPosition: "top",
     featureTips: [
       "Drag and drop cards within folders to reorder them",
-      "Right-click any file to Open, Rename, Delete, or Download",
+      "Right-click any file or folder to Open, Rename, Delete, or Download (.zip)",
       "Click 'Reset' in the Ribbon Toolbar anytime to undo all changes",
     ],
   },

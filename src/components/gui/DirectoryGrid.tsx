@@ -5,6 +5,7 @@ import Image from "next/image";
 import { useFilesystem } from "@/context/FilesystemContext";
 import { FSNode, FSDirectory, FSFile, ROOT_PATH, VIRTUAL_FS, findNodeById } from "@/data/filesystemData";
 import { formatFileSize, getFileBadgeVariant } from "@/lib/fileHelpers";
+import { downloadNode } from "@/lib/downloadHelper";
 import {
   Folder,
   FileText,
@@ -856,6 +857,19 @@ export function DirectoryGrid({ nodes }: DirectoryGridProps) {
           <Copy size={14} />
           <span>Copy Link</span>
         </button>
+
+        {!(node.type === "file" && node.fileType === "vault") && (
+          <button
+            className={styles.contextMenuItem}
+            onClick={async () => {
+              setContextMenu((prev) => ({ ...prev, isOpen: false }));
+              await downloadNode(node);
+            }}
+          >
+            <Download size={14} />
+            <span>{node.type === "directory" ? "Download Folder (.zip)" : "Download"}</span>
+          </button>
+        )}
 
         {isPinned ? (
           <button
