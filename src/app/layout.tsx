@@ -74,7 +74,10 @@ export const metadata: Metadata = {
     },
   },
   icons: {
-    icon: "/icon",
+    icon: [
+      { url: "/favicon.svg", type: "image/svg+xml" },
+      { url: "/icon" },
+    ],
     apple: "/apple-icon",
   },
 };

@@ -11,22 +11,27 @@ export default function AppleIcon() {
     (
       <div
         style={{
-          fontSize: 90,
-          background: "#101114",
+          background: "#0f172a",
           width: "100%",
           height: "100%",
           display: "flex",
-          flexDirection: "column",
           alignItems: "center",
           justifyContent: "center",
-          color: "#ffffff",
           borderRadius: 36,
-          border: "4px solid #8b1e2f",
-          fontWeight: 900,
-          fontFamily: "monospace",
         }}
       >
-        <span style={{ color: "#ff4d6d" }}>H/H</span>
+        <svg
+          width="112"
+          height="112"
+          viewBox="0 0 512 512"
+          fill="none"
+          xmlns="http://www.w3.org/2000/svg"
+        >
+          <path
+            d="M64 64H256V192H448V448H320V320C320 284.65 291.35 256 256 256C220.65 256 192 284.65 192 320V448H64V64Z"
+            fill="#ffffff"
+          />
+        </svg>
       </div>
     ),
     {

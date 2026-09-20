@@ -11,21 +11,27 @@ export default function Icon() {
     (
       <div
         style={{
-          fontSize: 18,
-          background: "#101114",
+          background: "#0f172a",
           width: "100%",
           height: "100%",
           display: "flex",
           alignItems: "center",
           justifyContent: "center",
-          color: "#ff4d6d",
           borderRadius: 6,
-          border: "1.5px solid #8b1e2f",
-          fontWeight: 800,
-          fontFamily: "monospace",
         }}
       >
-        H
+        <svg
+          width="20"
+          height="20"
+          viewBox="0 0 512 512"
+          fill="none"
+          xmlns="http://www.w3.org/2000/svg"
+        >
+          <path
+            d="M64 64H256V192H448V448H320V320C320 284.65 291.35 256 256 256C220.65 256 192 284.65 192 320V448H64V64Z"
+            fill="#ffffff"
+          />
+        </svg>
       </div>
     ),
     {
