@@ -629,6 +629,7 @@ export function normalizePath(path: string): string {
   if (resolved === "/home/husain/skills") return "/home/husain/skills.md";
   if (resolved === "/home/husain/contact") return "/home/husain/contact-info.md";
   if (resolved === "/home/husain/contact-info") return "/home/husain/contact-info.md";
+  if (resolved === "/home/husain/resume") return "/home/husain/resume.pdf";
 
   return resolved;
 }
@@ -647,10 +648,12 @@ export function findNodeByPath(path: string, root: FSDirectory = VIRTUAL_FS): FS
     const isLast = i === relative.length - 1;
     if (current.type !== "directory") return null;
 
-    // Look for exact match or match with .md appended
+    // Look for exact match or match with .md / .pdf appended
     let found: FSNode | undefined = current.children.find((child) => child.name === segment);
     if (!found && isLast) {
-      found = current.children.find((child) => child.name === `${segment}.md`);
+      found = current.children.find(
+        (child) => child.name === `${segment}.md` || child.name === `${segment}.pdf`
+      );
     }
     if (!found) return null;
     current = found;

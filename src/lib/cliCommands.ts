@@ -6,6 +6,7 @@ import {
   normalizePath,
   generateTree,
 } from "@/data/filesystemData";
+import { downloadNode } from "@/lib/downloadHelper";
 import { PROFILE_DATA } from "@/data/profileData";
 import { PROJECTS_DATA } from "@/data/projectsData";
 import { WRITEUPS_DATA } from "@/data/writeupsData";
@@ -39,6 +40,7 @@ export const AVAILABLE_COMMANDS = [
   "cd",
   "pwd",
   "cat",
+  "download",
   "clear",
   "whoami",
   "tree",
@@ -94,6 +96,7 @@ Available Navigation & System Commands:
   cd <dir>         Change working directory (e.g. cd projects, cd .., cd ~)
   pwd              Print name of current working directory
   cat <file>       Display file content, project details, or writeups
+  download <path>  Download virtual file (.md/.pdf) or folder (.zip)
   tree             Display hierarchical tree structure of filesystem
   whoami           Display operator identity and offensive & defensive security focus
   clear            Clear terminal screen
@@ -386,6 +389,62 @@ Tip: Type 'contact' to open clickable links in GUI mode.`,
       }
 
       return { text: `[${node.name} - ${node.description || "Binary / Data File"}]` };
+    }
+
+    case "download": {
+      if (args.length === 0) {
+        return {
+          text: `download: missing file or directory operand\nUsage: download <path | file | directory>\nExamples:\n  download projects\n  download about.md\n  download resume.pdf\n  download .`,
+          isError: true,
+        };
+      }
+
+      const target = args[0];
+      let targetPath: string;
+
+      if (target === "." || target === "./") {
+        targetPath = context.currentPath;
+      } else if (target === "~" || target === "") {
+        targetPath = ROOT_PATH;
+      } else if (target.startsWith("~/")) {
+        targetPath = normalizePath(`${ROOT_PATH}/${target.slice(2)}`);
+      } else if (target === "..") {
+        const parts = context.currentPath.split("/").filter(Boolean);
+        if (parts.length > 2) {
+          parts.pop();
+          targetPath = "/" + parts.join("/");
+        } else {
+          targetPath = ROOT_PATH;
+        }
+      } else if (target.startsWith("/")) {
+        targetPath = normalizePath(target);
+      } else {
+        targetPath = normalizePath(`${context.currentPath}/${target}`);
+      }
+
+      const node = findNodeByPath(targetPath);
+      if (!node) {
+        return {
+          text: `download: cannot access '${target}': No such file or directory`,
+          isError: true,
+        };
+      }
+
+      const isDir = node.type === "directory";
+      const downloadLabel = isDir
+        ? `${node.name.startsWith("HusainHakim_") ? node.name : `HusainHakim_${node.name}`}.zip`
+        : node.name;
+
+      return {
+        text: isDir
+          ? `Preparing directory archive '${downloadLabel}'... Download initiated.`
+          : `Preparing file '${downloadLabel}'... Download initiated.`,
+        action: () => {
+          downloadNode(node).catch((err) => {
+            console.error("Download failed:", err);
+          });
+        },
+      };
     }
 
     case "tree": {
