@@ -110,7 +110,17 @@ export function BlogDetailView({ blog }: BlogDetailViewProps) {
         <div className={styles.sectionCard} style={{ border: 'none', background: 'transparent', padding: '0' }}>
           {blog.content ? (
             <div className={styles.markdownBody}>
-              <ReactMarkdown>{blog.content}</ReactMarkdown>
+              <ReactMarkdown
+                components={{
+                  a: ({ href, children, ...props }) => (
+                    <a href={href} target="_blank" rel="noopener noreferrer" {...props}>
+                      {children}
+                    </a>
+                  ),
+                }}
+              >
+                {blog.content}
+              </ReactMarkdown>
             </div>
           ) : (
             <div className={styles.bodyParagraphMuted}>

@@ -127,5 +127,55 @@ I highly encourage developers to install Burp Suite Community Edition, intercept
       "A lack of rate limiting makes 2FA brute-forcing trivial.",
       "Client-side headers should never be trusted for generating reset links."
     ],
+  },
+  {
+    id: "vibe-coding-when-it-works-isnt-the-same-as-it-s-secure",
+    slug: "vibe-coding-when-it-works-isnt-the-same-as-it-s-secure",
+    title: "Vibe Coding: When It Works Isn’t the Same as It’s Secure",
+    publication: "Medium",
+    date: "2026-09-15",
+    readTime: "4 min read",
+    mediumUrl: "https://medium.com/@husainhakim/vibe-coding-when-it-works-isnt-the-same-as-it-s-secure-2b94e4f3e369?sharedUserId=husainhakim",
+    bannerImage: "https://images.unsplash.com/photo-1526374965328-7f61d4dc18c5?q=80&w=2070&auto=format&fit=crop",
+    summary: "Your AI-generated application works. The UI looks right. The API returns 200 OK. But does it actually hold up when someone starts thinking like an attacker?",
+    topics: ["Application Security", "Threat Modeling", "AI & Security", "Web Security"],
+    keyTakeaways: [
+      "Functional software and secure software are fundamentally not the same thing.",
+      "The frontend is not a security boundary; CORS is not authentication.",
+      "Secure development requires actively testing assumptions, not just happy paths."
+    ],
+    content: `Your AI-generated application works. The UI looks right. The API returns \`200 OK\`. But does it actually hold up when someone starts thinking like an attacker?
+
+AI-generated code is not automatically insecure, but generated code can easily make an application appear finished before its security assumptions are understood or validated. Rapid AI prototyping and "vibe coding" optimize heavily for velocity—delivering a smooth happy path where expected inputs produce expected outputs.
+
+However, functional software and secure software are not the same thing.
+
+## How an Attacker Breaks the Happy Path
+
+An application built purely around the happy path collapses the moment interaction deviates from developer expectations. An attacker doesn't interact through your intended UI:
+
+- **Object ID & Parameter Tampering:** Changing object IDs, manipulating parameters, or tampering with request payloads to access other users' data (IDOR / BOLA).
+- **Header Removal & Manipulation:** Removing or modifying security headers to bypass weakly implemented checks.
+- **Request Replay & Concurrency:** Replaying requests rapidly to exploit race conditions or state desync.
+- **Direct Endpoint Probing:** Calling backend endpoints directly, bypassing client-side validation entirely.
+- **Business Logic Abuse:** Chaining valid API operations in unauthorized sequences to abuse business logic.
+
+## Fundamental Security Boundaries
+
+When building or deploying AI-assisted code, these non-negotiable security principles must be enforced:
+
+- **The frontend is not a security boundary:** Client-side validation, disabled buttons, and UI guards provide zero protection against direct HTTP requests.
+- **CORS is not authentication:** Cross-Origin Resource Sharing is a browser-enforced resource access policy, not an access control mechanism.
+- **Secrets exposed in client-side code are not secrets:** Environment variables, API keys, or credentials bundled into client code are public.
+- **Authentication does not automatically mean authorization is correctly implemented:** Verifying identity (AuthN) does not guarantee that object-level access controls (AuthZ) are enforced on every request.
+
+## Testing Assumptions, Not Just the Happy Path
+
+Secure development requires testing the assumptions behind the application, not just testing whether the happy path works. Resilient engineering means thinking offensively: identifying trust boundaries, validating all data strictly on the backend, and assuming that every client-controlled input can and will be manipulated.
+
+---
+
+[Read the full breakdown on Medium →](https://medium.com/@husainhakim/vibe-coding-when-it-works-isnt-the-same-as-it-s-secure-2b94e4f3e369?sharedUserId=husainhakim)`,
   }
 ];
+
