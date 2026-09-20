@@ -167,10 +167,21 @@ export function InteractiveTour() {
 
   const isLastStep = currentStepIndex === totalSteps - 1;
 
+  const clipPathStyle = targetRect
+    ? `polygon(0 0, 0 100%, ${targetRect.left}px 100%, ${targetRect.left}px ${targetRect.top}px, ${targetRect.left + targetRect.width}px ${targetRect.top}px, ${targetRect.left + targetRect.width}px ${targetRect.top + targetRect.height}px, ${targetRect.left}px ${targetRect.top + targetRect.height}px, ${targetRect.left}px 100%, 100% 100%, 100% 0)`
+    : undefined;
+
   const content = (
     <>
-      {/* Semi-transparent backdrop (click to dismiss/advance) */}
-      <div className={styles.tourBackdrop} onClick={endTour} />
+      {/* Semi-transparent backdrop: Dims and blurs entire viewport EXCEPT the exact target element */}
+      <div
+        className={styles.tourBackdrop}
+        style={{
+          clipPath: clipPathStyle,
+          WebkitClipPath: clipPathStyle,
+        }}
+        onClick={endTour}
+      />
 
       {/* Target spotlight cutout frame */}
       {targetRect && (
