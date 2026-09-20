@@ -1,6 +1,6 @@
 import { ImageResponse } from "next/og";
 
-export const alt = "Husain Hakim — Offensive & Defensive Security Workspace";
+export const alt = "Husain Hakim | Offensive & Defensive Security Workspace";
 export const size = {
   width: 1200,
   height: 630,

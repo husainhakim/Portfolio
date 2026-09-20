@@ -26,7 +26,7 @@ export const BLOGS_DATA: BlogItem[] = [
 
 Then I spent 10 months building and scaling production systems at [LetsUpgrade](https://letsupgrade.in). 
 
-That earlier mindset didn't just feel naive—it felt completely disconnected from reality.
+That earlier mindset didn't just feel naive; it felt completely disconnected from reality.
 
 ## The Myth of Code in Isolation
 
@@ -60,7 +60,7 @@ Personal projects gave me my foundation. They helped me build confidence, techni
 
 But it was company projects that taught me the hard lessons: responsibility, restraint, and architectural judgment. 
 
-You absolutely need both. One without the other leaves massive blind spots in your skill set—gaps you usually only notice when a critical system crashes in production.
+You absolutely need both. One without the other leaves massive blind spots in your skill set: gaps you usually only notice when a critical system crashes in production.
 
 I'm still learning. I'm still building. But now, I do it with a much deeper, battle-tested understanding of what actually matters when the code hits the real world.`,
     topics: ["Software Engineering", "Career Growth", "Backend Development"],
@@ -106,7 +106,7 @@ By intercepting the password reset request and changing the \`Host\` header to a
 
 ## The Impact
 
-None of these attacks require memory corruption or advanced reverse engineering. They are logical flaws—the system doing exactly what the code told it to do, but in a way the developer never anticipated. 
+None of these attacks require memory corruption or advanced reverse engineering. They are logical flaws where the system does exactly what the code told it to do, but in a way the developer never anticipated. 
 
 The impact is devastating. By chaining Username Enumeration to harvest accounts, and then exploiting a lack of rate limiting or flawed reset logic, an attacker can systematically compromise user accounts across the entire platform. If one of those accounts happens to be an administrator, it's game over.
 

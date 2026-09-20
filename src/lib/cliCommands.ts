@@ -86,7 +86,7 @@ Dedicated to ethical hacking, offensive security, and technical systems research
 
     case "help":
       return {
-        text: `Husain Hakim — Cybersecurity Workspace Shell (v2.4)
+        text: `Husain Hakim | Cybersecurity Workspace Shell (v2.4)
 =====================================================
 Available Navigation & System Commands:
 

@@ -3032,7 +3032,7 @@
   word-break: break-word;
 }
 
-/* Deletion variant — subtle, refined dark ruby in dark mode, gentle rose in light mode */
+/* Deletion variant - subtle, refined dark ruby in dark mode, gentle rose in light mode */
 .guiToastDanger {
   background: #1f0b0f;
   border-color: rgba(239, 68, 68, 0.45);

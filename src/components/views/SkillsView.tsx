@@ -62,7 +62,7 @@ export function SkillsView() {
 
     list.push({
       type: "complete",
-      text: `[✓] Scan complete — ${totalSkills} technologies identified across ${SKILLS_DATA.length} categories.`,
+      text: `[✓] Scan complete: ${totalSkills} technologies identified across ${SKILLS_DATA.length} categories.`,
     });
 
     return list;
@@ -250,7 +250,7 @@ export function SkillsView() {
           </div>
           <div className={styles.progressStatsRow}>
             <span>
-              [ Progress: {progressPercent}% — {detectedCount}/{totalSkills} detected ]
+              [ Progress: {progressPercent}% | {detectedCount}/{totalSkills} detected ]
             </span>
             {!isComplete && (
               <span className={styles.skipHint}>Click anywhere or press Space to skip</span>
@@ -326,7 +326,7 @@ export function SkillsView() {
         <div className={styles.completionCard}>
           <div className={styles.completionTitleRow}>
             <span className={styles.prefixCheck}>[✓]</span>
-            <span>Scan complete — {totalSkills} technologies identified</span>
+            <span>Scan complete: {totalSkills} technologies identified</span>
           </div>
           <div className={styles.completionSubtext}>
             Verified {SKILLS_DATA.length} technology domains • 100% fingerprint integrity • All capability modules loaded.

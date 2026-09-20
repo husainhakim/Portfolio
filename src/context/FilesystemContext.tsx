@@ -275,7 +275,7 @@ export function FilesystemProvider({ children }: { children: React.ReactNode }) 
       if (current.includes(nodeId)) return;
 
       if (current.length >= 5) {
-        showToast("Quick Access is full — remove one first");
+        showToast("Quick Access is full. Remove one first");
         unlock("hoarder");
         return;
       }

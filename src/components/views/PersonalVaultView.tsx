@@ -1,7 +1,7 @@
 import React, { useState, useEffect, useRef, useCallback } from "react";
 import { createPortal } from "react-dom";
 import styles from "./Views.module.css";
-import { Lock, Unlock, ShieldAlert, AlertCircle, HelpCircle, Terminal, Compass, Brain } from "lucide-react";
+import { Lock, Unlock, ShieldAlert, AlertCircle, HelpCircle, Terminal, Compass, Brain, MessageSquare } from "lucide-react";
 import { useTheme } from "@/context/ThemeContext";
 import { useAchievements } from "@/context/AchievementContext";
 
@@ -153,7 +153,7 @@ export function PersonalVaultView() {
       // Step 3 (1.85s): Massive Vault Door Swings Open in 3D
       const t2 = setTimeout(() => {
         setVaultStep("door_open");
-        setStatusText("[✓] VAULT DOOR OPEN — ACCESS GRANTED");
+        setStatusText("[✓] VAULT DOOR OPEN: ACCESS GRANTED");
       }, 1850);
 
       // Step 4 (2.65s): Dissolve into decrypted vault (completes at ~3.05s)
@@ -163,7 +163,7 @@ export function PersonalVaultView() {
 
       timersRef.current = [t0, t1, t2, t3];
     } else {
-      setError("None of those matched — you only need one right.");
+      setError("None of those matched. You only need one right.");
     }
   }, [answers, phase, completeUnlock]);
 
@@ -852,7 +852,7 @@ export function PersonalVaultView() {
                   fontFamily="var(--font-mono)"
                   letterSpacing="0.22em"
                 >
-                  SECURE ARCHIVE — CONFIDENTIAL
+                  SECURE ARCHIVE // CONFIDENTIAL
                 </text>
 
                 {/* --- C. Heavy Chrome 4-Spoke Central Wheel (Spins 360°) --- */}
@@ -1050,8 +1050,8 @@ export function PersonalVaultView() {
           Outside the Terminal
         </h2>
         <div className={styles.textBlock}>
-          <p>Not everything I do revolves around a terminal.</p>
-          <p>I&apos;ve lost more than <strong>14 kg through the gym</strong>, and getting into fitness has become a pretty important part of my life. I also love running — sometimes for the workout, sometimes just to get away from a screen for a while.</p>
+          <p>My whole life doesnt revolve around coding and security.</p>
+          <p>In the previous 12 months i&apos;ve lost more than <strong>14 kg through the gym</strong>, and getting into fitness has become a pretty important part of my life. I also love running, sometimes for the workout, sometimes just to get away from a screen for a while.</p>
           <p>And when I&apos;m not doing either of those things, there&apos;s a good chance I&apos;m playing <strong>BGMI</strong>.</p>
           <p>I&apos;ve learned a lot from the process of getting fitter, especially about consistency, patience, and actually sticking with something even when progress feels slow.</p>
           <p>If you&apos;re working on your fitness and feel like you don&apos;t know where to start, <strong>feel free to reach out.</strong> I&apos;ve been there, and if I can help from my own experience, I&apos;ll be happy to.</p>
@@ -1065,7 +1065,7 @@ export function PersonalVaultView() {
           How I Got Here
         </h2>
         <div className={styles.textBlock}>
-          <p>I started out more interested in understanding technology than in cybersecurity specifically. I liked figuring out how things worked behind the interface — what happens in a network, how operating systems manage things, what actually happens when you run a command, and why something behaves the way it does.</p>
+          <p>I started out more interested in understanding technology than in cybersecurity specifically. I liked figuring out how things worked behind the interface: what happens in a network, how operating systems manage things, what actually happens when you run a command, and why something behaves the way it does.</p>
           <p>As I started learning more about Linux, networking, and security, I became increasingly interested in the offensive side of things.</p>
           <p>The idea that you can look at a system, understand how it works, find where it is weak, and then prove that weakness actually exists is what pulled me toward ethical hacking.</p>
           <p>I&apos;m still early in that journey. I&apos;m not going to pretend I&apos;ve mastered it. Right now, I&apos;m focused on building the fundamentals properly and getting as much hands-on experience as I can.</p>
@@ -1084,6 +1084,106 @@ export function PersonalVaultView() {
           <p>Linux and networking have taught me this repeatedly.</p>
           <p>Something that looks like a complicated security problem can often become much easier once you actually understand what&apos;s happening underneath it.</p>
           <p>That&apos;s one of the things I enjoy most about learning ethical hacking: every difficult problem usually points toward something I need to understand better.</p>
+        </div>
+      </div>
+
+      {/* Card 4: Random Q&A */}
+      <div className={styles.sectionCard}>
+        <h2 className={styles.sectionTitle}>
+          <MessageSquare size={16} className={styles.sectionIcon} />
+          Random Q&amp;A
+        </h2>
+
+        <div className={styles.vaultQaList}>
+          {/* Item 1 */}
+          <div className={styles.vaultQaItem}>
+            <div className={styles.vaultQaBadgeRow}>
+              <span className={styles.vaultQaBadge}>Q.01</span>
+            </div>
+            <div className={styles.quoteBlock}>
+              &ldquo;What instantly puts you in a good mood?&rdquo;
+            </div>
+            <div className={styles.vaultQaAnswer}>
+              <p>
+                A genuinely good conversation, a good run, music I haven&apos;t heard in a while, or plans suddenly working out.
+              </p>
+              <p>
+                Also food. I&apos;m not going to pretend I&apos;m above that.
+              </p>
+            </div>
+          </div>
+
+          {/* Item 2 */}
+          <div className={styles.vaultQaItem}>
+            <div className={styles.vaultQaBadgeRow}>
+              <span className={styles.vaultQaBadge}>Q.02</span>
+            </div>
+            <div className={styles.quoteBlock}>
+              &ldquo;What is something you could talk about for hours?&rdquo;
+            </div>
+            <div className={styles.vaultQaAnswer}>
+              <p>
+                Random things I&apos;m currently interested in.
+              </p>
+              <p>
+                It changes constantly. If I&apos;m into something, I&apos;ll go way too deep into it and then suddenly move on to something completely unrelated.
+              </p>
+            </div>
+          </div>
+
+          {/* Item 3 */}
+          <div className={styles.vaultQaItem}>
+            <div className={styles.vaultQaBadgeRow}>
+              <span className={styles.vaultQaBadge}>Q.03</span>
+            </div>
+            <div className={styles.quoteBlock}>
+              &ldquo;What&apos;s something you miss from being younger?&rdquo;
+            </div>
+            <div className={styles.vaultQaAnswer}>
+              <p>
+                Having fewer things to think about.
+              </p>
+              <p>
+                You could spend an entire day doing absolutely nothing and it didn&apos;t feel like you were wasting your life.
+              </p>
+            </div>
+          </div>
+
+          {/* Item 4 */}
+          <div className={styles.vaultQaItem}>
+            <div className={styles.vaultQaBadgeRow}>
+              <span className={styles.vaultQaBadge}>Q.04</span>
+            </div>
+            <div className={styles.quoteBlock}>
+              &ldquo;What is something you genuinely don&apos;t understand about people?&rdquo;
+            </div>
+            <div className={styles.vaultQaAnswer}>
+              <p>
+                Why so many people are terrified of admitting they don&apos;t know something.
+              </p>
+              <p>
+                Saying &ldquo;I don&apos;t know&rdquo; seems much less embarrassing than pretending you do.
+              </p>
+            </div>
+          </div>
+
+          {/* Item 5 */}
+          <div className={styles.vaultQaItem}>
+            <div className={styles.vaultQaBadgeRow}>
+              <span className={styles.vaultQaBadge}>Q.05</span>
+            </div>
+            <div className={styles.quoteBlock}>
+              &ldquo;How easily do you get nostalgic?&rdquo;
+            </div>
+            <div className={styles.vaultQaAnswer}>
+              <p>
+                <strong>Dangerously good at it.</strong>
+              </p>
+              <p>
+                A song, an old screenshot, a place, even a random smell can take me straight back to a completely different period of my life.
+              </p>
+            </div>
+          </div>
         </div>
       </div>
     </div>

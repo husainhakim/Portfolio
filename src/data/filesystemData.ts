@@ -92,29 +92,95 @@ export const VIRTUAL_FS: FSDirectory = {
       permissions: "-rw-r--r--",
       owner: "husain",
       group: "staff",
-      size: 1420,
-      updatedAt: "2026-08-23",
-      description: "Personal background, education, and technical mindset",
+      size: 4850,
+      updatedAt: "2026-09-20",
+      description: "Personal background, technical focus, and systems mindset",
       content: `# Husain Hakim
 **Cybersecurity Student | Offensive & Defensive Security**
 
-Dedicated to offensive and defensive security, ethical hacking, vulnerability research, and systems engineering. I specialize in bridging the gap between low-level systems programming, secure defense, and modern application security.
+I am a Computer Science student currently building my foundation in cybersecurity, focusing on understanding how systems operate underneath their interfaces and why they fail under unexpected conditions.
 
-## Core Interests
-- Penetration testing methodologies & automated reconnaissance
-- Linux operating system internals & local privilege escalation
-- Network protocol analysis & Layer 2/3 traffic dissection
-- Defensive verification through offensive simulations
-- Building tactical telemetry and forensic utilities
+Long before I was analyzing network packets or auditing source code, my academic path started in the PCMB stream. At the time, studying physics, chemistry, mathematics, and biology felt like an intensive exercise in natural sciences, but looking back, it fundamentally shaped how I analyze problems. It gave me a systems-level way of thinking: observing interconnected components, tracking how small state changes propagate through an entire environment, and looking for root causes rather than treating superficial symptoms.
 
-## Technical Proficiencies
-- **Languages:** Python, C++, TypeScript/JavaScript, Bash
-- **Security:** Active Directory Enumeration, Reverse Engineering (Magic Numbers/File Signatures), OSINT, Vulnerability Analysis
-- **Frameworks:** React, Next.js, FastAPI, Node.js
-- **Networking:** TCP/IP, ARP, mDNS/Bonjour, Socket Programming
+My transition into computing grew out of raw curiosity. Growing up, I was fascinated by aviation and once imagined a future where I would become a pilot, drawn to the intricate cockpits, navigation systems, and disciplined procedures required to keep complex machinery operating smoothly. While my trajectory eventually shifted from navigating airspace to exploring computer networks, that same appreciation for mission-critical systems and technical architecture carried straight into computing.
 
-## Current Focus
-Currently focused on building bespoke security tools (like CYBER // SONAR and File Type Identifiers) that don't rely on existing frameworks, emphasizing zero-dependency architectures and deep-dive technical postmortems to truly understand the underlying protocols.`,
+When I first started writing code, my early programming days were spent grappling with C++, where figuring out standard input, output, and memory allocation felt like solving an intricate puzzle. That rush of making something work from scratch (understanding what was actually happening beneath the code, how variables sit in memory, and how compilers translate instructions) is what originally got me hooked on technology.
+
+Naturally, that curiosity didn't stop at building software; it drove me to ask where the boundaries break. How do computers talk to each other across an untrusted network? What happens under the hood when a single terminal command is executed? What assumptions do developers make that leave doors open for exploitation? Those questions led me directly into cybersecurity.
+
+## Academic Background
+- **ITM Skills University** | Bachelor of Technology in Computer Science & Engineering (B.Tech CSE), 2023 – 2027
+  - Coursework focusing on operating systems, network protocols, distributed systems, and computer architecture.
+  - Organized three university hackathons with prize pools exceeding ₹6,85,000; mentored student teams at ITM Buildathon 3.0.
+- **SIES College of Arts, Science & Commerce** | Higher Secondary Certificate (Junior College / Science), 2021 – 2023
+- **St. Mary's High School** | Secondary School Certificate (SSC), 2011 – 2021
+
+## What I Actually Work With
+To be completely clear: I do not consider myself an expert in these domains. Cybersecurity is vast, and these are the specific areas where I am actively investing time, getting my hands dirty, and building genuine technical depth:
+
+- **Linux & the Command Line:** Working in Linux daily as my primary environment: navigating filesystems, inspecting process trees, understanding SUID permissions, writing Bash automation scripts, and auditing system logs.
+- **Networking & Protocol Analysis:** Studying Layer 2 and Layer 3 traffic mechanics, TCP handshakes, ARP cache behavior, DNS queries, mDNS multicast resolution, and packet inspection using tools like Wireshark and tcpdump.
+- **Python & Security Scripting:** Developing custom network probes, protocol parsers, automated reconnaissance utilities, and forensic tools from scratch using standard libraries and asynchronous concurrency.
+- **Reconnaissance & Enumeration:** Mapping out attack surfaces through active and passive asset discovery, port auditing, service fingerprinting, and sub-domain discovery.
+- **Web Application Security:** Analyzing web traffic, investigating authentication workflows, testing access control boundaries (IDOR), and understanding common vulnerability classes like SQL injection and cross-site scripting.
+- **Vulnerability Discovery & Ethical Hacking:** Following structured testing methodologies to identify logic flaws and misconfigurations within authorized environments.
+- **Intrusion Detection & Telemetry:** Ingesting web and system logs, aggregating connection metrics across sliding time windows, and writing logic to flag suspicious brute-force or injection activity.
+- **Security Tooling & Developer Utilities:** Writing lightweight, local-first CLI tools that avoid heavy external dependencies, respect user privacy, and run deterministically.
+- **Backend Systems & APIs:** Building and inspecting REST APIs using Node.js, Express, and FastAPI, paying close attention to input sanitization, database query parameterization, and secure state handling.
+- **Security Labs & Vulnerable Sandboxes:** Practicing regularly across platforms like TryHackMe and PortSwigger Web Security Academy, as well as running custom local Docker containers to experiment safely.
+
+## Projects & Experiments
+A massive part of my learning happens through building. Reading documentation and theory is essential, but until I actually write code to interact with a protocol or parse a raw binary format, the knowledge doesn't fully click.
+
+One project that played a pivotal role in shaping my perspective was building a multi-tier **Intrusion Detection System & Honeypot**. I wanted to see how web applications look to both an attacker attempting an intrusion and a defender trying to detect it in real time. The architecture paired a deliberately flawed honeypot portal (using raw SQL string concatenation, unescaped inputs, and weak credentials) with a hardened production server implementing parameterized queries and password hashing.
+
+Between them ran a real-time log-monitoring IDS engine that continuously tailed access logs, maintained sliding time windows per session ID, and raised high-severity alerts when brute-force thresholds were exceeded. Building the accompanying attack testing scripts (especially comparing an aggressive brute-force mode against a delayed, stealth mode designed to evade detection thresholds) was eye-opening. It pushed me heavily toward the defensive side of security because it proved that effective defense requires understanding the exact operational signatures an attack leaves behind.
+
+Other key projects include:
+- **CYBER // SONAR (Network Scanner):** A zero-dependency tactical intranet discovery utility in Python. Sweeps subnets with parallel socket sweeps, parses kernel ARP tables for authentic physical MAC addresses, resolves hardware vendors via IEEE OUI databases and hostnames via mDNS, visualized in an HTML5 Canvas radar.
+- **File Signature Identifier:** A forensics utility that inspects true binary magic numbers to detect extension spoofing and masquerading, with a built-in hex viewer.
+- **PassGuard:** A local-first password security analyzer estimating Shannon entropy and performing k-Anonymity breach checking with the Web Crypto API.
+- **RepoChecker:** A local-only CLI tool that checks Git repositories for accidentally committed secrets, API keys, and missing .gitignore rules.
+- **QuickRef:** An offline, terminal-first documentation lookup CLI formatted with ANSI escape codes and packaged via setuptools.
+
+## How I Learn
+My learning process revolves around a practical, four-stage feedback loop: **LEARN → BUILD → TEST → DOCUMENT**.
+
+1. **LEARN (Read the Fundamentals):** I start by understanding underlying concepts, reading RFCs, Linux man pages, protocol specifications, and technical documentation rather than skipping straight to high-level automation tools.
+2. **BUILD (Write Tools from Scratch):** Once I understand the theory, I try to write a small utility or script to interact with it directly in Python, Bash, or standard libraries. Writing zero-dependency code forces me to handle data streams, parse packets, and deal with edge cases that frameworks usually hide.
+3. **TEST (Break Things in Authorized Labs):** I take that knowledge into isolated virtual machines, local Docker containers, or authorized lab environments. Running commands myself and seeing what breaks is essential. Failed scripts, syntax errors, and misconfigured test environments are where the real learning happens.
+4. **DOCUMENT (Analyze & Write Postmortems):** Finally, I write down what I learned in detailed writeups, project postmortems, or technical blogs. Explaining the root cause of a vulnerability, the exploitation steps, and the mitigation strategy proves whether I genuinely understand a concept or just memorized a command.
+
+## What I'm Currently Exploring
+Here is a snapshot of specific topics currently sitting on my desk for active study:
+- **Network Protocols:** Deep-diving into TCP/IP state machines, handshake sequences, DNS query mechanics, and HTTP/HTTPS header analysis.
+- **Linux Internals & Privilege Escalation:** Auditing file permissions, SUID/SGID binaries, Linux capabilities, cron job configurations, and path hijacking vectors in lab machines.
+- **Reconnaissance & Enumeration:** Refining structured discovery workflows, service fingerprinting, and asset mapping.
+- **Web Vulnerabilities:** Analyzing OWASP Top 10 vulnerabilities, authentication bypasses, broken object-level authorization (IDOR), and parameter tampering.
+- **Network Traffic Analysis:** Capturing and inspecting live packet captures with Wireshark and tcpdump to understand what payloads look like over the wire.
+- **Intrusion Detection Concepts:** Studying sliding-window thresholding, log aggregation, and the balance between alert sensitivity and false positives.
+- **Python Security Automation:** Writing modular scripts to automate asset scanning, header validation, and local security audits.
+- **Attacker Techniques vs. Defensive Indicators:** Comparing offensive execution steps with corresponding forensic traces left in system and web server logs.
+
+## Why Purple Teaming Interests Me
+Offensive security teaches how systems can be probed and exploited, while defensive security teaches how those attacks can be recognized, investigated, and mitigated. I am most fascinated by the space where both meet.
+
+> I don't just want to know how to perform an attack. I also want to understand what that attack looks like from the other side.
+
+When an attacker runs an automated directory scan, what does that look like in web server access logs? When an exploitation payload touches an endpoint, what events are recorded in system audit logs? When an attacker introduces deliberate delays to slip past rate limits, how do detection rules need to evolve to catch that behavior?
+
+Exploring adversary simulation, detection engineering, network analysis, and security monitoring allows offense to sharpen defense, while defense provides the realistic constraints that make offensive testing meaningful. While I am not claiming to work professionally as a purple teamer today, this collaborative, holistic approach is the clear direction my learning is heading toward.
+
+## What's Next
+My immediate goal is straightforward: **get really good at the fundamentals.**
+
+Cybersecurity is broad, and I don't have my entire career mapped out to the final milestone, nor do I think I need to right now. I know the direction I am heading in, and I want to spend my university years building real depth across networking, Linux, web security, and defensive telemetry before deciding where to specialize.
+
+As I progress, I want to expand my lab work into more complex environments, exploring Active Directory, Kerberos authentication, domain privilege escalation, red and blue teaming workflows, adversary simulation, vulnerability research, and detection engineering.
+
+At the end of the day, I don't want to become someone who simply knows how to run pre-packaged security tools. I want to understand systems well enough to know where to look, what to question, what to break, and what the evidence means afterwards.
+
+That is why I keep following the loop: **LEARN → BUILD → TEST → DOCUMENT**. Keep learning, keep breaking things in authorized environments, understand why they broke, and get better at building them securely.`,
     },
 
     // 📁 projects/
@@ -268,7 +334,7 @@ Currently focused on building bespoke security tools (like CYBER // SONAR and Fi
           group: "staff",
           size: 5840,
           updatedAt: "2026-08-25",
-          description: "Writeup: QuickRef — CLI Tooling & Python Packaging",
+          description: "Writeup: QuickRef | CLI Tooling & Python Packaging",
         },
         {
           id: "writeup-ids",

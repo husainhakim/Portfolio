@@ -78,7 +78,7 @@ export async function generateMetadata({
 
   // 2. About
   if (segment0 === "about") {
-    const title = "About Husain Hakim — Cybersecurity & Systems Mindset";
+    const title = "About Husain Hakim | Cybersecurity & Systems Mindset";
     const description =
       "Background, education at ITM Skills University, offensive and defensive security philosophy, and technical methodologies of Husain Hakim.";
     return {
@@ -95,7 +95,7 @@ export async function generateMetadata({
       const slug = pathArray[1];
       const project = PROJECTS_DATA.find((p) => p.slug === slug);
       if (project) {
-        const title = `${project.name} — Security Tooling`;
+        const title = `${project.name} | Security Tooling`;
         const description = project.summary;
         return {
           title,
@@ -111,7 +111,7 @@ export async function generateMetadata({
       }
     }
 
-    const title = "Security Projects & Tools — Husain Hakim";
+    const title = "Security Projects & Tools | Husain Hakim";
     const description =
       "Bespoke cybersecurity and network reconnaissance utilities engineered by Husain Hakim, including CYBER // SONAR and File Signature Detector.";
     return {
@@ -131,7 +131,7 @@ export async function generateMetadata({
         (w) => w.category === category && w.slug === slug
       );
       if (writeup) {
-        const title = `${writeup.title} — Security Research Writeup`;
+        const title = `${writeup.title} | Security Research Writeup`;
         const description = writeup.summary;
         return {
           title,
@@ -147,7 +147,7 @@ export async function generateMetadata({
       }
     }
 
-    const title = "Security Research & Lab Writeups — Husain Hakim";
+    const title = "Security Research & Lab Writeups | Husain Hakim";
     const description =
       "Technical offensive and defensive security writeups on SUID binary privilege escalation, network scanning methodologies, and defense architectures.";
     return {
@@ -164,7 +164,7 @@ export async function generateMetadata({
       const slug = pathArray[1];
       const blog = BLOGS_DATA.find((b) => b.slug === slug);
       if (blog) {
-        const title = `${blog.title} — Technical Publication`;
+        const title = `${blog.title} | Technical Publication`;
         const description = blog.summary;
         return {
           title,
@@ -180,7 +180,7 @@ export async function generateMetadata({
       }
     }
 
-    const title = "Technical Articles & Publications — Husain Hakim";
+    const title = "Technical Articles & Publications | Husain Hakim";
     const description =
       "In-depth articles covering backend architectures, security testing, and systems engineering by Husain Hakim.";
     return {
@@ -193,7 +193,7 @@ export async function generateMetadata({
 
   // 6. Skills
   if (segment0 === "skills") {
-    const title = "Technical Skills & Security Matrix — Husain Hakim";
+    const title = "Technical Skills & Security Matrix | Husain Hakim";
     const description =
       "Technical competencies in Python, C++, Linux Kernel & Internals, Network Packet Analysis, and Penetration Testing.";
     return {
@@ -206,7 +206,7 @@ export async function generateMetadata({
 
   // 7. Experience
   if (segment0 === "experience") {
-    const title = "Professional Experience & Leadership — Husain Hakim";
+    const title = "Professional Experience & Leadership | Husain Hakim";
     const description =
       "Professional track record as Backend Developer at LetsUpgrade and University Hackathon Organizer (₹6,85,000+ Prize Pools).";
     return {
@@ -219,7 +219,7 @@ export async function generateMetadata({
 
   // 8. Contact
   if (segment0 === "contact") {
-    const title = "Contact & Communications — Husain Hakim";
+    const title = "Contact & Communications | Husain Hakim";
     const description =
       "Get in touch with Husain Hakim for cybersecurity research, penetration testing collaborations, or software development.";
     return {
@@ -232,7 +232,7 @@ export async function generateMetadata({
 
   // 9. Vault
   if (segment0 === "vault") {
-    const title = "Personal Security Vault — Husain Hakim";
+    const title = "Personal Security Vault | Husain Hakim";
     const description = "Encrypted personal vault and security credentials portal.";
     return {
       title,
@@ -368,17 +368,17 @@ export default async function Page({ params }: PageProps) {
   }
 
   // Determine single primary heading for semantic crawlable source
-  let semanticHeading = `${PROFILE_DATA.name} — ${PROFILE_DATA.title}`;
+  let semanticHeading = `${PROFILE_DATA.name} | ${PROFILE_DATA.title}`;
   let semanticDescription = PROFILE_DATA.summary;
 
   if (activeProject) {
-    semanticHeading = `${activeProject.name} — Security Tool`;
+    semanticHeading = `${activeProject.name} | Security Tool`;
     semanticDescription = activeProject.summary;
   } else if (activeWriteup) {
-    semanticHeading = `${activeWriteup.title} — Security Writeup`;
+    semanticHeading = `${activeWriteup.title} | Security Writeup`;
     semanticDescription = activeWriteup.summary;
   } else if (pathArray[0] === "about") {
-    semanticHeading = `About ${PROFILE_DATA.name} — Offensive & Defensive Security`;
+    semanticHeading = `About ${PROFILE_DATA.name} | Offensive & Defensive Security`;
     semanticDescription = PROFILE_DATA.summary;
   } else if (pathArray[0] === "projects") {
     semanticHeading = `Offensive & Defensive Security Projects`;

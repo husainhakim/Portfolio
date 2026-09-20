@@ -33,7 +33,7 @@ export function Terminal() {
     {
       id: "init-welcome",
       command: "welcome",
-      output: `Husain Hakim — Offensive & Defensive Security Workspace Terminal [v2.4]
+      output: `Husain Hakim | Offensive & Defensive Security Workspace Terminal [v2.4]
 Type 'help' to see all available filesystem & security commands.
 Type 'gui' to toggle back to the GUI workspace at any time.`,
       timestamp: new Date().toLocaleTimeString(),

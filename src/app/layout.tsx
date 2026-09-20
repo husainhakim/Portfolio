@@ -132,7 +132,7 @@ export default function RootLayout({
     "@context": "https://schema.org",
     "@type": "ProfessionalService",
     "@id": `${SITE_URL}/#service`,
-    name: "Husain Hakim — Cybersecurity & Vulnerability Research Consulting",
+    name: "Husain Hakim | Cybersecurity & Vulnerability Research Consulting",
     description:
       "Offensive and defensive security research, penetration testing, network reconnaissance, and security audit services based in Mumbai, India.",
     url: SITE_URL,

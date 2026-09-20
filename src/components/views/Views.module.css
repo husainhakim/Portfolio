@@ -1141,10 +1141,10 @@
 }
 
 /* ═══════════════════════════════════════════════
-   Personal Vault — Clean File-Manager Modal (Light Neutral Palette)
+   Personal Vault - Clean File-Manager Modal (Light Neutral Palette)
    ═══════════════════════════════════════════════ */
 
-/* Backdrop overlay — subtle scrim with blur */
+/* Backdrop overlay - subtle scrim with blur */
 .vaultOverlay {
   position: fixed;
   inset: 0;
@@ -1162,7 +1162,7 @@
   animation: vOverlayOut 0.4s cubic-bezier(0.4, 0, 0.2, 1) forwards;
 }
 
-/* Modal panel — light warm neutral matching the workstation file-manager UI */
+/* Modal panel - light warm neutral matching the workstation file-manager UI */
 .vaultPanel {
   position: relative;
   width: 660px;
@@ -1186,7 +1186,7 @@
   animation: vPanelOut 0.35s cubic-bezier(0.4, 0, 0.2, 1) forwards;
 }
 
-/* Panel Header — clean neutral header matching app file headers */
+/* Panel Header - clean neutral header matching app file headers */
 .vaultPanelHeader {
   display: flex;
   align-items: center;
@@ -1258,7 +1258,7 @@
   animation: vFormFadeOut 0.22s ease-out forwards;
 }
 
-/* Lock Row — icon + metadata */
+/* Lock Row - icon + metadata */
 .vaultLockRow {
   display: flex;
   align-items: center;
@@ -1330,7 +1330,7 @@
   letter-spacing: 0.01em;
 }
 
-/* Questions container — rhythm: distinct gap of 16px */
+/* Questions container - rhythm: distinct gap of 16px */
 .vaultQuestions {
   display: flex;
   flex-direction: column;
@@ -1474,7 +1474,7 @@
   cursor: not-allowed;
 }
 
-/* "Need a hint?" button — prominent, clear contrast, unmistakably visible */
+/* "Need a hint?" button - prominent, clear contrast, unmistakably visible */
 .vaultHintBtn {
   display: inline-flex;
   align-items: center;
@@ -1503,7 +1503,7 @@
   outline-offset: 2px !important;
 }
 
-/* Hint message callout box — high contrast, clearly legible */
+/* Hint message callout box - high contrast, clearly legible */
 .vaultHintBox {
   display: flex;
   align-items: flex-start;
@@ -2217,4 +2217,69 @@
   .vaultFullscreenFooter {
     padding: 16px 16px 20px;
   }
+}
+
+/* ── Vault Q&A ── */
+.vaultQaList {
+  display: flex;
+  flex-direction: column;
+  gap: 32px;
+  margin-top: 14px;
+}
+
+.vaultQaItem {
+  display: flex;
+  flex-direction: column;
+  background: transparent;
+  border: none;
+  padding: 0;
+  box-shadow: none;
+}
+
+.vaultQaBadgeRow {
+  display: flex;
+  align-items: center;
+  margin-bottom: 6px;
+}
+
+.vaultQaBadge {
+  display: inline-flex;
+  align-items: center;
+  font-family: var(--font-mono);
+  font-size: 11px;
+  font-weight: 700;
+  color: var(--accent-text);
+  background: var(--accent-surface);
+  border: 1px solid var(--accent-border);
+  border-radius: 999px;
+  padding: 2px 8px;
+  letter-spacing: 0.05em;
+  line-height: 1.2;
+}
+
+.vaultQaQuestion {
+  font-size: 14px;
+  font-weight: 700;
+  color: var(--text-primary);
+  letter-spacing: -0.01em;
+  line-height: 1.45;
+  margin: 0 0 8px 0;
+}
+
+.vaultQaAnswer {
+  display: flex;
+  flex-direction: column;
+  gap: 8px;
+  font-size: 13.5px;
+  line-height: 1.65;
+  color: var(--text-secondary);
+}
+
+.vaultQaAnswer p {
+  margin: 0;
+}
+
+.vaultQaAnswer strong {
+  color: var(--text-primary);
+  font-weight: 600;
 }
