@@ -124,11 +124,10 @@ function triggerBrowserDownload(blobOrUrl: Blob | string, filename: string) {
 }
 
 /**
- * Resolves the download filename.
- * All files strictly get the .md extension so they open in markdown editors,
- * except the resume which is always HusainHakim_Resume.pdf.
+ * Resolves the internal filename for files (used inside folder .zip archives).
+ * All non-resume files strictly get the .md extension.
  */
-export function getDownloadFilename(node: FSFile): string {
+export function getInternalFilename(node: FSFile): string {
   if (node.name.toLowerCase().includes("resume") || node.fileType === "pdf") {
     return "HusainHakim_Resume.pdf";
   }
@@ -143,12 +142,30 @@ export function getDownloadFilename(node: FSFile): string {
 }
 
 /**
+ * Resolves the standalone download filename for a single file.
+ * Prefixes with HusainHakim_ (e.g. HusainHakim_about.md),
+ * except for the resume which is already HusainHakim_Resume.pdf.
+ */
+export function getStandaloneDownloadFilename(node: FSFile): string {
+  if (node.name.toLowerCase().includes("resume") || node.fileType === "pdf") {
+    return "HusainHakim_Resume.pdf";
+  }
+
+  const internalName = getInternalFilename(node);
+  if (internalName.startsWith("HusainHakim_")) {
+    return internalName;
+  }
+
+  return `HusainHakim_${internalName}`;
+}
+
+/**
  * Downloads a single file from the virtual filesystem.
- * Ensures resume is downloaded as binary PDF with filename HusainHakim_Resume.pdf,
- * and all other files download with a .md extension.
+ * Standalone files are named HusainHakim_<filename>.md,
+ * and resume is HusainHakim_Resume.pdf.
  */
 export async function downloadSingleFile(node: FSFile): Promise<void> {
-  const filename = getDownloadFilename(node);
+  const filename = getStandaloneDownloadFilename(node);
 
   // If this is the resume PDF file
   if (node.name.toLowerCase().includes("resume") || node.fileType === "pdf") {
@@ -164,11 +181,12 @@ export async function downloadSingleFile(node: FSFile): Promise<void> {
 
 /**
  * Recursively adds directory contents to a JSZip instance.
+ * Files inside the zip retain their original clean filenames (without HusainHakim_ prefix).
  */
 async function addFolderToZip(zipFolder: JSZip, directory: FSDirectory): Promise<void> {
   for (const child of directory.children) {
     if (child.type === "file") {
-      const filename = getDownloadFilename(child);
+      const filename = getInternalFilename(child);
       if (child.name.toLowerCase().includes("resume") || child.fileType === "pdf") {
         try {
           const res = await fetch("/resume.pdf");
@@ -193,6 +211,7 @@ async function addFolderToZip(zipFolder: JSZip, directory: FSDirectory): Promise
 
 /**
  * Downloads an entire directory as a .zip file.
+ * The zip archive is named HusainHakim_<folder_name>.zip.
  */
 export async function downloadDirectoryAsZip(directory: FSDirectory): Promise<void> {
   const zip = new JSZip();
@@ -204,7 +223,10 @@ export async function downloadDirectoryAsZip(directory: FSDirectory): Promise<vo
     compressionOptions: { level: 6 },
   });
 
-  const zipFilename = `${directory.name}.zip`;
+  const folderBase = directory.name.startsWith("HusainHakim_")
+    ? directory.name
+    : `HusainHakim_${directory.name}`;
+  const zipFilename = `${folderBase}.zip`;
   triggerBrowserDownload(zipBlob, zipFilename);
 }
 
