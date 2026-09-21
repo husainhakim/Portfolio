@@ -1,9 +1,10 @@
 import React, { useState, useEffect, useRef, useCallback } from "react";
 import { createPortal } from "react-dom";
 import styles from "./Views.module.css";
-import { Lock, Unlock, ShieldAlert, AlertCircle, HelpCircle, Terminal, Compass, Brain, MessageSquare } from "lucide-react";
+import { Lock, Unlock, ShieldAlert, AlertCircle, HelpCircle, Terminal, Compass, Brain, MessageSquare, ChevronLeft, X } from "lucide-react";
 import { useTheme } from "@/context/ThemeContext";
 import { useAchievements } from "@/context/AchievementContext";
+import { useFilesystem } from "@/context/FilesystemContext";
 
 const VALID_ANSWERS: Record<string, string[]> = {
   q1: ["pcmb", "physics chemistry maths biology", "pcmb stream", "science pcmb"],
@@ -39,6 +40,7 @@ export type VaultStep = "wheel_turn" | "bolts_retract" | "door_open";
 export function PersonalVaultView() {
   const { theme } = useTheme();
   const { unlock } = useAchievements();
+  const { closeFile } = useFilesystem();
   const isDark = theme === "dark";
   const [isUnlocked, setIsUnlocked] = useState(false);
   const [mounted, setMounted] = useState(false);
@@ -93,8 +95,12 @@ export function PersonalVaultView() {
   useEffect(() => {
     if (isUnlocked) return;
     const handleGlobalKey = (e: KeyboardEvent) => {
-      if (e.key === "Escape" && (phase === "vault_unlock" || phase === "dissolve")) {
-        completeUnlock();
+      if (e.key === "Escape") {
+        if (phase === "vault_unlock" || phase === "dissolve") {
+          completeUnlock();
+        } else {
+          closeFile();
+        }
         return;
       }
       if (!overlayRef.current) return;
@@ -107,7 +113,7 @@ export function PersonalVaultView() {
     };
     document.addEventListener("keydown", handleGlobalKey);
     return () => document.removeEventListener("keydown", handleGlobalKey);
-  }, [isUnlocked, phase, completeUnlock]);
+  }, [isUnlocked, phase, completeUnlock, closeFile]);
 
   const handleInputChange = useCallback((key: string, value: string) => {
     setAnswers(prev => ({ ...prev, [key]: value }));
@@ -189,9 +195,20 @@ export function PersonalVaultView() {
         >
           {/* Top Bar HUD */}
           <div className={styles.vaultFullscreenHeader}>
-            <div className={styles.vaultFullscreenTitle}>
-              <Lock size={16} color={isAccessGranted ? (isDark ? "#22c55e" : "#16a34a") : (isDark ? "#ef4444" : "#dc2626")} />
-              <span>{isAccessGranted ? "personal_vault.md [DECRYPTED]" : "personal_vault.md [DECRYPTING...]"}</span>
+            <div className={styles.vaultFullscreenLeft}>
+              <button
+                type="button"
+                className={styles.vaultVideoBackBtn}
+                onClick={closeFile}
+                title="Exit vault"
+              >
+                <ChevronLeft size={16} />
+                <span>BACK</span>
+              </button>
+              <div className={styles.vaultFullscreenTitle}>
+                <Lock size={16} color={isAccessGranted ? (isDark ? "#22c55e" : "#16a34a") : (isDark ? "#ef4444" : "#dc2626")} />
+                <span>{isAccessGranted ? "personal_vault.md [DECRYPTED]" : "personal_vault.md [DECRYPTING...]"}</span>
+              </div>
             </div>
             <button
               type="button"
@@ -921,18 +938,40 @@ export function PersonalVaultView() {
       <div
         ref={overlayRef}
         className={`${styles.vaultOverlay} ${phase === "submitting" ? styles.vaultOverlayExit : ""}`}
+        onClick={closeFile}
         role="dialog"
         aria-modal="true"
         aria-label="Personal Vault - Unlock Challenge"
       >
-        <div className={styles.vaultPanel}>
+        <div className={styles.vaultPanel} onClick={e => e.stopPropagation()}>
           {/* File Header Bar */}
           <div className={styles.vaultPanelHeader}>
             <div className={styles.vaultHeaderLeft}>
+              <button
+                type="button"
+                onClick={closeFile}
+                className={styles.vaultBackBtn}
+                title="Back to files (ESC)"
+                aria-label="Back to files"
+              >
+                <ChevronLeft size={16} />
+                <span>Back</span>
+              </button>
               <Lock size={15} className={styles.vaultHeaderIcon} />
               <span className={styles.vaultHeaderTitle}>personal_vault.md</span>
             </div>
-            <span className={styles.vaultHeaderPerms}>-rw-------</span>
+            <div className={styles.vaultHeaderRight}>
+              <span className={styles.vaultHeaderPerms}>-rw-------</span>
+              <button
+                type="button"
+                onClick={closeFile}
+                className={styles.vaultCloseBtn}
+                title="Close (ESC)"
+                aria-label="Close"
+              >
+                <X size={16} />
+              </button>
+            </div>
           </div>
 
           {/* Panel Body */}
@@ -1000,6 +1039,15 @@ export function PersonalVaultView() {
                 >
                   <HelpCircle size={15} />
                   <span>{showHint ? "Hide hint" : "Need a hint?"}</span>
+                </button>
+                <button
+                  type="button"
+                  className={styles.vaultCancelBtn}
+                  onClick={closeFile}
+                  title="Go back (ESC)"
+                >
+                  <ChevronLeft size={15} />
+                  <span>Back</span>
                 </button>
               </div>
 

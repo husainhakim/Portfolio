@@ -1204,13 +1204,12 @@
   animation: vPanelOut 0.35s cubic-bezier(0.4, 0, 0.2, 1) forwards;
 }
 
-/* Panel Header - clean neutral header matching app file headers */
 .vaultPanelHeader {
   display: flex;
   align-items: center;
   justify-content: space-between;
   height: 48px;
-  padding: 0 22px;
+  padding: 0 16px 0 12px;
   background: var(--bg-panel, #ebe9e1);
   border-bottom: 1px solid var(--border-default, #c9c4b5);
   position: relative;
@@ -1225,6 +1224,33 @@
   z-index: 1;
 }
 
+.vaultBackBtn {
+  display: inline-flex;
+  align-items: center;
+  gap: 4px;
+  padding: 4px 8px;
+  font-size: 12px;
+  font-family: var(--font-mono);
+  font-weight: 600;
+  background: var(--bg-surface, #ffffff);
+  border: 1px solid var(--border-default, #c9c4b5);
+  color: var(--text-secondary, #4a505b);
+  cursor: pointer;
+  transition: all 0.12s ease;
+  user-select: none;
+}
+
+.vaultBackBtn:hover {
+  background: var(--bg-panel-hover, #f0eee6);
+  color: var(--text-primary, #1a1a1a);
+  border-color: var(--border-strong, #9e9783);
+}
+
+.vaultBackBtn:focus-visible {
+  outline: 2px solid #dc2626 !important;
+  outline-offset: 1px !important;
+}
+
 .vaultHeaderIcon {
   color: var(--text-secondary, #4a505b);
   flex-shrink: 0;
@@ -1234,8 +1260,16 @@
   font-family: var(--font-mono);
   font-size: 13px;
   font-weight: 700;
-  color: #1a1a1a;
+  color: var(--text-primary, #1a1a1a);
   letter-spacing: 0.02em;
+}
+
+.vaultHeaderRight {
+  display: flex;
+  align-items: center;
+  gap: 10px;
+  position: relative;
+  z-index: 1;
 }
 
 /* Permission tag (-rw-------) badge: muted neutral */
@@ -1244,13 +1278,38 @@
   z-index: 1;
   font-family: var(--font-mono);
   font-size: 11px;
-  color: #747b88;
+  color: var(--text-muted, #747b88);
   padding: 3px 9px;
   background: var(--bg-subtle, #f8f7f4);
   border: 1px solid var(--border-subtle, #dbd7cb);
   border-radius: 0;
   letter-spacing: 0.06em;
   user-select: none;
+}
+
+.vaultCloseBtn {
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  width: 26px;
+  height: 26px;
+  background: transparent;
+  border: 1px solid transparent;
+  color: var(--text-muted, #747b88);
+  cursor: pointer;
+  transition: all 0.12s ease;
+  border-radius: var(--radius-sm, 2px);
+}
+
+.vaultCloseBtn:hover {
+  background: rgba(220, 38, 38, 0.12);
+  color: #dc2626;
+  border-color: rgba(220, 38, 38, 0.25);
+}
+
+.vaultCloseBtn:focus-visible {
+  outline: 2px solid #dc2626 !important;
+  outline-offset: 1px !important;
 }
 
 /* Panel Body */
@@ -1521,6 +1580,35 @@
   outline-offset: 2px !important;
 }
 
+/* "Back" button in Challenge Form Actions */
+.vaultCancelBtn {
+  display: inline-flex;
+  align-items: center;
+  gap: 5px;
+  font-family: var(--font-mono);
+  font-size: 12.5px;
+  font-weight: 600;
+  color: var(--text-secondary, #4a505b);
+  background: transparent;
+  border: 1px solid var(--border-default, #c9c4b5);
+  padding: 8px 16px;
+  cursor: pointer;
+  letter-spacing: 0.02em;
+  transition: all 0.15s ease;
+  user-select: none;
+}
+
+.vaultCancelBtn:hover {
+  background: var(--bg-panel-hover, #ebe9e1);
+  border-color: var(--border-strong, #9e9783);
+  color: var(--text-primary, #1a1a1a);
+}
+
+.vaultCancelBtn:focus-visible {
+  outline: 2px solid #dc2626 !important;
+  outline-offset: 2px !important;
+}
+
 /* Hint message callout box - high contrast, clearly legible */
 .vaultHintBox {
   display: flex;
@@ -1606,6 +1694,49 @@
   justify-content: space-between;
   background: transparent;
   z-index: 30;
+}
+
+.vaultFullscreenLeft {
+  display: flex;
+  align-items: center;
+  gap: 12px;
+}
+
+.vaultVideoBackBtn {
+  display: inline-flex;
+  align-items: center;
+  gap: 6px;
+  font-family: var(--font-mono);
+  font-size: 11.5px;
+  font-weight: 700;
+  letter-spacing: 0.05em;
+  color: #ffffff;
+  background: rgba(15, 23, 42, 0.65);
+  border: 1px solid rgba(255, 255, 255, 0.15);
+  padding: 6px 14px;
+  border-radius: 9999px;
+  backdrop-filter: blur(8px);
+  -webkit-backdrop-filter: blur(8px);
+  cursor: pointer;
+  transition: all 0.15s ease;
+}
+
+.vaultVideoBackBtn:hover {
+  background: rgba(15, 23, 42, 0.85);
+  border-color: rgba(255, 255, 255, 0.3);
+  transform: translateX(-2px);
+}
+
+.vaultStageLight .vaultVideoBackBtn {
+  background: rgba(255, 255, 255, 0.88);
+  color: #121316;
+  border: 1px solid rgba(0, 0, 0, 0.12);
+  box-shadow: 0 2px 10px rgba(0, 0, 0, 0.06);
+}
+
+.vaultStageLight .vaultVideoBackBtn:hover {
+  background: #ffffff;
+  border-color: rgba(0, 0, 0, 0.25);
 }
 
 .vaultFullscreenTitle {
