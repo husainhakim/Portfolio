@@ -82,6 +82,32 @@ export const VIRTUAL_FS: FSDirectory = {
       ],
     },
 
+    // 📄 README.md (Workstation Guide & Cheat Sheet)
+    {
+      id: "readme-file",
+      name: "README.md",
+      path: "/home/husain/README.md",
+      type: "file",
+      fileType: "markdown",
+      permissions: "-rw-r--r--",
+      owner: "husain",
+      group: "staff",
+      size: 3420,
+      updatedAt: "2026-09-21",
+      description: "Workstation Superpowers, CLI Hotkeys, CTF Vault, and Achievements Guide",
+      content: `# HUSAIN.OS v2.4 • INTERACTIVE WORKSTATION GUIDE
+
+Welcome to Husain Hakim's Interactive Portfolio Workstation.
+This system is an interactive Linux desktop simulation (/home/husain).
+
+## Key Capabilities & Hotkeys:
+- [Alt + T / Ctrl + \`] : Toggle between GUI Desktop & Interactive Linux Terminal Shell
+- [Ctrl + K / Cmd + K]  : Open Global Command Palette & Feature Spotlight
+- [Vault Challenge]    : Unlock the riddle-protected Personal Vault (/home/husain/vault)
+- [10 Achievements]    : Discover hidden Easter eggs, CLI secrets, and unlock all trophy badges
+- [Drag & Drop]        : Reorganize files, pin items to Quick Access, or right-click to customize`,
+    },
+
     // 📄 about.md
     {
       id: "about-file",

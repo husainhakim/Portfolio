@@ -12,8 +12,10 @@ import {
   Moon,
   FileText,
   Trophy,
+  Command,
 } from "lucide-react";
 import { useAchievements } from "@/context/AchievementContext";
+import { CommandPalette } from "@/components/ui/CommandPalette";
 import styles from "./Header.module.css";
 
 const FULL_NAME = "Husain Hakim";
@@ -39,6 +41,7 @@ export function Header() {
 
   // Physical switch flipping state
   const [isFlipping, setIsFlipping] = useState(false);
+  const [isPaletteOpen, setIsPaletteOpen] = useState(false);
 
   // Typing and Subtitle Glitch states
   const [typedName, setTypedName] = useState("");
@@ -114,12 +117,15 @@ export function Header() {
     }, 360);
   };
 
-  // Global hotkey: Alt+T or Ctrl+` to toggle GUI/CLI mode
+  // Global hotkeys: Alt+T or Ctrl+` for CLI, Cmd+K or Ctrl+K for Palette
   useEffect(() => {
     const handleHotkey = (e: KeyboardEvent) => {
       if ((e.altKey && e.key.toLowerCase() === "t") || (e.ctrlKey && e.key === "`")) {
         e.preventDefault();
         toggleMode();
+      } else if ((e.metaKey || e.ctrlKey) && e.key.toLowerCase() === "k") {
+        e.preventDefault();
+        setIsPaletteOpen((prev) => !prev);
       }
     };
     window.addEventListener("keydown", handleHotkey);
@@ -129,132 +135,151 @@ export function Header() {
   const isDark = mounted && theme === "dark";
 
   return (
-    <header className={styles.header}>
-      {/* Brand & Identity */}
-      <div className={styles.brandGroup}>
-        <button
-          onClick={() => navigate("/home/husain")}
-          className={styles.brandButton}
-          title="Return to Workspace Root (/home/husain)"
-        >
-          <div className={styles.brandAvatar}>
-            <Image
-              src="/husain.jpg"
-              alt="Husain Hakim - Cybersecurity Student & Offensive/Defensive Security Researcher"
-              width={38}
-              height={38}
-              className={styles.avatarImage}
-            />
-          </div>
-          <div className={styles.brandText}>
-            <span className={styles.brandNameLarge}>
-              {typedName || (isTyping ? "" : FULL_NAME)}
-              {isTyping && <span className={styles.brandCursor}>_</span>}
-            </span>
-            <span className={styles.brandSubLarge}>
-              {subtitleChars.length > 0 ? (
-                subtitleChars.map((item, idx) =>
-                  item.isGlitch ? (
-                    <span key={idx} className={styles.redGlitchChar}>
-                      {item.char}
-                    </span>
-                  ) : (
-                    <span key={idx}>{item.char}</span>
-                  )
-                )
-              ) : (
-                <span>{FULL_SUBTITLE}</span>
-              )}
-            </span>
-          </div>
-        </button>
-      </div>
-
-      {/* Hero Mode Switcher & Tools */}
-      <div className={styles.actionsGroup}>
-        {/* MODE SWITCHER */}
-        <div className={styles.modeSwitchAnchor}>
-          <div
-            className={styles.heroModeSwitch}
-            data-tour="mode-switch"
-            role="group"
-            aria-label="Interface Workspace Mode"
+    <>
+      <header className={styles.header}>
+        {/* Brand & Identity */}
+        <div className={styles.brandGroup}>
+          <button
+            onClick={() => navigate("/home/husain")}
+            className={styles.brandButton}
+            title="Return to Workspace Root (/home/husain)"
           >
-            <div className={styles.modeSwitchLabel}>MODE:</div>
-            <button
-              id="mode-btn-gui"
-              onClick={handleGuiClick}
-              className={`${styles.heroModeBtn} ${mode === "gui" ? styles.heroModeBtnActive : ""}`}
-              title="Switch to GUI File Explorer"
-              aria-pressed={mode === "gui"}
-            >
-              <LayoutGrid size={13} />
-              <span>GUI</span>
-            </button>
-            <button
-              id="mode-btn-cli"
-              onClick={handleCliClick}
-              className={`${styles.heroModeBtn} ${styles.heroModeBtnCli} ${mode === "cli" ? styles.heroModeBtnActiveCli : ""
-                }`}
-              title="Switch to CLI Interactive Shell (Alt+T)"
-              aria-pressed={mode === "cli"}
-            >
-              <TerminalIcon size={13} />
-              <span>CLI</span>
-            </button>
-            <span className={styles.hotkeyTag} title="Toggle with Alt+T">Alt+T</span>
-          </div>
+            <div className={styles.brandAvatar}>
+              <Image
+                src="/husain.jpg"
+                alt="Husain Hakim - Cybersecurity Student & Offensive/Defensive Security Researcher"
+                width={38}
+                height={38}
+                className={styles.avatarImage}
+              />
+            </div>
+            <div className={styles.brandText}>
+              <span className={styles.brandNameLarge}>
+                {typedName || (isTyping ? "" : FULL_NAME)}
+                {isTyping && <span className={styles.brandCursor}>_</span>}
+              </span>
+              <span className={styles.brandSubLarge}>
+                {subtitleChars.length > 0 ? (
+                  subtitleChars.map((item, idx) =>
+                    item.isGlitch ? (
+                      <span key={idx} className={styles.redGlitchChar}>
+                        {item.char}
+                      </span>
+                    ) : (
+                      <span key={idx}>{item.char}</span>
+                    )
+                  )
+                ) : (
+                  <span>{FULL_SUBTITLE}</span>
+                )}
+              </span>
+            </div>
+          </button>
         </div>
 
-        {/* Achievements / Trophies Button */}
-        <button
-          id="header-trophy-button"
-          data-tour="trophy-btn"
-          ref={trophyButtonRef}
-          onClick={openPanel}
-          key={`trophy-btn-${trophyBounceKey}`}
-          className={`${styles.trophyButton} ${unlockedCount > 0 ? styles.trophyButtonUnlocked : ""
-            } ${trophyBounceKey > 0 ? styles.trophyLandingBounce : ""}`}
-          title={`Achievements (${unlockedCount}/${totalCount} Unlocked)`}
-          aria-label={`Achievements (${unlockedCount}/${totalCount} Unlocked)`}
-        >
-          <Trophy size={13} />
-          {unlockedCount > 0 && (
-            <span
-              key={`badge-${unlockedCount}`}
-              className={`${styles.trophyBadge} ${styles.trophyBadgePop}`}
+        {/* Hero Mode Switcher & Tools */}
+        <div className={styles.actionsGroup}>
+          {/* Spotlight / Command Palette Button */}
+          <button
+            onClick={() => setIsPaletteOpen(true)}
+            className={styles.spotlightButton}
+            title="Open Command Palette & Feature Search (⌘K / Ctrl+K)"
+            aria-label="Open Command Palette"
+          >
+            <Command size={13} />
+            <span className={styles.spotlightKbd}>⌘K</span>
+          </button>
+
+          {/* MODE SWITCHER */}
+          <div className={styles.modeSwitchAnchor}>
+            <div
+              className={styles.heroModeSwitch}
+              data-tour="mode-switch"
+              role="group"
+              aria-label="Interface Workspace Mode"
             >
-              {unlockedCount}/{totalCount}
-            </span>
-          )}
-        </button>
-
-        {/* Physical Mechanical Light Switch */}
-        <button
-          onClick={handleSwitchClick}
-          className={`${styles.lightSwitchHousing} ${isDark ? styles.lightSwitchDark : styles.lightSwitchLight
-            } ${isFlipping ? styles.lightSwitchFlipping : ""}`}
-          title={`Switch to ${isDark ? "Light" : "Dark"} Mode`}
-          aria-label={`Toggle Theme (Currently ${isDark ? "Dark" : "Light"} Mode)`}
-          aria-pressed={isDark}
-        >
-          <div className={styles.lightSwitchRocker}>
-            {isDark ? <Moon size={12} /> : <Sun size={12} />}
+              <div className={styles.modeSwitchLabel}>MODE:</div>
+              <button
+                id="mode-btn-gui"
+                onClick={handleGuiClick}
+                className={`${styles.heroModeBtn} ${mode === "gui" ? styles.heroModeBtnActive : ""}`}
+                title="Switch to GUI File Explorer"
+                aria-pressed={mode === "gui"}
+              >
+                <LayoutGrid size={13} />
+                <span>GUI</span>
+              </button>
+              <button
+                id="mode-btn-cli"
+                onClick={handleCliClick}
+                className={`${styles.heroModeBtn} ${styles.heroModeBtnCli} ${mode === "cli" ? styles.heroModeBtnActiveCli : ""
+                  }`}
+                title="Switch to CLI Interactive Shell (Alt+T)"
+                aria-pressed={mode === "cli"}
+              >
+                <TerminalIcon size={13} />
+                <span>CLI</span>
+              </button>
+              <span className={styles.hotkeyTag} title="Toggle with Alt+T">Alt+T</span>
+            </div>
           </div>
-        </button>
 
-        {/* Resume Quick Access */}
-        <a
-          href="/resume.pdf"
-          target="_blank"
-          rel="noopener noreferrer"
-          className={styles.resumeButton}
-          title="Open Technical Resume (PDF)"
-        >
-          <FileText size={13} />
-          <span className={styles.resumeText}>Resume</span>
-        </a>
-      </div>
-    </header>
+          {/* Achievements / Trophies Button */}
+          <button
+            id="header-trophy-button"
+            data-tour="trophy-btn"
+            ref={trophyButtonRef}
+            onClick={openPanel}
+            key={`trophy-btn-${trophyBounceKey}`}
+            className={`${styles.trophyButton} ${unlockedCount > 0 ? styles.trophyButtonUnlocked : ""
+              } ${trophyBounceKey > 0 ? styles.trophyLandingBounce : ""}`}
+            title={`Achievements (${unlockedCount}/${totalCount} Unlocked)`}
+            aria-label={`Achievements (${unlockedCount}/${totalCount} Unlocked)`}
+          >
+            <Trophy size={13} />
+            {unlockedCount > 0 && (
+              <span
+                key={`badge-${unlockedCount}`}
+                className={`${styles.trophyBadge} ${styles.trophyBadgePop}`}
+              >
+                {unlockedCount}/{totalCount}
+              </span>
+            )}
+          </button>
+
+          {/* Physical Mechanical Light Switch */}
+          <button
+            onClick={handleSwitchClick}
+            className={`${styles.lightSwitchHousing} ${isDark ? styles.lightSwitchDark : styles.lightSwitchLight
+              } ${isFlipping ? styles.lightSwitchFlipping : ""}`}
+            title={`Switch to ${isDark ? "Light" : "Dark"} Mode`}
+            aria-label={`Toggle Theme (Currently ${isDark ? "Dark" : "Light"} Mode)`}
+            aria-pressed={isDark}
+          >
+            <div className={styles.lightSwitchRocker}>
+              {isDark ? <Moon size={12} /> : <Sun size={12} />}
+            </div>
+          </button>
+
+          {/* Resume Quick Access */}
+          <a
+            href="/resume.pdf"
+            target="_blank"
+            rel="noopener noreferrer"
+            className={styles.resumeButton}
+            title="Open Technical Resume (PDF)"
+          >
+            <FileText size={13} />
+            <span className={styles.resumeText}>Resume</span>
+          </a>
+        </div>
+      </header>
+
+      {/* Global Command Palette Modal */}
+      <CommandPalette
+        isOpen={isPaletteOpen}
+        onClose={() => setIsPaletteOpen(false)}
+      />
+    </>
   );
 }

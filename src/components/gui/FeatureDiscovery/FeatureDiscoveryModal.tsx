@@ -258,7 +258,7 @@ export function FeatureDiscoveryModal() {
                     <h4 className={styles.cardTitle}>Interactive Linux CLI Terminal</h4>
                   </div>
                   <p className={styles.cardDescription}>
-                    Prefer a terminal? Switch to CLI mode anytime using the top header or press <strong>Alt+T</strong>. Run real shell commands (<code>ls</code>, <code>cat</code>, <code>tree</code>, <code>matrix</code>, <code>clear</code>) against the live virtual filesystem.
+                    Prefer a terminal? Switch to CLI mode anytime using the top header or press <strong>Alt+T</strong>. Run real shell commands (<code>neofetch</code>, <code>ls</code>, <code>cat</code>, <code>tree</code>, <code>whoami</code>) against the live virtual filesystem.
                   </p>
                   <span className={styles.cardBadge}>
                     Hotkey: Alt+T / Ctrl+`

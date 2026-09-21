@@ -285,10 +285,13 @@ export async function downloadDirectoryAsZip(directory: FSDirectory): Promise<vo
     compressionOptions: { level: 6 },
   });
 
-  const folderBase = directory.name.startsWith("HusainHakim_")
-    ? directory.name
-    : `HusainHakim_${directory.name}`;
-  const zipFilename = `${folderBase}.zip`;
+  let zipFilename = "HusainHakim.zip";
+  if (directory.name !== "husain" && directory.path !== "/home/husain") {
+    const folderBase = directory.name.startsWith("HusainHakim_")
+      ? directory.name
+      : `HusainHakim_${directory.name}`;
+    zipFilename = `${folderBase}.zip`;
+  }
   triggerBrowserDownload(zipBlob, zipFilename);
 }
 

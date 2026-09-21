@@ -16,6 +16,7 @@ import { ExperienceView } from "@/components/views/ExperienceView";
 import { ContactView } from "@/components/views/ContactView";
 import { ResumeView } from "@/components/views/ResumeView";
 import { PersonalVaultView } from "@/components/views/PersonalVaultView";
+import { ReadmeView } from "@/components/views/ReadmeView";
 import { formatFileSize } from "@/lib/fileHelpers";
 import { downloadNode } from "@/lib/downloadHelper";
 import {
@@ -92,6 +93,11 @@ export function FileViewerModal() {
     // About Profile View
     if (openedFile.path.startsWith("/home/husain/about")) {
       return <AboutView />;
+    }
+
+    // README / Workstation Guide View
+    if (openedFile.name.toLowerCase() === "readme.md" || openedFile.id === "readme-file") {
+      return <ReadmeView />;
     }
 
     // Personal Vault View

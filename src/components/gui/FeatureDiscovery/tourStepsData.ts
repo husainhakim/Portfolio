@@ -75,7 +75,7 @@ export const TOUR_STEPS: TourStep[] = [
     preferredPosition: "bottom",
     featureTips: [
       "Press Alt+T or Ctrl+` anywhere to toggle between GUI and CLI",
-      "Type 'help' in CLI to see available commands (ls, cat, tree, matrix)",
+      "Type 'help' in CLI to see available commands (neofetch, ls, cat, tree)",
       "Filesystem state stays synchronized between GUI and CLI in real time",
     ],
   },

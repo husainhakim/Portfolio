@@ -1,0 +1,156 @@
+.capabilitiesBar {
+  display: flex;
+  align-items: center;
+  gap: 12px;
+  padding: 6px 14px;
+  background: var(--bg-panel);
+  border-bottom: 1px solid var(--border-subtle);
+  overflow-x: auto;
+  scrollbar-width: none;
+  -ms-overflow-style: none;
+  user-select: none;
+}
+
+.capabilitiesBar::-webkit-scrollbar {
+  display: none;
+}
+
+.systemTag {
+  display: flex;
+  align-items: center;
+  gap: 6px;
+  padding-right: 10px;
+  border-right: 1px solid var(--border-subtle);
+  flex-shrink: 0;
+}
+
+.statusPulse {
+  width: 7px;
+  height: 7px;
+  border-radius: 50%;
+  background: #10b981;
+  box-shadow: 0 0 8px #10b981;
+  animation: pulseGlow 2s ease-in-out infinite alternate;
+}
+
+@keyframes pulseGlow {
+  0% { opacity: 0.6; transform: scale(0.9); }
+  100% { opacity: 1; transform: scale(1.15); }
+}
+
+.systemName {
+  font-family: var(--font-mono);
+  font-size: 11px;
+  font-weight: 700;
+  color: var(--text-primary);
+  letter-spacing: 0.06em;
+}
+
+.systemVersion {
+  font-family: var(--font-mono);
+  font-size: 9.5px;
+  color: var(--text-muted);
+}
+
+.pillsScrollArea {
+  display: flex;
+  align-items: center;
+  gap: 8px;
+  flex-wrap: nowrap;
+  flex-shrink: 0;
+}
+
+.pillBtn {
+  display: inline-flex;
+  align-items: center;
+  gap: 6px;
+  padding: 4px 9px;
+  background: var(--bg-input);
+  border: 1px solid var(--border-subtle);
+  border-radius: 999px;
+  font-size: 11.5px;
+  font-weight: 500;
+  color: var(--text-secondary);
+  cursor: pointer;
+  transition: all 0.15s ease;
+  white-space: nowrap;
+  flex-shrink: 0;
+}
+
+.pillBtn:hover {
+  background: var(--bg-hover);
+  color: var(--text-primary);
+  transform: translateY(-1px);
+  border-color: var(--border-medium);
+}
+
+.pillIcon {
+  flex-shrink: 0;
+}
+
+.pillTerminal:hover {
+  border-color: rgba(16, 185, 129, 0.4);
+  color: #10b981;
+}
+.pillTerminal .pillIcon { color: #10b981; }
+
+.pillVault:hover {
+  border-color: rgba(239, 68, 68, 0.4);
+  color: #ef4444;
+}
+.pillVault .pillIcon { color: #ef4444; }
+
+.pillTrophy:hover {
+  border-color: rgba(245, 158, 11, 0.4);
+  color: #f59e0b;
+}
+.pillTrophy .pillIcon { color: #f59e0b; }
+
+.pillTour:hover {
+  border-color: rgba(59, 130, 246, 0.4);
+  color: #3b82f6;
+}
+.pillTour .pillIcon { color: #3b82f6; }
+
+.pillSpotlight:hover {
+  border-color: rgba(139, 92, 246, 0.4);
+  color: #8b5cf6;
+}
+.pillSpotlight .pillIcon { color: #8b5cf6; }
+
+.pillHelp:hover {
+  border-color: var(--border-medium);
+}
+
+.pillKbd {
+  font-family: var(--font-mono);
+  font-size: 9px;
+  padding: 1px 4px;
+  background: var(--bg-panel);
+  border: 1px solid var(--border-medium);
+  border-radius: 3px;
+  color: var(--text-muted);
+  line-height: 1;
+}
+
+.pillBadge {
+  font-family: var(--font-mono);
+  font-size: 9px;
+  padding: 1px 5px;
+  background: rgba(239, 68, 68, 0.15);
+  color: #ef4444;
+  border-radius: 999px;
+  font-weight: 600;
+  line-height: 1;
+}
+
+.trophyCountBadge {
+  font-family: var(--font-mono);
+  font-size: 9.5px;
+  font-weight: 700;
+  padding: 1px 5px;
+  background: rgba(245, 158, 11, 0.15);
+  color: #f59e0b;
+  border-radius: 999px;
+  line-height: 1;
+}

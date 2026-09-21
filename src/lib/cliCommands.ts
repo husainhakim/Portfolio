@@ -43,6 +43,8 @@ export const AVAILABLE_COMMANDS = [
   "download",
   "clear",
   "whoami",
+  "neofetch",
+  "fastfetch",
   "tree",
   "history",
   "projects",
@@ -72,6 +74,29 @@ export function executeCommand(
   const args = parts.slice(1);
 
   switch (command) {
+    case "neofetch":
+    case "fastfetch":
+    case "fetch":
+      return {
+        text: `       _,met$$$$$gg.          husain@husain-os
+    ,g$$$$$$$$$$$$$$$P.       ----------------
+  ,g$$P"     """Y$$.".        OS: HusainOS v2.4 (x86_64)
+ ,$$P'              \`$$$.     Host: Next.js 16 Cybersecurity Workstation
+',$$P       ,ggs.     \`$$b:   Kernel: 6.8.0-cyber-hardened
+\`d$$'     ,$P"'   .    $$$    Uptime: 42 days, 13 hours
+ $$P      d$'     ,    $$P    Shell: husain-sh (interactive VFS)
+ $$:      $$.   -    ,d$$'    Resolution: 1920x1080 (HiDPI)
+ $$;      Y$b._   _,d$P'      DE: Brutalist Desktop Environment
+ Y$$.    \`.\`"Y$$$$P"'         WM: NextWM (Virtual File Explorer)
+ \`$$b      "-.__              Terminal: WebPTY (xterm-256color)
+  \`Y$$                        CPU: Offensive & Defensive Security Engine
+   \`Y$$.                      Memory: 1337MiB / 4096MiB (32%)
+     \`$$b.                    CTF Vault: /home/husain/vault [Locked]
+       \`Y$$b.                 Trophies: 10 Secret Achievements
+          \`"Y$b._             
+              \`"""            ███ ███ ███ ███ ███ ███ ███ ███`,
+      };
+
     case "about":
       return {
         text: `# Husain Hakim
@@ -92,6 +117,7 @@ Dedicated to ethical hacking, offensive security, and technical systems research
 =====================================================
 Available Navigation & System Commands:
 
+  neofetch         Display HusainOS system & kernel specs
   ls [-l]          List directory contents (files & folders)
   cd <dir>         Change working directory (e.g. cd projects, cd .., cd ~)
   pwd              Print name of current working directory

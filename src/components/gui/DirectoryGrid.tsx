@@ -43,16 +43,18 @@ import {
   Check,
   FolderOpen,
   X,
+  Zap,
 } from "lucide-react";
 import styles from "./Gui.module.css";
 import { Win11Folder, Win11Pdf } from "./Win11Icons";
-import { AboutTutorialBadge, ABOUT_TUTORIAL_KEY } from "./AboutTutorialBadge";
 
 interface DirectoryGridProps {
   nodes: FSNode[];
 }
 
 const ITEM_PURPOSE_TAGS: Record<string, string> = {
+  "README.md": "WORKSTATION GUIDE",
+  "readme.md": "WORKSTATION GUIDE",
   "about.md": "PERSONAL INTRO",
   projects: "CODE & BUILDS",
   writeups: "SECURITY WRITEUPS",
@@ -123,7 +125,6 @@ export function DirectoryGrid({ nodes }: DirectoryGridProps) {
   const [isMounted, setIsMounted] = React.useState(false);
   const [isQuickAccessOpen, setIsQuickAccessOpen] = React.useState(true);
   const [isRecentOpen, setIsRecentOpen] = React.useState(true);
-  const [hasSeenTutorial, setHasSeenTutorial] = React.useState<boolean>(true);
 
   // In-memory state hooks from FilesystemContext
   const {
@@ -198,12 +199,6 @@ export function DirectoryGrid({ nodes }: DirectoryGridProps) {
 
   React.useEffect(() => {
     setIsMounted(true);
-    try {
-      const seen = localStorage.getItem(ABOUT_TUTORIAL_KEY);
-      if (!seen) {
-        setHasSeenTutorial(false);
-      }
-    } catch (_) {}
   }, []);
 
   // Focus and select input on rename activation
@@ -440,12 +435,6 @@ export function DirectoryGrid({ nodes }: DirectoryGridProps) {
         })
       : quickAccessSurviving;
 
-  const isQaShowingAbout =
-    isRoot &&
-    !searchQuery &&
-    isQuickAccessOpen &&
-    quickAccessNodes.some((n) => n.name === "about.md");
-
   const getRecentItems = () => {
     if (!isRoot || searchQuery) return [];
 
@@ -475,10 +464,6 @@ export function DirectoryGrid({ nodes }: DirectoryGridProps) {
   };
 
   const handleNodeDoubleClick = (node: FSNode) => {
-    try {
-      localStorage.setItem(ABOUT_TUTORIAL_KEY, "1");
-      setHasSeenTutorial(true);
-    } catch (_) {}
     if (node.type === "directory") {
       navigate(node.path);
     } else {
@@ -601,7 +586,6 @@ export function DirectoryGrid({ nodes }: DirectoryGridProps) {
   // Shared function to render a node in Quick Access
   const renderQuickAccessNode = (node: FSNode) => {
     const isSelected = selectedNode?.id === node.id;
-    const isAboutTutorialTarget = node.name === "about.md" && !hasSeenTutorial;
     const iconClass = getNodeIconClass(node);
     const folderKey = "quick-access";
     const isDragging = draggedNodeId === node.id;
@@ -612,6 +596,7 @@ export function DirectoryGrid({ nodes }: DirectoryGridProps) {
       node.name === "personal_vault.md" ||
       node.name === "vault" ||
       (node.type === "file" && (node as FSFile).fileType === "vault");
+    const isReadmeCard = node.name.toLowerCase() === "readme.md" || node.id === "readme-file";
 
     return (
       <div
@@ -672,20 +657,23 @@ export function DirectoryGrid({ nodes }: DirectoryGridProps) {
         onKeyDown={(e) => handleKeyDown(e, node)}
         onContextMenu={(e) => handleContextMenu(e, node)}
         className={`${styles.gridItemCard} ${isSelected ? styles.gridItemSelected : ""} ${
-          isAboutTutorialTarget ? "tutorialTargetNode" : ""
-        } ${isDragging ? styles.draggedItem : ""} ${isDragOver ? styles.dragOverTarget : ""} ${
+          isDragging ? styles.draggedItem : ""
+        } ${isDragOver ? styles.dragOverTarget : ""} ${
           isJustRestored ? styles.itemPopIn : ""
         } ${isJustPinned ? styles.itemJustPinned : ""} ${
           isVaultCard ? styles.vaultGridCard : ""
         }`}
+        data-tour={isReadmeCard ? "readme-card" : undefined}
+        data-node-name={node.name}
+        data-node-id={node.id}
         role="button"
         aria-label={`${node.type === "directory" ? "Directory" : "File"}: ${node.name}`}
       >
-        {isAboutTutorialTarget && (
-          <AboutTutorialBadge
-            variant="quick-access"
-            onDismiss={() => setHasSeenTutorial(true)}
-          />
+        {isReadmeCard && (
+          <div className={styles.readmeStartBadge} title="Workstation Feature Matrix & Cheat Sheet">
+            <Sparkles size={11.5} className={styles.readmeSparkleIcon} />
+            <span>START HERE</span>
+          </div>
         )}
         <div className={styles.qaCardPinBadge} title="Pinned to Quick Access">
           <Pin size={14} />
@@ -724,10 +712,17 @@ export function DirectoryGrid({ nodes }: DirectoryGridProps) {
 
         <div className={styles.gridItemFooter}>
           <span className={styles.gridItemSize}>{getItemTag(node)}</span>
-          <span className={styles.gridItemSize}>
-            {node.type === "file"
-              ? formatFileSize((node as FSFile).size)
-              : `${(node as FSDirectory).children.length} items`}
+          <span className={isReadmeCard ? styles.readmeFooterBadge : styles.gridItemSize}>
+            {isReadmeCard ? (
+              <>
+                <Zap size={10} className={styles.readmeZapIcon} />
+                <span>START MANUAL</span>
+              </>
+            ) : node.type === "file" ? (
+              formatFileSize((node as FSFile).size)
+            ) : (
+              `${(node as FSDirectory).children.length} items`
+            )}
           </span>
         </div>
       </div>
@@ -1005,9 +1000,7 @@ export function DirectoryGrid({ nodes }: DirectoryGridProps) {
             </div>
             {isQuickAccessOpen && (
               <div
-                className={`${styles.qaGrid} ${
-                  !hasSeenTutorial ? styles.qaGridTutorialActive : ""
-                } ${isDragOverQuickAccess ? styles.qaGridDropActive : ""}`}
+                className={`${styles.qaGrid} ${isDragOverQuickAccess ? styles.qaGridDropActive : ""}`}
               >
                 {quickAccessNodes.length > 0 ? (
                   quickAccessNodes.map(renderQuickAccessNode)
@@ -1091,14 +1084,10 @@ export function DirectoryGrid({ nodes }: DirectoryGridProps) {
 
         <div
           data-tour="directory-grid"
-          className={`${styles.fileGrid} ${
-            !isQaShowingAbout && !hasSeenTutorial ? styles.fileGridTutorialActive : ""
-          }`}
+          className={styles.fileGrid}
         >
           {filteredNodes.map((node) => {
             const isSelected = selectedNode?.id === node.id;
-            const isAboutTutorialTarget =
-              !isQaShowingAbout && node.name === "about.md" && !hasSeenTutorial;
             const iconClass = getNodeIconClass(node);
             const folderKey = currentPath;
             const isDragging = draggedNodeId === node.id;
@@ -1108,6 +1097,7 @@ export function DirectoryGrid({ nodes }: DirectoryGridProps) {
               node.name === "personal_vault.md" ||
               node.name === "vault" ||
               (node.type === "file" && (node as FSFile).fileType === "vault");
+            const isReadmeCard = node.name.toLowerCase() === "readme.md" || node.id === "readme-file";
 
             return (
               <div
@@ -1164,19 +1154,22 @@ export function DirectoryGrid({ nodes }: DirectoryGridProps) {
                 onContextMenu={(e) => handleContextMenu(e, node)}
                 className={`${styles.gridItemCard} ${
                   isSelected ? styles.gridItemSelected : ""
-                } ${isAboutTutorialTarget ? "tutorialTargetNode" : ""} ${
+                } ${
                   isDragging ? styles.draggedItem : ""
                 } ${isDragOver ? styles.dragOverTarget : ""} ${
                   isJustRestored ? styles.itemPopIn : ""
                 } ${isVaultCard ? styles.vaultGridCard : ""}`}
+                data-tour={isReadmeCard ? "readme-card" : undefined}
+                data-node-name={node.name}
+                data-node-id={node.id}
                 role="button"
                 aria-label={`${node.type === "directory" ? "Directory" : "File"}: ${node.name}`}
               >
-                {isAboutTutorialTarget && (
-                  <AboutTutorialBadge
-                    variant="grid"
-                    onDismiss={() => setHasSeenTutorial(true)}
-                  />
+                {isReadmeCard && (
+                  <div className={styles.readmeStartBadge} title="Workstation Feature Matrix & Cheat Sheet">
+                    <Sparkles size={11.5} className={styles.readmeSparkleIcon} />
+                    <span>START HERE</span>
+                  </div>
                 )}
                 <div className={styles.gridItemTop}>
                   <div className={`${styles.gridItemIcon} ${iconClass}`}>
@@ -1212,10 +1205,17 @@ export function DirectoryGrid({ nodes }: DirectoryGridProps) {
 
                 <div className={styles.gridItemFooter}>
                   <span className={styles.gridItemSize}>{getItemTag(node)}</span>
-                  <span className={styles.gridItemSize}>
-                    {node.type === "file"
-                      ? formatFileSize((node as FSFile).size)
-                      : `${(node as FSDirectory).children.length} items`}
+                  <span className={isReadmeCard ? styles.readmeFooterBadge : styles.gridItemSize}>
+                    {isReadmeCard ? (
+                      <>
+                        <Zap size={10} className={styles.readmeZapIcon} />
+                        <span>START MANUAL</span>
+                      </>
+                    ) : node.type === "file" ? (
+                      formatFileSize((node as FSFile).size)
+                    ) : (
+                      `${(node as FSDirectory).children.length} items`
+                    )}
                   </span>
                 </div>
               </div>
@@ -1250,9 +1250,7 @@ export function DirectoryGrid({ nodes }: DirectoryGridProps) {
           </div>
           {isQuickAccessOpen && (
             <div
-              className={`${styles.qaGrid} ${
-                !hasSeenTutorial ? styles.qaGridTutorialActive : ""
-              } ${isDragOverQuickAccess ? styles.qaGridDropActive : ""}`}
+              className={`${styles.qaGrid} ${isDragOverQuickAccess ? styles.qaGridDropActive : ""}`}
             >
               {quickAccessNodes.length > 0 ? (
                 quickAccessNodes.map(renderQuickAccessNode)
