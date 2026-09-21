@@ -18,7 +18,7 @@ interface TargetRect {
 const STORAGE_KEY = "has_seen_readme_tutorial";
 
 export function ReadmeSpotlightTutorial() {
-  const { openFile, currentPath, openedFile } = useFilesystem();
+  const { openFile, currentPath, openedFile, isBooted } = useFilesystem();
   const { isTourActive } = useTour();
 
   const [mounted, setMounted] = useState(false);
@@ -43,23 +43,23 @@ export function ReadmeSpotlightTutorial() {
     };
   }, []);
 
-  // Check if first-time user and on root /home/husain
+  // Check if first-time user and on root /home/husain - ONLY AFTER BOOT SEQUENCE COMPLETES
   useEffect(() => {
-    if (!mounted || isTourActive || openedFile) return;
+    if (!mounted || !isBooted || isTourActive || openedFile) return;
 
     try {
       const hasSeen = localStorage.getItem(STORAGE_KEY);
       if (!hasSeen && currentPath === "/home/husain") {
-        // Small delay so layout stabilizes
+        // Small delay so layout stabilizes after boot sequence finishes
         const timer = setTimeout(() => {
           setIsActive(true);
-        }, 400);
+        }, 500);
         return () => clearTimeout(timer);
       }
     } catch {
       // Ignore localStorage errors (e.g. private mode)
     }
-  }, [mounted, isTourActive, currentPath, openedFile]);
+  }, [mounted, isBooted, isTourActive, currentPath, openedFile]);
 
   // Dismiss function
   const dismiss = useCallback(() => {
@@ -163,7 +163,7 @@ export function ReadmeSpotlightTutorial() {
     return () => window.removeEventListener("keydown", handleKeyDown);
   }, [isActive, dismiss, handleOpenReadme]);
 
-  if (!isActive || !mounted || !portalContainer || isTourActive || openedFile) return null;
+  if (!isActive || !mounted || !isBooted || !portalContainer || isTourActive || openedFile) return null;
 
   const clipPathStyle = targetRect
     ? `polygon(0 0, 0 100%, ${targetRect.left}px 100%, ${targetRect.left}px ${targetRect.top}px, ${targetRect.left + targetRect.width}px ${targetRect.top}px, ${targetRect.left + targetRect.width}px ${targetRect.top + targetRect.height}px, ${targetRect.left}px ${targetRect.top + targetRect.height}px, ${targetRect.left}px 100%, 100% 100%, 100% 0)`

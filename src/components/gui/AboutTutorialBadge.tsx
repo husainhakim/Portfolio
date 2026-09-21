@@ -3,6 +3,7 @@
 import React, { useState, useEffect, useCallback } from "react";
 import { X, ChevronDown, MousePointerClick, Sparkles } from "lucide-react";
 import { useTour } from "@/context/TourContext";
+import { useFilesystem } from "@/context/FilesystemContext";
 import styles from "./AboutTutorialBadge.module.css";
 
 export const ABOUT_TUTORIAL_KEY = "hasSeenAboutTutorial";
@@ -14,10 +15,12 @@ interface AboutTutorialBadgeProps {
 
 export function AboutTutorialBadge({ onDismiss, variant = "quick-access" }: AboutTutorialBadgeProps) {
   const { startTour } = useTour();
+  const { isBooted } = useFilesystem();
   const [isVisible, setIsVisible] = useState(false);
   const [isDismissing, setIsDismissing] = useState(false);
 
   useEffect(() => {
+    if (!isBooted) return;
     try {
       const seen = localStorage.getItem(ABOUT_TUTORIAL_KEY);
       if (!seen) {
@@ -25,7 +28,7 @@ export function AboutTutorialBadge({ onDismiss, variant = "quick-access" }: Abou
         return () => clearTimeout(timer);
       }
     } catch (_) { }
-  }, []);
+  }, [isBooted]);
 
   const handleDismiss = useCallback(
     (e?: React.MouseEvent) => {

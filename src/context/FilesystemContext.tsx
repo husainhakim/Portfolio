@@ -64,6 +64,9 @@ interface FilesystemContextType {
   addToQuickAccess: (nodeId: string) => void;
   removeFromQuickAccess: (nodeId: string) => void;
   justPinnedNodeIds: string[];
+  // Bootloader State
+  isBooted: boolean;
+  completeBoot: () => void;
 }
 
 export const DEFAULT_QUICK_ACCESS_IDS = [
@@ -115,6 +118,24 @@ export function FilesystemProvider({ children }: { children: React.ReactNode }) 
   const [viewLayout, setViewLayout] = useState<ViewLayout>("grid");
   const [searchQuery, setSearchQuery] = useState<string>("");
   const [sortOption, setSortOption] = useState<SortOption>("default");
+  const [isBooted, setIsBooted] = useState<boolean>(false);
+
+  useEffect(() => {
+    try {
+      if (sessionStorage.getItem("vfs_booted") === "true") {
+        setIsBooted(true);
+      }
+    } catch (_) {
+      setIsBooted(true);
+    }
+  }, []);
+
+  const completeBoot = useCallback(() => {
+    try {
+      sessionStorage.setItem("vfs_booted", "true");
+    } catch (_) {}
+    setIsBooted(true);
+  }, []);
 
   // GUI-only interactive customization state (in-memory, reset on command or refresh)
   const [customNames, setCustomNames] = useState<Record<string, string>>({});
@@ -500,6 +521,8 @@ export function FilesystemProvider({ children }: { children: React.ReactNode }) 
         addToQuickAccess,
         removeFromQuickAccess,
         justPinnedNodeIds,
+        isBooted,
+        completeBoot,
       }}
     >
       {children}
