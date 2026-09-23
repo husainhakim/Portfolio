@@ -82,11 +82,11 @@ export const VIRTUAL_FS: FSDirectory = {
       ],
     },
 
-    // 📄 README.md (Workstation Guide & Cheat Sheet)
+    // 📄 MANUAL.md (Workstation Guide & Cheat Sheet)
     {
       id: "readme-file",
-      name: "README.md",
-      path: "/home/husain/README.md",
+      name: "MANUAL.md",
+      path: "/home/husain/MANUAL.md",
       type: "file",
       fileType: "markdown",
       permissions: "-rw-r--r--",

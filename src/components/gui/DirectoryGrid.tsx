@@ -53,6 +53,8 @@ interface DirectoryGridProps {
 }
 
 const ITEM_PURPOSE_TAGS: Record<string, string> = {
+  "manual.md": "WORKSTATION GUIDE",
+  "MANUAL.md": "WORKSTATION GUIDE",
   "README.md": "WORKSTATION GUIDE",
   "readme.md": "WORKSTATION GUIDE",
   "about.md": "PERSONAL INTRO",
@@ -596,7 +598,10 @@ export function DirectoryGrid({ nodes }: DirectoryGridProps) {
       node.name === "personal_vault.md" ||
       node.name === "vault" ||
       (node.type === "file" && (node as FSFile).fileType === "vault");
-    const isReadmeCard = node.name.toLowerCase() === "readme.md" || node.id === "readme-file";
+    const isReadmeCard =
+      node.name.toLowerCase() === "manual.md" ||
+      node.name.toLowerCase() === "readme.md" ||
+      node.id === "readme-file";
 
     return (
       <div
@@ -1097,7 +1102,10 @@ export function DirectoryGrid({ nodes }: DirectoryGridProps) {
               node.name === "personal_vault.md" ||
               node.name === "vault" ||
               (node.type === "file" && (node as FSFile).fileType === "vault");
-            const isReadmeCard = node.name.toLowerCase() === "readme.md" || node.id === "readme-file";
+            const isReadmeCard =
+              node.name.toLowerCase() === "manual.md" ||
+              node.name.toLowerCase() === "readme.md" ||
+              node.id === "readme-file";
 
             return (
               <div

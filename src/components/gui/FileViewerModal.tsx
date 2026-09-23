@@ -95,8 +95,12 @@ export function FileViewerModal() {
       return <AboutView />;
     }
 
-    // README / Workstation Guide View
-    if (openedFile.name.toLowerCase() === "readme.md" || openedFile.id === "readme-file") {
+    // README / Workstation Manual Guide View
+    if (
+      openedFile.name.toLowerCase() === "manual.md" ||
+      openedFile.name.toLowerCase() === "readme.md" ||
+      openedFile.id === "readme-file"
+    ) {
       return <ReadmeView />;
     }
 

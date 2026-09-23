@@ -71,21 +71,27 @@ export function ReadmeSpotlightTutorial() {
     }
   }, []);
 
-  // Open README.md function
+  // Open MANUAL.md function
   const handleOpenReadme = useCallback(() => {
     dismiss();
-    const readmeNode = findNodeById("readme-file") || findNodeByPath("/home/husain/README.md");
+    const readmeNode =
+      findNodeById("readme-file") ||
+      findNodeByPath("/home/husain/MANUAL.md") ||
+      findNodeByPath("/home/husain/manual.md") ||
+      findNodeByPath("/home/husain/README.md");
     if (readmeNode && readmeNode.type === "file") {
       openFile(readmeNode as FSFile);
     }
   }, [dismiss, openFile]);
 
-  // Compute position of target README card and tour card
+  // Compute position of target MANUAL.md card and tour card
   const updatePositions = useCallback(() => {
     if (!isActive) return;
 
     const el =
       document.querySelector('[data-tour="readme-card"]') ||
+      document.querySelector('[data-node-name="MANUAL.md"]') ||
+      document.querySelector('[data-node-name="manual.md"]') ||
       document.querySelector('[data-node-name="README.md"]') ||
       document.querySelector('[data-node-id="readme-file"]');
 
@@ -193,7 +199,7 @@ export function ReadmeSpotlightTutorial() {
             cursor: "pointer",
           }}
           onClick={handleOpenReadme}
-          title="Click to open README.md"
+          title="Click to open MANUAL.md"
         />
       )}
 
@@ -215,7 +221,7 @@ export function ReadmeSpotlightTutorial() {
               <Sparkles size={12} color="var(--accent-primary)" />
               <span>WORKSTATION QUICKSTART</span>
             </span>
-            <h3 className={styles.tourTitle}>Start Here with README.md</h3>
+            <h3 className={styles.tourTitle}>Start Here with MANUAL.md</h3>
           </div>
           <button
             onClick={dismiss}
@@ -228,7 +234,7 @@ export function ReadmeSpotlightTutorial() {
         </div>
 
         <p className={styles.tourDescription}>
-          Welcome to Husain&apos;s interactive cybersecurity workstation! Open <strong>README.md</strong> to discover interactive Linux CLI commands, confidential CTF vaults, 10 hidden secret trophies, and desktop shortcuts.
+          Welcome to Husain&apos;s interactive cybersecurity workstation! Open <strong>MANUAL.md</strong> to discover interactive Linux CLI commands, confidential CTF vaults, 10 hidden secret trophies, and desktop shortcuts.
         </p>
 
         <ul className={styles.tourTipsList}>
@@ -248,7 +254,7 @@ export function ReadmeSpotlightTutorial() {
               <span>Explore Myself</span>
             </button>
             <button onClick={handleOpenReadme} className={styles.tourBtnPrimary}>
-              <span>Open README.md</span>
+              <span>Open MANUAL.md</span>
               <ArrowRight size={13} />
             </button>
           </div>

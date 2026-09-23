@@ -222,7 +222,7 @@ export function CommandPalette({ isOpen, onClose }: CommandPaletteProps) {
       // Dossiers
       {
         id: "doc-readme",
-        title: "README.md (Workstation Guide & Feature Matrix)",
+        title: "MANUAL.md (Workstation Guide & Feature Matrix)",
         subtitle: "Capabilities overview and shortcuts cheat sheet",
         category: "Dossiers",
         icon: <FileText size={15} className={styles.iconDoc} />,
