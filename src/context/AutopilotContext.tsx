@@ -73,6 +73,20 @@ interface AutopilotContextType {
 
 const AutopilotContext = createContext<AutopilotContextType | undefined>(undefined);
 
+const SWAPPED_HOME_ORDER = [
+  "vault-dir",
+  "readme-file",
+  "about-file",
+  "projects-dir",
+  "blogs-dir",
+  "writeups-dir",
+  "skills-file",
+  "contact-file",
+  "experience-file",
+  "certs-file",
+  "resume-pdf",
+];
+
 export function AutopilotProvider({ children }: { children: React.ReactNode }) {
   const {
     setMode,
@@ -82,7 +96,6 @@ export function AutopilotProvider({ children }: { children: React.ReactNode }) {
     renameNode,
     addToQuickAccess,
     removeFromQuickAccess,
-    setSelectedNode,
     setExplicitFolderOrder,
   } = useFilesystem();
   const { closePanel, unlock } = useAchievements();
@@ -114,57 +127,79 @@ export function AutopilotProvider({ children }: { children: React.ReactNode }) {
   // Sync global autopilot flag so intermediate actions are ignored
   useEffect(() => {
     if (typeof window !== "undefined") {
-      (window as any).__IS_AUTOPILOT_ACTIVE__ = isAutopilotActive;
+      (window as unknown as Record<string, unknown>).__IS_AUTOPILOT_ACTIVE__ = isAutopilotActive;
     }
     return () => {
       if (typeof window !== "undefined") {
-        (window as any).__IS_AUTOPILOT_ACTIVE__ = false;
+        (window as unknown as Record<string, unknown>).__IS_AUTOPILOT_ACTIVE__ = false;
       }
     };
   }, [isAutopilotActive]);
 
-  // Execute actions for a specific step
-  const executeStepActions = useCallback(
+  // Synchronize filesystem invariants for any given step index (Idempotent Chaos-Proof Reconciler)
+  const syncStepInvariants = useCallback(
     (stepIdx: number) => {
+      if (typeof window !== "undefined") {
+        window.dispatchEvent(new CustomEvent("vfs-autopilot-cancel-rename"));
+        window.dispatchEvent(new CustomEvent("vfs-autopilot-close-context-menu"));
+        window.dispatchEvent(new CustomEvent("vfs-autopilot-cancel-drag"));
+      }
+
+      closeFile();
+      closePanel();
+
       switch (stepIdx) {
         case 0: {
-          // Step 1: In-Place Rename navigation setup
+          // Step 1: In-Place Rename navigation setup (starts with original name)
           setMode("gui");
           navigate("/home/husain");
-          closeFile();
-          closePanel();
+          renameNode("writeups-dir", "");
+          removeFromQuickAccess("writeups-dir");
+          setExplicitFolderOrder("/home/husain", []);
           break;
         }
         case 1: {
-          // Step 2: Drag & Replace Position setup
+          // Step 2: Drag & Replace Position setup (must be renamed to Husain_Writeups)
           setMode("gui");
           navigate("/home/husain");
+          renameNode("writeups-dir", "Husain_Writeups");
+          removeFromQuickAccess("writeups-dir");
+          setExplicitFolderOrder("/home/husain", []);
           break;
         }
         case 2: {
-          // Step 3: Drag to Quick Access navigation setup
+          // Step 3: Drag to Quick Access navigation setup (renamed and in blogs position)
           setMode("gui");
           navigate("/home/husain");
+          renameNode("writeups-dir", "Husain_Writeups");
+          removeFromQuickAccess("writeups-dir");
+          setExplicitFolderOrder("/home/husain", SWAPPED_HOME_ORDER);
           break;
         }
         case 3: {
-          // Step 4: Remove from Quick Access navigation setup
+          // Step 4: Remove from Quick Access navigation setup (must be pinned so user/tour can unpin)
           setMode("gui");
           navigate("/home/husain");
+          renameNode("writeups-dir", "Husain_Writeups");
+          setExplicitFolderOrder("/home/husain", SWAPPED_HOME_ORDER);
+          addToQuickAccess("writeups-dir");
           break;
         }
         case 4: {
           // Step 5: Switch to CLI and engage terminal
-          closeFile();
-          closePanel();
-          setMode("cli");
+          // Note: Starts in GUI mode so the virtual cursor can click the CLI button live!
+          setMode("gui");
+          navigate("/home/husain");
+          renameNode("writeups-dir", "Husain_Writeups");
+          setExplicitFolderOrder("/home/husain", SWAPPED_HOME_ORDER);
+          removeFromQuickAccess("writeups-dir");
           break;
         }
         default:
           break;
       }
     },
-    [setMode, navigate, closeFile, closePanel]
+    [setMode, navigate, closeFile, closePanel, renameNode, removeFromQuickAccess, addToQuickAccess, setExplicitFolderOrder]
   );
 
   const stopAutopilot = useCallback(
@@ -173,12 +208,16 @@ export function AutopilotProvider({ children }: { children: React.ReactNode }) {
       setIsAutopilotActive(false);
       setIsPaused(false);
       setProgressPercent(0);
+      elapsedBeforePauseRef.current = 0;
 
       if (typeof window !== "undefined") {
-        (window as any).__IS_AUTOPILOT_ACTIVE__ = false;
+        (window as unknown as Record<string, unknown>).__IS_AUTOPILOT_ACTIVE__ = false;
+        window.dispatchEvent(new CustomEvent("vfs-autopilot-cancel-rename"));
+        window.dispatchEvent(new CustomEvent("vfs-autopilot-close-context-menu"));
+        window.dispatchEvent(new CustomEvent("vfs-autopilot-cancel-drag"));
       }
 
-      // Clean up any remaining modifications and return user back to GUI workstation
+      // Clean up any modifications and return user back to pristine GUI workstation
       renameNode("writeups-dir", "");
       removeFromQuickAccess("writeups-dir");
       renameNode("projects-dir", "");
@@ -202,22 +241,42 @@ export function AutopilotProvider({ children }: { children: React.ReactNode }) {
 
   const advanceToNext = useCallback(() => {
     clearTimers();
+    elapsedBeforePauseRef.current = 0;
+    setProgressPercent(0);
+
     if (currentStepIndex < AUTOPILOT_STEPS.length - 1) {
-      setCurrentStepIndex((prev) => prev + 1);
+      const nextIdx = currentStepIndex + 1;
+      setCurrentStepIndex(nextIdx);
+      syncStepInvariants(nextIdx);
     } else {
       // Finished all steps -> return user to GUI mode & award Grand Tourer trophy!
       stopAutopilot(true);
     }
-  }, [clearTimers, currentStepIndex, stopAutopilot]);
+  }, [clearTimers, currentStepIndex, syncStepInvariants, stopAutopilot]);
 
   const prevStep = useCallback(() => {
     clearTimers();
-    setCurrentStepIndex((prev) => Math.max(0, prev - 1));
-  }, [clearTimers]);
+    elapsedBeforePauseRef.current = 0;
+    setProgressPercent(0);
+
+    if (currentStepIndex > 0) {
+      const prevIdx = currentStepIndex - 1;
+      setCurrentStepIndex(prevIdx);
+      syncStepInvariants(prevIdx);
+    }
+  }, [clearTimers, currentStepIndex, syncStepInvariants]);
 
   const togglePause = useCallback(() => {
-    setIsPaused((prev) => !prev);
-  }, []);
+    setIsPaused((prev) => {
+      const next = !prev;
+      if (next) {
+        // Pausing: calculate elapsed time in current step
+        elapsedBeforePauseRef.current = Math.max(0, Date.now() - startTimeRef.current);
+        clearTimers();
+      }
+      return next;
+    });
+  }, [clearTimers]);
 
   // Step runner effect
   useEffect(() => {
@@ -231,10 +290,10 @@ export function AutopilotProvider({ children }: { children: React.ReactNode }) {
     const step = AUTOPILOT_STEPS[currentStepIndex];
     if (!step) return;
 
-    executeStepActions(currentStepIndex);
+    const totalDuration = step.durationMs;
+    const remainingTime = Math.max(100, totalDuration - elapsedBeforePauseRef.current);
 
     startTimeRef.current = Date.now() - elapsedBeforePauseRef.current;
-    const totalDuration = step.durationMs;
 
     // Progress bar ticker (every 30ms)
     progressIntervalRef.current = setInterval(() => {
@@ -244,7 +303,6 @@ export function AutopilotProvider({ children }: { children: React.ReactNode }) {
     }, 30);
 
     // Advance timer
-    const remainingTime = Math.max(0, totalDuration - elapsedBeforePauseRef.current);
     stepTimerRef.current = setTimeout(() => {
       elapsedBeforePauseRef.current = 0;
       advanceToNext();
@@ -253,11 +311,11 @@ export function AutopilotProvider({ children }: { children: React.ReactNode }) {
     return () => {
       clearTimers();
     };
-  }, [isAutopilotActive, currentStepIndex, isPaused, executeStepActions, advanceToNext, clearTimers]);
+  }, [isAutopilotActive, currentStepIndex, isPaused, advanceToNext, clearTimers]);
 
   const startAutopilot = useCallback(() => {
     if (typeof window !== "undefined") {
-      (window as any).__IS_AUTOPILOT_ACTIVE__ = true;
+      (window as unknown as Record<string, unknown>).__IS_AUTOPILOT_ACTIVE__ = true;
     }
 
     closeWelcome();
@@ -266,21 +324,14 @@ export function AutopilotProvider({ children }: { children: React.ReactNode }) {
     closePanel();
     clearTimers();
 
-    // Reset initial state
-    renameNode("writeups-dir", "");
-    removeFromQuickAccess("writeups-dir");
-    renameNode("projects-dir", "");
-    removeFromQuickAccess("projects-dir");
-    setExplicitFolderOrder("/home/husain", []);
-    setMode("gui");
-    navigate("/home/husain");
-
     setCurrentStepIndex(0);
     setProgressPercent(0);
     elapsedBeforePauseRef.current = 0;
     setIsPaused(false);
     setIsAutopilotActive(true);
-  }, [closeWelcome, endTour, closeFile, closePanel, clearTimers, renameNode, removeFromQuickAccess, setExplicitFolderOrder, setMode, navigate]);
+
+    syncStepInvariants(0);
+  }, [closeWelcome, endTour, closeFile, closePanel, clearTimers, syncStepInvariants]);
 
   const currentStep = AUTOPILOT_STEPS[currentStepIndex] || AUTOPILOT_STEPS[0];
 
