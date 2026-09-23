@@ -51,7 +51,7 @@ export const VIRTUAL_FS: FSDirectory = {
   permissions: "drwxr-xr-x",
   owner: "husain",
   group: "staff",
-  updatedAt: "2025-02-20",
+  updatedAt: "2026-09-23",
   description: "Husain Hakim's Primary Cybersecurity Workspace",
   children: [
     // 📁 vault/
@@ -63,7 +63,7 @@ export const VIRTUAL_FS: FSDirectory = {
       permissions: "drwx------",
       owner: "husain",
       group: "staff",
-      updatedAt: "2025-03-01",
+      updatedAt: "2026-09-23",
       description: "Personal Vault",
       children: [
         {
@@ -76,7 +76,7 @@ export const VIRTUAL_FS: FSDirectory = {
           owner: "husain",
           group: "staff",
           size: 1024,
-          updatedAt: "2025-03-01",
+          updatedAt: "2026-09-23",
           description: "Personal Vault Content",
         },
       ],
@@ -93,7 +93,7 @@ export const VIRTUAL_FS: FSDirectory = {
       owner: "husain",
       group: "staff",
       size: 3420,
-      updatedAt: "2026-09-21",
+      updatedAt: "2026-09-23",
       description: "Workstation Superpowers, CLI Hotkeys, CTF Vault, and Achievements Guide",
       content: `# HUSAIN.OS v2.4 • INTERACTIVE WORKSTATION GUIDE
 
@@ -104,7 +104,7 @@ This system is an interactive Linux desktop simulation (/home/husain).
 - [Alt + T / Ctrl + \`] : Toggle between GUI Desktop & Interactive Linux Terminal Shell
 - [Ctrl + K / Cmd + K]  : Open Global Command Palette & Feature Spotlight
 - [Vault Challenge]    : Unlock the riddle-protected Personal Vault (/home/husain/vault)
-- [10 Achievements]    : Discover hidden Easter eggs, CLI secrets, and unlock all trophy badges
+- [10 Achievements]    : Discover hidden Easter eggs, CLI secrets, and unlock all 10 trophy badges
 - [Drag & Drop]        : Reorganize files, pin items to Quick Access, or right-click to customize`,
     },
 
@@ -119,7 +119,7 @@ This system is an interactive Linux desktop simulation (/home/husain).
       owner: "husain",
       group: "staff",
       size: 4850,
-      updatedAt: "2026-09-20",
+      updatedAt: "2026-09-23",
       description: "Personal background, technical focus, and systems mindset",
       content: `# Husain Hakim
 **Cybersecurity Student | Offensive & Defensive Security**
@@ -218,7 +218,7 @@ That is why I keep following the loop: **LEARN → BUILD → TEST → DOCUMENT**
       permissions: "drwxr-xr-x",
       owner: "husain",
       group: "staff",
-      updatedAt: "2025-02-15",
+      updatedAt: "2026-09-23",
       description: "Offensive & defensive security tools, network scanners, and analyzers",
       children: [
         {
@@ -232,7 +232,7 @@ That is why I keep following the loop: **LEARN → BUILD → TEST → DOCUMENT**
           owner: "husain",
           group: "staff",
           size: 2840,
-          updatedAt: "2024-11-20",
+          updatedAt: "2026-08-20",
           description: "Web-based forensics tool for true file type detection and spoofing analysis",
         },
         {
@@ -246,7 +246,7 @@ That is why I keep following the loop: **LEARN → BUILD → TEST → DOCUMENT**
           owner: "husain",
           group: "staff",
           size: 4210,
-          updatedAt: "2024-05-15",
+          updatedAt: "2026-07-15",
           description: "CYBER // SONAR - Intranet telemetry and hardware discovery appliance",
         },
         {
@@ -260,7 +260,7 @@ That is why I keep following the loop: **LEARN → BUILD → TEST → DOCUMENT**
           owner: "husain",
           group: "staff",
           size: 3410,
-          updatedAt: "2024-12-05",
+          updatedAt: "2026-08-12",
           description: "PassGuard - Privacy-first password strength analyzer and k-anonymity checker",
         },
         {
@@ -274,7 +274,7 @@ That is why I keep following the loop: **LEARN → BUILD → TEST → DOCUMENT**
           owner: "husain",
           group: "staff",
           size: 2150,
-          updatedAt: "2024-10-01",
+          updatedAt: "2026-07-28",
           description: "QuickRef - Offline, terminal-first command reference tool",
         },
         {
@@ -288,7 +288,7 @@ That is why I keep following the loop: **LEARN → BUILD → TEST → DOCUMENT**
           owner: "husain",
           group: "staff",
           size: 3000,
-          updatedAt: "2024-10-25",
+          updatedAt: "2026-08-25",
           description: "RepoChecker - Local-only CLI for repository hygiene and secret detection",
         },
         {
@@ -302,7 +302,7 @@ That is why I keep following the loop: **LEARN → BUILD → TEST → DOCUMENT**
           owner: "husain",
           group: "staff",
           size: 3820,
-          updatedAt: "2024-11-10",
+          updatedAt: "2026-07-10",
           description: "Intrusion Detection System - Multi-tier Honeypot, IDS & Main Server simulation",
         },
       ],
@@ -317,7 +317,7 @@ That is why I keep following the loop: **LEARN → BUILD → TEST → DOCUMENT**
       permissions: "drwxr-xr-x",
       owner: "husain",
       group: "staff",
-      updatedAt: "2025-02-12",
+      updatedAt: "2026-09-23",
       description: "Technical security research writeups and lab walkthroughs",
       children: [
         {
@@ -388,7 +388,7 @@ That is why I keep following the loop: **LEARN → BUILD → TEST → DOCUMENT**
       permissions: "drwxr-xr-x",
       owner: "husain",
       group: "staff",
-      updatedAt: "2025-01-15",
+      updatedAt: "2026-09-23",
       description: "Technical articles published on Medium",
       children: [
         {
@@ -402,7 +402,7 @@ That is why I keep following the loop: **LEARN → BUILD → TEST → DOCUMENT**
           owner: "husain",
           group: "staff",
           size: 1540,
-          updatedAt: "2026-08-25",
+          updatedAt: "2026-09-23",
           description: "Markdown: Clean Code Was Never the Hard Part",
         },
         {
@@ -416,7 +416,7 @@ That is why I keep following the loop: **LEARN → BUILD → TEST → DOCUMENT**
           owner: "husain",
           group: "staff",
           size: 4230,
-          updatedAt: "2026-08-28",
+          updatedAt: "2026-09-23",
           description: "Markdown: The Devil is in the Details: Authentication Flaws",
         },
         {
@@ -430,7 +430,7 @@ That is why I keep following the loop: **LEARN → BUILD → TEST → DOCUMENT**
           owner: "husain",
           group: "staff",
           size: 2850,
-          updatedAt: "2026-09-15",
+          updatedAt: "2026-09-23",
           description: "Markdown: Vibe Coding: When It Works Isn't the Same as It's Secure",
         }
       ],
@@ -447,7 +447,7 @@ That is why I keep following the loop: **LEARN → BUILD → TEST → DOCUMENT**
       owner: "husain",
       group: "staff",
       size: 4890,
-      updatedAt: "2025-02-14",
+      updatedAt: "2026-09-23",
       description: "Categorized breakdown of technical tools, languages, and soft skills",
       content: `# Technical Skills & Competencies
 **Husain Hakim | Cybersecurity Student & Backend Developer**
@@ -536,7 +536,7 @@ That is why I keep following the loop: **LEARN → BUILD → TEST → DOCUMENT**
       permissions: "drwxr-xr-x",
       owner: "husain",
       group: "staff",
-      updatedAt: "2025-02-10",
+      updatedAt: "2026-09-23",
       description: "Professional software engineering and community leadership",
       children: [
         {
@@ -550,8 +550,8 @@ That is why I keep following the loop: **LEARN → BUILD → TEST → DOCUMENT**
           owner: "husain",
           group: "staff",
           size: 2980,
-          updatedAt: "2025-02-10",
-          description: "Backend Engineer at LetsUpgrade (Sept 2025 - Present)",
+          updatedAt: "2026-09-23",
+          description: "Backend Engineer at LetsUpgrade (Sept 2025 – July 2026)",
           content: `# Backend Developer - LetsUpgrade Edtech Pvt Ltd
 
 - **Role:** Backend Developer
@@ -609,7 +609,7 @@ Actively participated in core client meetings to capture technical requirements,
       owner: "husain",
       group: "staff",
       size: 890,
-      updatedAt: "2026-08-25",
+      updatedAt: "2026-09-23",
       description: "Direct email, GitHub, LinkedIn, Medium, and X links",
       content: `# Contact Information
 
@@ -632,7 +632,7 @@ Actively participated in core client meetings to capture technical requirements,
       owner: "husain",
       group: "staff",
       size: 280224,
-      updatedAt: "2026-08-31",
+      updatedAt: "2026-09-23",
       description: "Husain Hakim's Official Technical Resume (PDF Document)",
       externalUrl: "/resume.pdf",
     },

@@ -183,6 +183,7 @@ export function DirectoryGrid({ nodes }: DirectoryGridProps) {
   const [isDragOverQuickAccess, setIsDragOverQuickAccess] = React.useState(false);
   const [isDragOverRemoveZone, setIsDragOverRemoveZone] = React.useState(false);
   const qaDragCounterRef = React.useRef(0);
+  const filteredNodesRef = React.useRef<FSNode[]>([]);
 
   const isDraggingFromQuickAccess = dragFolderKey === "quick-access" && !!draggedNodeId;
 
@@ -210,6 +211,108 @@ export function DirectoryGrid({ nodes }: DirectoryGridProps) {
       renameInputRef.current.select();
     }
   }, [renamingNodeId]);
+
+  // Autopilot real inline rename event driver
+  React.useEffect(() => {
+    const handleAutopilotStartRename = (e: CustomEvent<{ nodeId: string; initialValue?: string }>) => {
+      if (e.detail?.nodeId) {
+        setRenamingNodeId(e.detail.nodeId);
+        setRenameValue(e.detail.initialValue || "");
+      }
+    };
+    const handleAutopilotTypeRename = (e: CustomEvent<{ value: string }>) => {
+      if (typeof e.detail?.value === "string") {
+        setRenameValue(e.detail.value);
+      }
+    };
+    const handleAutopilotCommitRename = (e: CustomEvent<{ nodeId: string; finalValue: string }>) => {
+      if (e.detail?.nodeId) {
+        renameNode(e.detail.nodeId, e.detail.finalValue);
+        setRenamingNodeId(null);
+      }
+    };
+    const handleAutopilotCancelRename = () => {
+      setRenamingNodeId(null);
+    };
+
+    const handleAutopilotOpenContextMenu = (e: CustomEvent<{ nodeId: string; x?: number; y?: number }>) => {
+      if (e.detail?.nodeId) {
+        const targetNode = findNodeById(e.detail.nodeId);
+        if (targetNode) {
+          setSelectedNode(targetNode);
+          const x = e.detail.x ?? window.innerWidth / 2;
+          const y = e.detail.y ?? window.innerHeight / 2;
+          setContextMenu({ isOpen: true, x, y, node: targetNode });
+        }
+      }
+    };
+    const handleAutopilotCloseContextMenu = () => {
+      setContextMenu((prev) => ({ ...prev, isOpen: false }));
+    };
+
+    const handleAutopilotStartDragQa = (e: CustomEvent<{ nodeId?: string }>) => {
+      setDraggedNodeId(e.detail?.nodeId || "writeups-dir");
+      setDragFolderKey("quick-access");
+      setIsDragOverRemoveZone(false);
+    };
+    const handleAutopilotDragOverRemove = () => {
+      setIsDragOverRemoveZone(true);
+    };
+    const handleAutopilotDropRemove = (e: CustomEvent<{ nodeId?: string }>) => {
+      const targetId = e.detail?.nodeId || "writeups-dir";
+      if (targetId) {
+        removeFromQuickAccess(targetId);
+        showToast(`📌 Unpinned '${customNames[targetId] || "Husain_Writeups"}' from Quick Access`, 3000);
+      }
+      setDraggedNodeId(null);
+      setDragOverNodeId(null);
+      setDragFolderKey(null);
+      setIsDragOverQuickAccess(false);
+      setIsDragOverRemoveZone(false);
+    };
+    const handleAutopilotDropReorder = (e: CustomEvent<{ sourceId: string; targetId: string }>) => {
+      if (e.detail?.sourceId && e.detail?.targetId) {
+        const currentList = filteredNodesRef.current.length > 0 ? filteredNodesRef.current : nodes;
+        handleReorder(currentPath, currentList.map((n) => n.id), e.detail.sourceId, e.detail.targetId);
+      }
+      setDraggedNodeId(null);
+      setDragOverNodeId(null);
+      setDragFolderKey(null);
+    };
+    const handleAutopilotCancelDrag = () => {
+      setDraggedNodeId(null);
+      setDragOverNodeId(null);
+      setDragFolderKey(null);
+      setIsDragOverQuickAccess(false);
+      setIsDragOverRemoveZone(false);
+    };
+
+    window.addEventListener("vfs-autopilot-start-rename" as any, handleAutopilotStartRename);
+    window.addEventListener("vfs-autopilot-type-rename" as any, handleAutopilotTypeRename);
+    window.addEventListener("vfs-autopilot-commit-rename" as any, handleAutopilotCommitRename);
+    window.addEventListener("vfs-autopilot-cancel-rename" as any, handleAutopilotCancelRename);
+    window.addEventListener("vfs-autopilot-open-context-menu" as any, handleAutopilotOpenContextMenu);
+    window.addEventListener("vfs-autopilot-close-context-menu" as any, handleAutopilotCloseContextMenu);
+    window.addEventListener("vfs-autopilot-start-drag-qa" as any, handleAutopilotStartDragQa);
+    window.addEventListener("vfs-autopilot-drag-over-remove" as any, handleAutopilotDragOverRemove);
+    window.addEventListener("vfs-autopilot-drop-remove" as any, handleAutopilotDropRemove);
+    window.addEventListener("vfs-autopilot-drop-reorder" as any, handleAutopilotDropReorder);
+    window.addEventListener("vfs-autopilot-cancel-drag" as any, handleAutopilotCancelDrag);
+
+    return () => {
+      window.removeEventListener("vfs-autopilot-start-rename" as any, handleAutopilotStartRename);
+      window.removeEventListener("vfs-autopilot-type-rename" as any, handleAutopilotTypeRename);
+      window.removeEventListener("vfs-autopilot-commit-rename" as any, handleAutopilotCommitRename);
+      window.removeEventListener("vfs-autopilot-cancel-rename" as any, handleAutopilotCancelRename);
+      window.removeEventListener("vfs-autopilot-open-context-menu" as any, handleAutopilotOpenContextMenu);
+      window.removeEventListener("vfs-autopilot-close-context-menu" as any, handleAutopilotCloseContextMenu);
+      window.removeEventListener("vfs-autopilot-start-drag-qa" as any, handleAutopilotStartDragQa);
+      window.removeEventListener("vfs-autopilot-drag-over-remove" as any, handleAutopilotDragOverRemove);
+      window.removeEventListener("vfs-autopilot-drop-remove" as any, handleAutopilotDropRemove);
+      window.removeEventListener("vfs-autopilot-drop-reorder" as any, handleAutopilotDropReorder);
+      window.removeEventListener("vfs-autopilot-cancel-drag" as any, handleAutopilotCancelDrag);
+    };
+  }, [renameNode, removeFromQuickAccess, showToast, setSelectedNode, customNames, currentPath, nodes]);
 
   // Context menu click-outside and Escape listener
   React.useEffect(() => {
@@ -414,6 +517,8 @@ export function DirectoryGrid({ nodes }: DirectoryGridProps) {
 
     return baseNodes;
   }, [nodes, searchQuery, sortOption, deletedNodeIds, customNames, folderOrders, currentPath]);
+
+  filteredNodesRef.current = filteredNodes;
 
   // Quick Access nodes with custom ordering and delete filtering
   const quickAccessBase =
@@ -815,6 +920,7 @@ export function DirectoryGrid({ nodes }: DirectoryGridProps) {
       >
         <button
           className={styles.contextMenuItem}
+          data-action="open"
           onClick={() => {
             handleNodeDoubleClick(node);
             setContextMenu((prev) => ({ ...prev, isOpen: false }));
@@ -826,6 +932,7 @@ export function DirectoryGrid({ nodes }: DirectoryGridProps) {
 
         <button
           className={styles.contextMenuItem}
+          data-action="rename"
           onClick={() => {
             setRenamingNodeId(node.id);
             setRenameValue(customNames[node.id] || node.name);
@@ -838,6 +945,7 @@ export function DirectoryGrid({ nodes }: DirectoryGridProps) {
 
         <button
           className={styles.contextMenuItem}
+          data-action="info"
           onClick={() => {
             setInfoNode(node);
             setContextMenu((prev) => ({ ...prev, isOpen: false }));
@@ -849,6 +957,7 @@ export function DirectoryGrid({ nodes }: DirectoryGridProps) {
 
         <button
           className={styles.contextMenuItem}
+          data-action="copy-link"
           onClick={() => {
             handleCopyNode(node);
             setContextMenu((prev) => ({ ...prev, isOpen: false }));
@@ -861,6 +970,7 @@ export function DirectoryGrid({ nodes }: DirectoryGridProps) {
         {!(node.type === "file" && node.fileType === "vault") && (
           <button
             className={styles.contextMenuItem}
+            data-action="download"
             onClick={async () => {
               setContextMenu((prev) => ({ ...prev, isOpen: false }));
               await downloadNode(node);
@@ -874,6 +984,7 @@ export function DirectoryGrid({ nodes }: DirectoryGridProps) {
         {isPinned ? (
           <button
             className={styles.contextMenuItem}
+            data-action="unpin"
             onClick={() => {
               removeFromQuickAccess(node.id);
               setContextMenu((prev) => ({ ...prev, isOpen: false }));
@@ -885,6 +996,7 @@ export function DirectoryGrid({ nodes }: DirectoryGridProps) {
         ) : (
           <button
             className={styles.contextMenuItem}
+            data-action="pin"
             onClick={() => {
               addToQuickAccess(node.id);
               setContextMenu((prev) => ({ ...prev, isOpen: false }));
@@ -960,7 +1072,7 @@ export function DirectoryGrid({ nodes }: DirectoryGridProps) {
               </span>
 
               <span className={styles.getInfoLabel}>Created:</span>
-              <span className={styles.getInfoValue}>{infoNode.createdAt || "Jan 15, 2024"}</span>
+              <span className={styles.getInfoValue}>{infoNode.createdAt || "Sep 23, 2026"}</span>
 
               <span className={styles.getInfoLabel}>Modified:</span>
               <span className={styles.getInfoValue}>{infoNode.updatedAt}</span>
@@ -1024,6 +1136,7 @@ export function DirectoryGrid({ nodes }: DirectoryGridProps) {
             className={`${styles.qaRemoveDropZone} ${
               isDragOverRemoveZone ? styles.qaRemoveDropZoneActive : ""
             }`}
+            data-tour="qa-remove-drop-zone"
             onDragOver={(e) => {
               e.preventDefault();
               e.dataTransfer.dropEffect = "move";
@@ -1277,6 +1390,7 @@ export function DirectoryGrid({ nodes }: DirectoryGridProps) {
           className={`${styles.qaRemoveDropZone} ${
             isDragOverRemoveZone ? styles.qaRemoveDropZoneActive : ""
           }`}
+          data-tour="qa-remove-drop-zone"
           onDragOver={(e) => {
             e.preventDefault();
             e.dataTransfer.dropEffect = "move";

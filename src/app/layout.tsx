@@ -3,6 +3,7 @@ import "./globals.css";
 import { ThemeProvider } from "@/context/ThemeContext";
 import { FilesystemProvider } from "@/context/FilesystemContext";
 import { TourProvider } from "@/context/TourContext";
+import { AutopilotProvider } from "@/context/AutopilotContext";
 import { AchievementProvider } from "@/context/AchievementContext";
 import { Header } from "@/components/Header";
 import { AchievementBanner } from "@/components/achievements/AchievementBanner";
@@ -225,12 +226,14 @@ export default function RootLayout({
           <AchievementProvider>
             <FilesystemProvider>
               <TourProvider>
-                <div className="app-shell">
-                  <Header />
-                  <div className="workspace-main">{children}</div>
-                </div>
-                <AchievementBanner />
-                <AchievementPanelModal />
+                <AutopilotProvider>
+                  <div className="app-shell">
+                    <Header />
+                    <div className="workspace-main">{children}</div>
+                  </div>
+                  <AchievementBanner />
+                  <AchievementPanelModal />
+                </AutopilotProvider>
               </TourProvider>
             </FilesystemProvider>
           </AchievementProvider>

@@ -37,7 +37,7 @@ export const PROJECTS_DATA: ProjectItem[] = [
     technologies: ["React", "Vite", "Vanilla CSS", "Python", "FastAPI"],
     githubUrl: "https://github.com/husainhakim/FileTypeIdentifier",
     demoUrl: "https://file-sign-identifier.vercel.app/",
-    date: "2024",
+    date: "Aug 2026",
     summary:
       "A cybersecurity tool designed to identify the true file type of a file by analyzing its 'magic numbers' (file signatures) rather than relying on its file extension. Includes a forensic hex viewer and spoofing detection.",
     problemStatement:
@@ -82,7 +82,7 @@ export const PROJECTS_DATA: ProjectItem[] = [
     ],
     technologies: ["Python 3", "FastAPI", "SQLite WAL", "HTML5 Canvas", "Asyncio"],
     githubUrl: "https://github.com/husainhakim/NetworkDeviceScanner",
-    date: "2024",
+    date: "Jul 2026",
     summary:
       "CYBER // SONAR is a lightweight, zero-dependency, tactical intranet telemetry appliance designed to discover, track, audit, and visualize every physical device active on your local network in real-time.",
     problemStatement:
@@ -139,7 +139,7 @@ $ python3 start.py --no-browser`,
     technologies: ["React", "Vite", "Tailwind CSS v4", "Python", "FastAPI", "Web Crypto API"],
     githubUrl: "https://github.com/husainhakim/PasswordStrengthChecker",
     demoUrl: "https://password-audit.vercel.app/",
-    date: "2024",
+    date: "Aug 2026",
     summary:
       "PassGuard is a privacy-first, locally-processing web application designed to analyze password security, estimate entropy, simulate cyber attacks, and generate cryptographically secure passwords.",
     problemStatement:
@@ -183,7 +183,7 @@ $ python3 start.py --no-browser`,
     ],
     technologies: ["Python", "JSON", "ANSI Escape Codes", "Setuptools"],
     githubUrl: "https://github.com/husainhakim/QuickRef",
-    date: "2024",
+    date: "Jul 2026",
     summary:
       "QuickRef is an offline, terminal-first command reference tool built to eliminate context-switching while learning Linux, networking, Git, and cybersecurity. It delivers fast, clean, structured command lookups directly in the terminal.",
     problemStatement:
@@ -227,7 +227,7 @@ $ python3 start.py --no-browser`,
     ],
     technologies: ["Python 3.10+", "CLI", "Regex"],
     githubUrl: "https://github.com/husainhakim/RepoChecker",
-    date: "2024",
+    date: "Aug 2026",
     summary:
       "RepoChecker is a local-only, read-only CLI tool designed to catch accidentally committed secrets, sensitive files, broken .gitignore rules, and untracked work before pushing to GitHub.",
     problemStatement:
@@ -276,7 +276,7 @@ $ repochecker ./my-project`,
     ],
     technologies: ["Node.js", "Express.js", "sql.js (WebAssembly SQLite)", "JavaScript", "CLI"],
     githubUrl: "https://github.com/husainhakim/IntrusionDetectionSystem",
-    date: "2024",
+    date: "Jul 2026",
     summary:
       "A multi-tier cybersecurity simulation designed to demonstrate web application vulnerabilities and defensive intrusion detection techniques. Features a deliberately vulnerable honeypot, a hardened main server, a real-time log-monitoring IDS, and automated attack testing scripts.",
     problemStatement:

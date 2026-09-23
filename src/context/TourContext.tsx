@@ -18,6 +18,9 @@ interface TourContextType {
   isHelpModalOpen: boolean;
   openHelpModal: () => void;
   closeHelpModal: () => void;
+  isWelcomeOpen: boolean;
+  openWelcome: () => void;
+  closeWelcome: () => void;
   hasSeenTour: boolean;
 }
 
@@ -28,6 +31,7 @@ export function TourProvider({ children }: { children: React.ReactNode }) {
   const [isTourActive, setIsTourActive] = useState(false);
   const [currentStepIndex, setCurrentStepIndex] = useState(0);
   const [isHelpModalOpen, setIsHelpModalOpen] = useState(false);
+  const [isWelcomeOpen, setIsWelcomeOpen] = useState(false);
   const [hasSeenTour, setHasSeenTour] = useState(true);
 
   useEffect(() => {
@@ -43,6 +47,7 @@ export function TourProvider({ children }: { children: React.ReactNode }) {
 
   const startTour = useCallback((stepIndex = 0) => {
     setIsHelpModalOpen(false);
+    setIsWelcomeOpen(false);
     setCurrentStepIndex(Math.max(0, Math.min(stepIndex, TOUR_STEPS.length - 1)));
     setIsTourActive(true);
   }, []);
@@ -74,11 +79,22 @@ export function TourProvider({ children }: { children: React.ReactNode }) {
 
   const openHelpModal = useCallback(() => {
     setIsTourActive(false);
+    setIsWelcomeOpen(false);
     setIsHelpModalOpen(true);
   }, []);
 
   const closeHelpModal = useCallback(() => {
     setIsHelpModalOpen(false);
+  }, []);
+
+  const openWelcome = useCallback(() => {
+    setIsTourActive(false);
+    setIsHelpModalOpen(false);
+    setIsWelcomeOpen(true);
+  }, []);
+
+  const closeWelcome = useCallback(() => {
+    setIsWelcomeOpen(false);
   }, []);
 
   const currentStep = TOUR_STEPS[currentStepIndex] || TOUR_STEPS[0];
@@ -97,6 +113,9 @@ export function TourProvider({ children }: { children: React.ReactNode }) {
         isHelpModalOpen,
         openHelpModal,
         closeHelpModal,
+        isWelcomeOpen,
+        openWelcome,
+        closeWelcome,
         hasSeenTour,
       }}
     >

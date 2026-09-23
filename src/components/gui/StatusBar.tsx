@@ -4,13 +4,15 @@ import React from "react";
 import { useFilesystem } from "@/context/FilesystemContext";
 import { formatFileSize } from "@/lib/fileHelpers";
 import { FSFile } from "@/data/filesystemData";
-import { ShieldCheck, HardDrive, Terminal, Layers, HelpCircle, Sparkles } from "lucide-react";
+import { ShieldCheck, HardDrive, Terminal, Layers, HelpCircle, Sparkles, Play } from "lucide-react";
 import { useTour } from "@/context/TourContext";
+import { useAutopilot } from "@/context/AutopilotContext";
 import styles from "./Gui.module.css";
 
 export function StatusBar() {
   const { currentPath, currentNode, selectedNode, mode } = useFilesystem();
   const { openHelpModal } = useTour();
+  const { startAutopilot } = useAutopilot();
 
   const childCount =
     currentNode && currentNode.type === "directory" ? currentNode.children.length : 0;
@@ -36,6 +38,14 @@ export function StatusBar() {
       </div>
 
       <div className={styles.statusRight}>
+        <button
+          onClick={startAutopilot}
+          className={styles.statusAutopilotBtn}
+          title="Watch 20-Second Live UI Skim Walkthrough"
+        >
+          <Play size={10} fill="currentColor" className={styles.statusIcon} />
+          <span>Watch Skim</span>
+        </button>
         <button
           onClick={openHelpModal}
           className={styles.statusTourBtn}

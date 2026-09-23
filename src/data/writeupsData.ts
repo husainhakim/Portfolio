@@ -306,7 +306,7 @@ However, secure code in production is rarely 100% flaw-free. To mirror real appl
 
 The IDS operates as a standalone daemon that tails \`activity.log\` using file streaming. Every request captured by \`tracker.js\` logs a structured entry:
 \`\`\`
-[2024-11-10T14:32:01.120Z] [SESSION: a9f81d3c] POST /login -> 401 UNAUTHORIZED
+[2026-08-25T14:32:01.120Z] [SESSION: a9f81d3c] POST /login -> 401 UNAUTHORIZED
 \`\`\`
 
 The IDS parses incoming log lines in real-time, grouping login attempts by session ID within a **10-second sliding time window**:

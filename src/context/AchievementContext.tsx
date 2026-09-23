@@ -185,6 +185,11 @@ export function AchievementProvider({
 
   const unlock = useCallback(
     (id: AchievementId) => {
+      // Ignore achievement triggers during automated Autopilot Skim demonstrations
+      if (typeof window !== "undefined" && (window as any).__IS_AUTOPILOT_ACTIVE__) {
+        return;
+      }
+
       // Check if already unlocked
       if (unlockedMapRef.current[id]) {
         return;

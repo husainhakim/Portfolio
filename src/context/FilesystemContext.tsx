@@ -284,8 +284,17 @@ export function FilesystemProvider({ children }: { children: React.ReactNode }) 
 
   const setExplicitFolderOrder = useCallback(
     (folderKey: string, newOrderedIds: string[]) => {
-      setFolderOrders((prev) => ({ ...prev, [folderKey]: newOrderedIds }));
-      unlock("file_shuffler");
+      setFolderOrders((prev) => {
+        if (!newOrderedIds || newOrderedIds.length === 0) {
+          const next = { ...prev };
+          delete next[folderKey];
+          return next;
+        }
+        return { ...prev, [folderKey]: newOrderedIds };
+      });
+      if (newOrderedIds && newOrderedIds.length > 0) {
+        unlock("file_shuffler");
+      }
     },
     [unlock]
   );

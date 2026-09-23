@@ -361,7 +361,7 @@ export default async function Page({ params }: PageProps) {
           name: PROFILE_DATA.name,
           url: SITE_CONFIG.url,
         },
-        datePublished: activeWriteup.date || "2025-01-01",
+        datePublished: activeWriteup.date || "2026-08-25",
         mainEntityOfPage: canonicalUrl,
       };
     }

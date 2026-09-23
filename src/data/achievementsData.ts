@@ -106,7 +106,7 @@ export const ACHIEVEMENTS: Achievement[] = [
   {
     id: "tour_completer",
     title: "Grand Tourer",
-    description: "Completed the interactive workstation tour from start to finish.",
+    description: "Completed the interactive live walkthrough or workstation tour from start to finish.",
     hint: "Walk the guided path across every corner of this workstation.",
     iconName: "Compass",
     category: "exploration",

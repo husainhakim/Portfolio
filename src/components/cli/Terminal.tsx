@@ -53,6 +53,27 @@ Type 'gui' to toggle back to the GUI workspace at any time.`,
     unlock("old_school");
   }, [unlock]);
 
+  // Autopilot event listener for typing and running live CLI commands
+  useEffect(() => {
+    const handleAutopilotTypeCli = (e: CustomEvent<{ value: string }>) => {
+      if (typeof e.detail?.value === "string") {
+        setInput(e.detail.value);
+      }
+    };
+    const handleAutopilotRunCli = (e: CustomEvent<{ command: string }>) => {
+      if (e.detail?.command) {
+        handleCommandSubmit(e.detail.command);
+      }
+    };
+
+    window.addEventListener("vfs-autopilot-type-cli" as any, handleAutopilotTypeCli);
+    window.addEventListener("vfs-autopilot-run-cli" as any, handleAutopilotRunCli);
+    return () => {
+      window.removeEventListener("vfs-autopilot-type-cli" as any, handleAutopilotTypeCli);
+      window.removeEventListener("vfs-autopilot-run-cli" as any, handleAutopilotRunCli);
+    };
+  }, [currentPath, navigate, openFile, setMode, theme, toggleTheme, setTheme]);
+
   // Focus input automatically on mount and path change
   useEffect(() => {
     inputRef.current?.focus();
@@ -251,6 +272,7 @@ Type 'gui' to toggle back to the GUI workspace at any time.`,
               onChange={(e) => setInput(e.target.value)}
               onKeyDown={handleKeyDown}
               className={styles.terminalInput}
+              data-tour="terminal-input"
               autoFocus
               spellCheck={false}
               autoComplete="off"

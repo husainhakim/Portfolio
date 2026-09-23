@@ -3,6 +3,7 @@
 import React, { useState, useEffect, useRef, useMemo, useCallback } from "react";
 import { useFilesystem } from "@/context/FilesystemContext";
 import { useTour } from "@/context/TourContext";
+import { useAutopilot } from "@/context/AutopilotContext";
 import { useAchievements } from "@/context/AchievementContext";
 import { useTheme } from "@/context/ThemeContext";
 import { downloadNode } from "@/lib/downloadHelper";
@@ -25,6 +26,7 @@ import {
   BookOpen,
   CornerDownLeft,
   Sparkle,
+  Play,
 } from "lucide-react";
 import styles from "./CommandPalette.module.css";
 
@@ -52,7 +54,8 @@ export function CommandPalette({ isOpen, onClose }: CommandPaletteProps) {
     currentNode,
     resetModifications,
   } = useFilesystem();
-  const { startTour, openHelpModal } = useTour();
+  const { startTour, openHelpModal, openWelcome } = useTour();
+  const { startAutopilot } = useAutopilot();
   const { openPanel, unlockedCount, totalCount, unlock } = useAchievements();
   const { toggleTheme } = useTheme();
 
@@ -81,6 +84,28 @@ export function CommandPalette({ isOpen, onClose }: CommandPaletteProps) {
   const allCommands: CommandItem[] = useMemo(() => {
     const list: CommandItem[] = [
       // Quick Actions
+      {
+        id: "act-autopilot",
+        title: "Watch 20s Live Autopilot Skim (Demo)",
+        subtitle: "Automated cinema walkthrough of Terminal, CTF Vault, and Trophies",
+        category: "Quick Actions",
+        icon: <Play size={15} className={styles.iconTour} />,
+        action: () => {
+          startAutopilot();
+          onClose();
+        },
+      },
+      {
+        id: "act-welcome",
+        title: "Meet Husain & Operator Welcome Guide",
+        subtitle: "Introduction message, photo dialogue, and MANUAL.md quickstart",
+        category: "Quick Actions",
+        icon: <Sparkles size={15} className={styles.iconTour} />,
+        action: () => {
+          openWelcome();
+          onClose();
+        },
+      },
       {
         id: "act-terminal",
         title: mode === "cli" ? "Switch to GUI Desktop" : "Switch to Interactive Linux Terminal",

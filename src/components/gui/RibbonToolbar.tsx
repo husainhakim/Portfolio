@@ -18,16 +18,30 @@ import {
   ChevronDown,
   RotateCcw,
   Sparkles,
+  Play,
 } from "lucide-react";
 import { useTour } from "@/context/TourContext";
+import { useAutopilot } from "@/context/AutopilotContext";
 import styles from "./Gui.module.css";
 
 const ICON_SIZE = 15;
 const CHEVRON_SIZE = 11;
 const STROKE_WIDTH = 1.8;
 
+const NEW_BUTTON_EASTER_EGGS = [
+  "⚡ Allocating 64TB of virtual RAM for your revolutionary idea...",
+  "📦 Installing 847 dependencies for an empty folder. npm says this is normal.",
+  "🧠 Spawning 47 CPU cores to decide what to name this folder.",
+  "💾 Reserving 128GB of disk space for the 3KB you're probably going to put here.",
+  "🗃️ Creating 256 backup copies. You can never be too careful with an empty folder.",
+  "🧯 Allocating 32 fire extinguishers for a folder that contains 0 files.",
+  "💻 Your 8GB machine has been asked for 64GB. Negotiations are ongoing.",
+  "⚡ CPU: 3,847%. RAM: 64,208MB. Reason: folder.",
+];
+
 export function RibbonToolbar() {
   const { openHelpModal } = useTour();
+  const { startAutopilot } = useAutopilot();
   const {
     viewLayout,
     setViewLayout,
@@ -38,7 +52,19 @@ export function RibbonToolbar() {
     selectedNode,
     handleCopyNode,
     handleDeleteNode,
+    showToast,
   } = useFilesystem();
+
+  const [eggIndex, setEggIndex] = React.useState(0);
+  const [isNewSpinning, setIsNewSpinning] = React.useState(false);
+
+  const handleNewClick = () => {
+    setIsNewSpinning(true);
+    const msg = NEW_BUTTON_EASTER_EGGS[eggIndex % NEW_BUTTON_EASTER_EGGS.length];
+    setEggIndex((prev) => prev + 1);
+    showToast(msg, 3800);
+    setTimeout(() => setIsNewSpinning(false), 500);
+  };
 
   const isVaultSelected =
     selectedNode?.id === "vault" ||
@@ -59,10 +85,18 @@ export function RibbonToolbar() {
 
   return (
     <div className={styles.ribbonToolbar}>
-      {/* New */}
+      {/* New (Interactive Easter Egg) */}
       <div className={styles.ribbonGroup}>
-        <button className={styles.ribbonBtnWithLabel} title="New" disabled>
-          <Plus size={ICON_SIZE} strokeWidth={STROKE_WIDTH} />
+        <button
+          className={`${styles.ribbonBtnWithLabel} ${styles.ribbonNewBtn}`}
+          title="Create New Item (+ Easter Egg)"
+          onClick={handleNewClick}
+        >
+          <Plus
+            size={ICON_SIZE}
+            strokeWidth={STROKE_WIDTH}
+            className={isNewSpinning ? styles.ribbonPlusSpin : ""}
+          />
           <span>New</span>
           <ChevronDown size={CHEVRON_SIZE} strokeWidth={STROKE_WIDTH} style={{ marginLeft: -2 }} />
         </button>
@@ -150,6 +184,14 @@ export function RibbonToolbar() {
 
       {/* Feature Discovery & Interactive Tour */}
       <div className={styles.ribbonGroup}>
+        <button
+          className={`${styles.ribbonBtnWithLabel} ${styles.ribbonAutopilotBtn}`}
+          title="Watch 20-Second Live UI Skim Walkthrough"
+          onClick={startAutopilot}
+        >
+          <Play size={11} fill="currentColor" />
+          <span>Watch Skim</span>
+        </button>
         <button
           className={`${styles.ribbonBtnWithLabel} ${styles.ribbonTourBtn}`}
           title="Interactive Tour & Features Cheatsheet"
