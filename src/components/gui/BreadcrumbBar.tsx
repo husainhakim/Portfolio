@@ -22,6 +22,7 @@ interface BreadcrumbBarProps {
 export function BreadcrumbBar({ onToggleSidebar }: BreadcrumbBarProps) {
   const {
     currentPath,
+    customNames,
     navigate,
     goBack,
     goForward,
@@ -33,7 +34,7 @@ export function BreadcrumbBar({ onToggleSidebar }: BreadcrumbBarProps) {
     setSearchQuery,
   } = useFilesystem();
 
-  const breadcrumbs = buildBreadcrumbs(currentPath);
+  const breadcrumbs = buildBreadcrumbs(currentPath, customNames);
 
   return (
     <div className={styles.breadcrumbBar} data-tour="breadcrumb-bar">

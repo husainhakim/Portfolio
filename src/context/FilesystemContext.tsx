@@ -42,11 +42,12 @@ interface FilesystemContextType {
   canGoForward: boolean;
   canGoUp: boolean;
   history: string[];
-  // GUI In-Memory Modifications
+  // GUI & CLI In-Memory Modifications & Rename Canonical State
   customNames: Record<string, string>;
   deletedNodeIds: string[];
   folderOrders: Record<string, string[]>;
   isModified: boolean;
+  getNodeDisplayName: (node: FSNode | null | undefined) => string;
   renameNode: (nodeId: string, newName: string) => void;
   deleteNode: (nodeId: string) => void;
   restoreNode: (nodeId: string) => void;
@@ -63,6 +64,8 @@ interface FilesystemContextType {
   quickAccessIds: string[];
   addToQuickAccess: (nodeId: string) => void;
   removeFromQuickAccess: (nodeId: string) => void;
+  resetQuickAccess: () => void;
+  setQuickAccessList: (ids: string[]) => void;
   justPinnedNodeIds: string[];
   // Bootloader State
   isBooted: boolean;
@@ -71,8 +74,8 @@ interface FilesystemContextType {
 
 export const DEFAULT_QUICK_ACCESS_IDS = [
   "about-file",
+  "contact-file",
   "projects-dir",
-  "writeups-dir",
   "resume-pdf",
 ];
 
@@ -137,13 +140,33 @@ export function FilesystemProvider({ children }: { children: React.ReactNode }) 
     setIsBooted(true);
   }, []);
 
-  // GUI-only interactive customization state (in-memory, reset on command or refresh)
+  // GUI & CLI interactive customization state (persisted per session, reset on command)
   const [customNames, setCustomNames] = useState<Record<string, string>>({});
   const [deletedNodeIds, setDeletedNodeIds] = useState<string[]>([]);
   const [folderOrders, setFolderOrders] = useState<Record<string, string[]>>({});
   const [quickAccessIds, setQuickAccessIds] = useState<string[]>(DEFAULT_QUICK_ACCESS_IDS);
   const [justPinnedNodeIds, setJustPinnedNodeIds] = useState<string[]>([]);
   const [justRestoredNodeIds, setJustRestoredNodeIds] = useState<string[]>([]);
+
+  // Restore session-level customNames and folderOrders on mount
+  useEffect(() => {
+    try {
+      const savedNames = sessionStorage.getItem("vfs_custom_names");
+      if (savedNames) {
+        const parsed = JSON.parse(savedNames);
+        if (parsed && typeof parsed === "object") {
+          setCustomNames(parsed);
+        }
+      }
+      const savedOrders = sessionStorage.getItem("vfs_folder_orders");
+      if (savedOrders) {
+        const parsed = JSON.parse(savedOrders);
+        if (parsed && typeof parsed === "object") {
+          setFolderOrders(parsed);
+        }
+      }
+    } catch (_) {}
+  }, []);
 
   // Toast & auto-restore state
   const [toastMessage, setToastMessage] = useState<string | null>(null);
@@ -164,6 +187,14 @@ export function FilesystemProvider({ children }: { children: React.ReactNode }) 
     }, duration);
   }, []);
 
+  const getNodeDisplayName = useCallback(
+    (node: FSNode | null | undefined): string => {
+      if (!node) return "";
+      return customNames[node.id] || node.name;
+    },
+    [customNames]
+  );
+
   const renameNode = useCallback(
     (nodeId: string, newName: string) => {
       const trimmed = newName.trim();
@@ -171,12 +202,21 @@ export function FilesystemProvider({ children }: { children: React.ReactNode }) 
         unlock("master_of_disguise");
       }
       setCustomNames((prev) => {
+        let next: Record<string, string>;
         if (!trimmed) {
-          const next = { ...prev };
+          next = { ...prev };
           delete next[nodeId];
-          return next;
+        } else {
+          next = { ...prev, [nodeId]: trimmed };
         }
-        return { ...prev, [nodeId]: trimmed };
+        try {
+          if (Object.keys(next).length > 0) {
+            sessionStorage.setItem("vfs_custom_names", JSON.stringify(next));
+          } else {
+            sessionStorage.removeItem("vfs_custom_names");
+          }
+        } catch (_) {}
+        return next;
       });
     },
     [unlock]
@@ -285,12 +325,21 @@ export function FilesystemProvider({ children }: { children: React.ReactNode }) 
   const setExplicitFolderOrder = useCallback(
     (folderKey: string, newOrderedIds: string[]) => {
       setFolderOrders((prev) => {
+        let next: Record<string, string[]>;
         if (!newOrderedIds || newOrderedIds.length === 0) {
-          const next = { ...prev };
+          next = { ...prev };
           delete next[folderKey];
-          return next;
+        } else {
+          next = { ...prev, [folderKey]: newOrderedIds };
         }
-        return { ...prev, [folderKey]: newOrderedIds };
+        try {
+          if (Object.keys(next).length > 0) {
+            sessionStorage.setItem("vfs_folder_orders", JSON.stringify(next));
+          } else {
+            sessionStorage.removeItem("vfs_folder_orders");
+          }
+        } catch (_) {}
+        return next;
       });
       if (newOrderedIds && newOrderedIds.length > 0) {
         unlock("file_shuffler");
@@ -299,18 +348,26 @@ export function FilesystemProvider({ children }: { children: React.ReactNode }) 
     [unlock]
   );
 
+  const setQuickAccessList = useCallback((ids: string[]) => {
+    quickAccessIdsRef.current = ids;
+    setQuickAccessIds(ids);
+  }, []);
+
+  const resetQuickAccess = useCallback(() => {
+    quickAccessIdsRef.current = DEFAULT_QUICK_ACCESS_IDS;
+    setQuickAccessIds(DEFAULT_QUICK_ACCESS_IDS);
+  }, []);
+
   const addToQuickAccess = useCallback(
     (nodeId: string) => {
-      const current = quickAccessIdsRef.current;
-      if (current.includes(nodeId)) return;
+      setQuickAccessIds((prev) => {
+        if (prev.includes(nodeId) || prev.length >= 5) return prev;
+        const next = [...prev, nodeId];
+        quickAccessIdsRef.current = next;
+        return next;
+      });
 
-      if (current.length >= 5) {
-        showToast("Quick Access is full. Remove one first");
-        unlock("hoarder");
-        return;
-      }
-
-      if (current.length === 4) {
+      if (quickAccessIdsRef.current.length >= 5) {
         unlock("hoarder");
       }
 
@@ -318,25 +375,32 @@ export function FilesystemProvider({ children }: { children: React.ReactNode }) 
       setTimeout(() => {
         setJustPinnedNodeIds((prev) => prev.filter((id) => id !== nodeId));
       }, 800);
-
-      setQuickAccessIds((prev) =>
-        prev.includes(nodeId) || prev.length >= 5 ? prev : [...prev, nodeId]
-      );
     },
-    [showToast, unlock]
+    [unlock]
   );
 
   const removeFromQuickAccess = useCallback((nodeId: string) => {
-    setQuickAccessIds((prev) => prev.filter((id) => id !== nodeId));
+    setQuickAccessIds((prev) => {
+      const next = prev.filter((id) => id !== nodeId);
+      quickAccessIdsRef.current = next;
+      return next;
+    });
   }, []);
 
   const resetModifications = useCallback(() => {
     restoreTimersRef.current.forEach((timer) => clearTimeout(timer));
     restoreTimersRef.current.clear();
+    try {
+      sessionStorage.removeItem("vfs_custom_names");
+      sessionStorage.removeItem("vfs_folder_orders");
+      sessionStorage.removeItem("vfs_deleted_nodes");
+    } catch (_) {}
     setCustomNames({});
     setDeletedNodeIds([]);
     setFolderOrders({});
-  }, []);
+    setQuickAccessIds(DEFAULT_QUICK_ACCESS_IDS);
+    showToast("Workspace reset to default state. All names & layouts restored.", 3500);
+  }, [showToast]);
 
   // Synchronize restore timers when deletedNodeIds changes (e.g. manual Reset button clicked)
   useEffect(() => {
@@ -369,12 +433,12 @@ export function FilesystemProvider({ children }: { children: React.ReactNode }) 
 
   // Derive virtual path from URL pathname for GUI mode
   const guiVirtualPath = pathname === "/" ? ROOT_PATH : normalizePath(pathname);
-  const guiResolvedNode = findNodeByPath(guiVirtualPath, VIRTUAL_FS);
+  const guiResolvedNode = findNodeByPath(guiVirtualPath, VIRTUAL_FS, customNames);
   const guiCurrentPath = guiResolvedNode?.type === "file" ? getParentPath(guiVirtualPath) : guiVirtualPath;
 
   // Active path and node depending on workspace mode
   const currentPath = mode === "cli" ? cliPath : guiCurrentPath;
-  const currentNode = findNodeByPath(currentPath, VIRTUAL_FS);
+  const currentNode = findNodeByPath(currentPath, VIRTUAL_FS, customNames);
 
   // Sync openedFile with URL in GUI mode
   useEffect(() => {
@@ -389,12 +453,12 @@ export function FilesystemProvider({ children }: { children: React.ReactNode }) 
     } else {
       setOpenedFile(null);
     }
-  }, [mode, guiVirtualPath]);
+  }, [mode, guiVirtualPath, guiResolvedNode]);
 
   const navigate = useCallback(
     (targetPath: string): boolean => {
       const normalized = normalizePath(targetPath);
-      const node = findNodeByPath(normalized, VIRTUAL_FS);
+      const node = findNodeByPath(normalized, VIRTUAL_FS, customNames);
 
       if (!node) {
         return false;
@@ -408,12 +472,13 @@ export function FilesystemProvider({ children }: { children: React.ReactNode }) 
       }
 
       // If they are navigating to ROOT_PATH in GUI mode, map it back to "/" to keep URL clean
-      const urlPath = normalized === ROOT_PATH ? "/" : normalized;
+      const canonicalPath = node.type === "file" ? node.path : (normalized === ROOT_PATH ? "/" : normalized);
+      const urlPath = canonicalPath === ROOT_PATH ? "/" : canonicalPath;
       router.push(urlPath);
 
       return true;
     },
-    [router]
+    [router, customNames]
   );
 
   const setMode = useCallback((newMode: WorkspaceMode) => {
@@ -515,6 +580,7 @@ export function FilesystemProvider({ children }: { children: React.ReactNode }) 
         deletedNodeIds,
         folderOrders,
         isModified,
+        getNodeDisplayName,
         renameNode,
         deleteNode,
         restoreNode,
@@ -529,6 +595,8 @@ export function FilesystemProvider({ children }: { children: React.ReactNode }) 
         quickAccessIds,
         addToQuickAccess,
         removeFromQuickAccess,
+        resetQuickAccess,
+        setQuickAccessList,
         justPinnedNodeIds,
         isBooted,
         completeBoot,

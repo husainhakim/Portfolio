@@ -108,6 +108,7 @@ export function AutopilotOverlay() {
       setIsDraggingGhost(false);
       setTargetFocusRect(null);
       setClickEffect({ active: false, label: undefined, key: 0 });
+      lastStepIndexRef.current = -1;
       window.dispatchEvent(new CustomEvent("vfs-autopilot-cancel-drag"));
       return;
     }
@@ -116,6 +117,7 @@ export function AutopilotOverlay() {
     if (lastStepIndexRef.current !== currentStepIndex) {
       clearTimelineTimers();
       stepElapsedRef.current = 0;
+      stepStartTimeRef.current = Date.now();
       setShowSimulatedMenu(false);
       setIsDraggingGhost(false);
       setTargetFocusRect(null);
@@ -131,7 +133,8 @@ export function AutopilotOverlay() {
     }
 
     // Start or resume execution from current step elapsed offset
-    stepStartTimeRef.current = Date.now() - stepElapsedRef.current;
+    const currentElapsed = Math.max(0, Date.now() - stepStartTimeRef.current);
+    stepElapsedRef.current = currentElapsed;
     clearTimelineTimers();
 
     interface TimedAction {
@@ -144,7 +147,7 @@ export function AutopilotOverlay() {
     if (currentStepIndex === 0) {
       // Step 1: In-Place Rename (writeups ➔ Husain_Writeups via REAL context menu)
       actions.push({
-        time: 150,
+        time: 100,
         run: () => {
           const bounds =
             getTargetBounds('[data-node-id="writeups-dir"]') ||
@@ -157,7 +160,7 @@ export function AutopilotOverlay() {
       });
 
       actions.push({
-        time: 650,
+        time: 400,
         run: () => {
           triggerClickRipple("CLICK: SELECT");
           const el = document.querySelector('[data-node-id="writeups-dir"]') as HTMLElement | null;
@@ -166,7 +169,7 @@ export function AutopilotOverlay() {
       });
 
       actions.push({
-        time: 1100,
+        time: 750,
         run: () => {
           triggerClickRipple("RIGHT CLICK");
           const bounds =
@@ -182,7 +185,7 @@ export function AutopilotOverlay() {
       });
 
       actions.push({
-        time: 1650,
+        time: 1050,
         run: () => {
           const renameBtn = getTargetBounds('button[data-action="rename"]') || {
             centerX: 480 + 80,
@@ -193,7 +196,7 @@ export function AutopilotOverlay() {
       });
 
       actions.push({
-        time: 2150,
+        time: 1300,
         run: () => {
           triggerClickRipple("CLICK: RENAME");
           const btn = document.querySelector('button[data-action="rename"]') as HTMLButtonElement | null;
@@ -210,7 +213,7 @@ export function AutopilotOverlay() {
       });
 
       actions.push({
-        time: 2450,
+        time: 1450,
         run: () => {
           const inputBounds =
             getTargetBounds('[data-node-id="writeups-dir"] input') ||
@@ -224,7 +227,7 @@ export function AutopilotOverlay() {
       for (let i = 1; i <= targetName.length; i++) {
         const val = targetName.substring(0, i);
         actions.push({
-          time: 2550 + (i - 1) * 75,
+          time: 1550 + (i - 1) * 45,
           run: () => {
             window.dispatchEvent(
               new CustomEvent("vfs-autopilot-type-rename", {
@@ -236,7 +239,7 @@ export function AutopilotOverlay() {
       }
 
       actions.push({
-        time: 3950,
+        time: 2350,
         run: () => {
           triggerClickRipple("ENTER ↵ (COMMITTED)");
           window.dispatchEvent(
@@ -250,7 +253,7 @@ export function AutopilotOverlay() {
     } else if (currentStepIndex === 1) {
       // Step 2: Drag Husain_Writeups ➔ Replace Blogs Position
       actions.push({
-        time: 150,
+        time: 100,
         run: () => {
           const bounds =
             getTargetBounds('[data-node-id="writeups-dir"]') ||
@@ -264,7 +267,7 @@ export function AutopilotOverlay() {
       });
 
       actions.push({
-        time: 650,
+        time: 450,
         run: () => {
           triggerClickRipple("EQUIP FOLDER");
           const el = document.querySelector('[data-node-id="writeups-dir"]') as HTMLElement | null;
@@ -273,7 +276,7 @@ export function AutopilotOverlay() {
       });
 
       actions.push({
-        time: 1150,
+        time: 850,
         run: () => {
           triggerClickRipple("GRAB & DRAG");
           setIsDraggingGhost(true);
@@ -281,7 +284,7 @@ export function AutopilotOverlay() {
       });
 
       actions.push({
-        time: 1650,
+        time: 1350,
         run: () => {
           const blogsBounds =
             getTargetBounds('[data-node-id="blogs-dir"]') ||
@@ -294,7 +297,7 @@ export function AutopilotOverlay() {
       });
 
       actions.push({
-        time: 2900,
+        time: 2500,
         run: () => {
           triggerClickRipple("DROP: REPLACE BLOGS POSITION");
           setIsDraggingGhost(false);
@@ -310,7 +313,7 @@ export function AutopilotOverlay() {
     } else if (currentStepIndex === 2) {
       // Step 3: Equip & Drag to Quick Access
       actions.push({
-        time: 150,
+        time: 100,
         run: () => {
           const bounds =
             getTargetBounds('[data-node-id="writeups-dir"]') ||
@@ -324,7 +327,7 @@ export function AutopilotOverlay() {
       });
 
       actions.push({
-        time: 650,
+        time: 450,
         run: () => {
           triggerClickRipple("EQUIP FOLDER");
           const el = document.querySelector('[data-node-id="writeups-dir"]') as HTMLElement | null;
@@ -333,7 +336,7 @@ export function AutopilotOverlay() {
       });
 
       actions.push({
-        time: 1150,
+        time: 850,
         run: () => {
           triggerClickRipple("GRAB & DRAG");
           setIsDraggingGhost(true);
@@ -341,7 +344,7 @@ export function AutopilotOverlay() {
       });
 
       actions.push({
-        time: 1750,
+        time: 1400,
         run: () => {
           const qaBounds =
             getTargetBounds('[data-tour="quick-access-section"]') ||
@@ -354,7 +357,7 @@ export function AutopilotOverlay() {
       });
 
       actions.push({
-        time: 2900,
+        time: 2500,
         run: () => {
           triggerClickRipple("DROP IN QUICK ACCESS");
           setIsDraggingGhost(false);
@@ -366,12 +369,12 @@ export function AutopilotOverlay() {
     } else if (currentStepIndex === 3) {
       // Step 4: Drag out of Quick Access & Drop on "Drop here to unpin" zone
       actions.push({
-        time: 150,
+        time: 100,
         run: () => {
           const qaBounds =
             getTargetBounds('[data-tour="quick-access-section"] [data-node-id="writeups-dir"]') ||
-            getTargetBounds('[data-tour="quick-access-section"]') ||
-            { centerX: 360, centerY: 150, top: 110, left: 300, width: 120, height: 80 };
+            getTargetBounds('[data-node-id="writeups-dir"]') ||
+            { centerX: 450, centerY: 150, top: 110, left: 390, width: 120, height: 80 };
 
           setCursorPos({ x: qaBounds.centerX, y: qaBounds.centerY });
           setTargetFocusRect({ top: qaBounds.top - 4, left: qaBounds.left - 4, width: qaBounds.width + 8, height: qaBounds.height + 8 });
@@ -379,16 +382,22 @@ export function AutopilotOverlay() {
       });
 
       actions.push({
-        time: 650,
+        time: 450,
         run: () => {
           triggerClickRipple("EQUIP PINNED ITEM");
-          const pinnedCard = document.querySelector('[data-tour="quick-access-section"] [data-node-id="writeups-dir"]') as HTMLElement | null;
-          if (pinnedCard) pinnedCard.click();
+          const pinnedCard = (document.querySelector('[data-tour="quick-access-section"] [data-node-id="writeups-dir"]') ||
+            document.querySelector('[data-node-id="writeups-dir"]')) as HTMLElement | null;
+          if (pinnedCard) {
+            pinnedCard.click();
+            const b = pinnedCard.getBoundingClientRect();
+            setCursorPos({ x: b.left + b.width / 2, y: b.top + b.height / 2 });
+            setTargetFocusRect({ top: b.top - 4, left: b.left - 4, width: b.width + 8, height: b.height + 8 });
+          }
         },
       });
 
       actions.push({
-        time: 1100,
+        time: 850,
         run: () => {
           triggerClickRipple("GRAB & DRAG OUT");
           setIsDraggingGhost(true);
@@ -401,7 +410,7 @@ export function AutopilotOverlay() {
       });
 
       actions.push({
-        time: 1800,
+        time: 1400,
         run: () => {
           const dropZoneBounds =
             getTargetBounds('[data-tour="qa-remove-drop-zone"]') ||
@@ -415,7 +424,7 @@ export function AutopilotOverlay() {
       });
 
       actions.push({
-        time: 2900,
+        time: 2500,
         run: () => {
           triggerClickRipple("DROP TO UNPIN");
           setIsDraggingGhost(false);
@@ -430,7 +439,7 @@ export function AutopilotOverlay() {
     } else if (currentStepIndex === 4) {
       // Step 5: Engage CLI Terminal & Execute 'cat contact-info.md'
       actions.push({
-        time: 150,
+        time: 100,
         run: () => {
           const headerBtn =
             getTargetBounds('#mode-btn-cli') ||
@@ -443,7 +452,7 @@ export function AutopilotOverlay() {
       });
 
       actions.push({
-        time: 800,
+        time: 550,
         run: () => {
           triggerClickRipple("CLICK: CLI MODE");
           const btn = document.querySelector('#mode-btn-cli') as HTMLButtonElement | null;
@@ -456,7 +465,7 @@ export function AutopilotOverlay() {
       });
 
       actions.push({
-        time: 1400,
+        time: 1000,
         run: () => {
           const inputBounds =
             getTargetBounds('[data-tour="terminal-input"]') ||
@@ -473,7 +482,7 @@ export function AutopilotOverlay() {
       for (let i = 1; i <= targetCmd.length; i++) {
         const val = targetCmd.substring(0, i);
         actions.push({
-          time: 1650 + (i - 1) * 60,
+          time: 1250 + (i - 1) * 45,
           run: () => {
             window.dispatchEvent(
               new CustomEvent("vfs-autopilot-type-cli", {
@@ -485,7 +494,7 @@ export function AutopilotOverlay() {
       }
 
       actions.push({
-        time: 3300,
+        time: 2450,
         run: () => {
           triggerClickRipple("ENTER ↵ (EXECUTE)");
           window.dispatchEvent(

@@ -50,6 +50,7 @@ export function RibbonToolbar() {
     isModified,
     resetModifications,
     selectedNode,
+    customNames,
     handleCopyNode,
     handleDeleteNode,
     showToast,
@@ -111,7 +112,7 @@ export function RibbonToolbar() {
         </button>
         <button
           className={styles.ribbonBtn}
-          title={selectedNode ? `Copy link to ${selectedNode.name}` : "Copy"}
+          title={selectedNode ? `Copy link to ${customNames[selectedNode.id] || selectedNode.name}` : "Copy"}
           disabled={!selectedNode}
           onClick={() => selectedNode && handleCopyNode(selectedNode)}
         >
@@ -128,7 +129,7 @@ export function RibbonToolbar() {
         </button>
         <button
           className={styles.ribbonBtn}
-          title={selectedNode ? `Delete ${selectedNode.name}` : "Delete"}
+          title={selectedNode ? `Delete ${customNames[selectedNode.id] || selectedNode.name}` : "Delete"}
           disabled={!selectedNode || isVaultSelected}
           onClick={() => selectedNode && handleDeleteNode(selectedNode)}
         >

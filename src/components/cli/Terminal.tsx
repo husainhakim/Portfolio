@@ -24,7 +24,18 @@ import { useAchievements } from "@/context/AchievementContext";
 import styles from "./Terminal.module.css";
 
 export function Terminal() {
-  const { currentPath, navigate, openFile, setMode } = useFilesystem();
+  const {
+    currentPath,
+    navigate,
+    openFile,
+    setMode,
+    customNames,
+    renameNode,
+    resetModifications,
+    deletedNodeIds,
+    folderOrders,
+    showToast,
+  } = useFilesystem();
   const { theme, toggleTheme, setTheme } = useTheme();
   const { unlock } = useAchievements();
 
@@ -72,7 +83,21 @@ Type 'gui' to toggle back to the GUI workspace at any time.`,
       window.removeEventListener("vfs-autopilot-type-cli" as any, handleAutopilotTypeCli);
       window.removeEventListener("vfs-autopilot-run-cli" as any, handleAutopilotRunCli);
     };
-  }, [currentPath, navigate, openFile, setMode, theme, toggleTheme, setTheme]);
+  }, [
+    currentPath,
+    navigate,
+    openFile,
+    setMode,
+    theme,
+    toggleTheme,
+    setTheme,
+    customNames,
+    renameNode,
+    resetModifications,
+    deletedNodeIds,
+    folderOrders,
+    showToast,
+  ]);
 
   // Focus input automatically on mount and path change
   useEffect(() => {
@@ -118,6 +143,12 @@ Type 'gui' to toggle back to the GUI workspace at any time.`,
       theme,
       toggleTheme,
       setTheme,
+      customNames,
+      renameNode,
+      resetModifications,
+      deletedNodeIds,
+      folderOrders,
+      showToast,
     });
 
     const newEntry: CommandOutput = {
@@ -174,7 +205,7 @@ Type 'gui' to toggle back to the GUI workspace at any time.`,
     // Tab key: auto-complete
     else if (e.key === "Tab") {
       e.preventDefault();
-      const suggestion = getAutocompleteSuggestion(input, currentPath);
+      const suggestion = getAutocompleteSuggestion(input, currentPath, customNames, deletedNodeIds);
       if (suggestion) {
         setInput(suggestion);
       }
@@ -313,7 +344,7 @@ Type 'gui' to toggle back to the GUI workspace at any time.`,
         </button>
         <button
           onClick={() => {
-            const suggestion = getAutocompleteSuggestion(input, currentPath);
+            const suggestion = getAutocompleteSuggestion(input, currentPath, customNames, deletedNodeIds);
             if (suggestion) setInput(suggestion);
           }}
           className={`${styles.quickBtn} ${styles.quickBtnHighlight}`}

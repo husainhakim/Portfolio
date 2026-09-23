@@ -21,7 +21,7 @@ import {
 import styles from "./Gui.module.css";
 
 export function PreviewPanel() {
-  const { selectedNode, setSelectedNode } = useFilesystem();
+  const { selectedNode, setSelectedNode, customNames } = useFilesystem();
 
   React.useEffect(() => {
     const handleKeyDown = (e: KeyboardEvent) => {
@@ -84,7 +84,7 @@ export function PreviewPanel() {
           <div className={styles.previewSection}>
             <div className={styles.previewHeaderCentered}>
               <FileText size={48} className={styles.previewBigIcon} />
-              <h3>resume.pdf</h3>
+              <h3>{customNames[selectedNode.id] || "resume.pdf"}</h3>
               <span className={styles.previewTag}>280.2 KB</span>
             </div>
             <p className={styles.previewDesc}>
@@ -113,7 +113,7 @@ export function PreviewPanel() {
           <div className={styles.previewSection}>
             <div className={styles.previewHeaderCentered}>
               <Code size={48} className={styles.previewBigIcon} />
-              <h3>projects/</h3>
+              <h3>{customNames[selectedNode.id] ? `${customNames[selectedNode.id]}/` : "projects/"}</h3>
               <span className={styles.previewTag}>SECURITY TOOLS</span>
             </div>
             <p className={styles.previewDesc}>
@@ -127,7 +127,7 @@ export function PreviewPanel() {
           <div className={styles.previewSection}>
             <div className={styles.previewHeaderCentered}>
               <Shield size={48} className={styles.previewBigIcon} />
-              <h3>writeups/</h3>
+              <h3>{customNames[selectedNode.id] ? `${customNames[selectedNode.id]}/` : "writeups/"}</h3>
               <span className={styles.previewTag}>LAB RESEARCH</span>
             </div>
             <p className={styles.previewDesc}>
@@ -141,7 +141,7 @@ export function PreviewPanel() {
           <div className={styles.previewSection}>
             <div className={styles.previewHeaderCentered}>
               <Briefcase size={48} className={styles.previewBigIcon} />
-              <h3>experience/</h3>
+              <h3>{customNames[selectedNode.id] ? `${customNames[selectedNode.id]}/` : "experience/"}</h3>
               <span className={styles.previewTag}>PROFESSIONAL</span>
             </div>
             <p className={styles.previewDesc}>
@@ -166,7 +166,7 @@ export function PreviewPanel() {
           <div className={styles.previewSection}>
             <div className={styles.previewHeaderCentered}>
               <Compass size={48} className={styles.previewBigIcon} />
-              <h3>learning/</h3>
+              <h3>{customNames[selectedNode.id] ? `${customNames[selectedNode.id]}/` : "learning/"}</h3>
               <span className={styles.previewTag}>ROADMAP</span>
             </div>
             <p className={styles.previewDesc}>
@@ -190,7 +190,7 @@ export function PreviewPanel() {
           <div className={styles.previewSection}>
             <div className={styles.previewHeaderCentered}>
               <BookOpen size={48} className={styles.previewBigIcon} />
-              <h3>blogs/</h3>
+              <h3>{customNames[selectedNode.id] ? `${customNames[selectedNode.id]}/` : "blogs/"}</h3>
               <span className={styles.previewTag}>PUBLICATIONS</span>
             </div>
             <p className={styles.previewDesc}>
@@ -204,7 +204,7 @@ export function PreviewPanel() {
           <div className={styles.previewSection}>
             <div className={styles.previewHeaderCentered}>
               <Mail size={48} className={styles.previewBigIcon} />
-              <h3>contact/</h3>
+              <h3>{customNames[selectedNode.id] ? `${customNames[selectedNode.id]}/` : "contact/"}</h3>
               <span className={styles.previewTag}>CHANNELS</span>
             </div>
             <p className={styles.previewDesc}>
@@ -231,7 +231,7 @@ export function PreviewPanel() {
           <div className={styles.previewSection}>
             <div className={styles.previewHeaderCentered}>
               {isDir ? <Folder size={48} className={styles.previewBigIcon} /> : <FileText size={48} className={styles.previewBigIcon} />}
-              <h3>{selectedNode.name}</h3>
+              <h3>{customNames[selectedNode.id] || selectedNode.name}</h3>
               <span className={styles.previewTag}>{isDir ? "Folder" : (selectedNode as FSFile).fileType.toUpperCase()}</span>
             </div>
             {selectedNode.description && (

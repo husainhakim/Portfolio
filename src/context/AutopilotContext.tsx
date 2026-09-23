@@ -1,7 +1,7 @@
 "use client";
 
 import React, { createContext, useContext, useState, useEffect, useCallback, useRef } from "react";
-import { useFilesystem } from "@/context/FilesystemContext";
+import { useFilesystem, DEFAULT_QUICK_ACCESS_IDS } from "@/context/FilesystemContext";
 import { useAchievements } from "@/context/AchievementContext";
 import { useTour } from "@/context/TourContext";
 
@@ -20,7 +20,7 @@ export const AUTOPILOT_STEPS: AutopilotStep[] = [
     category: "01 // IN-PLACE CUSTOMIZATION",
     title: "Right-Click & Rename: writeups ➔ Husain_Writeups",
     subtitle: "Open the real context menu on Writeups, trigger in-place renaming, and commit updates live to the filesystem.",
-    durationMs: 4500,
+    durationMs: 2700,
     actionType: "rename",
   },
   {
@@ -28,7 +28,7 @@ export const AUTOPILOT_STEPS: AutopilotStep[] = [
     category: "02 // POSITION REPLACEMENT",
     title: "Drag Husain_Writeups ➔ Replace Blogs Position",
     subtitle: "Drag Husain_Writeups out of its slot and drop it onto Blogs to replace its position in the workspace grid.",
-    durationMs: 4500,
+    durationMs: 3600,
     actionType: "drag-replace-position",
   },
   {
@@ -36,7 +36,7 @@ export const AUTOPILOT_STEPS: AutopilotStep[] = [
     category: "03 // SELECTION & DOCKING",
     title: "Equip & Drag to Quick Access",
     subtitle: "Select Husain_Writeups from its new position, then drag it directly into the Quick Access dock.",
-    durationMs: 4500,
+    durationMs: 3600,
     actionType: "drag-to-quickaccess",
   },
   {
@@ -44,7 +44,7 @@ export const AUTOPILOT_STEPS: AutopilotStep[] = [
     category: "04 // DOCK REORGANIZATION",
     title: "Drag & Drop to Unpin from Quick Access",
     subtitle: "Drag Husain_Writeups out of Quick Access into the drop zone to dynamically unpin it.",
-    durationMs: 4400,
+    durationMs: 3600,
     actionType: "drag-remove-quickaccess",
   },
   {
@@ -52,7 +52,7 @@ export const AUTOPILOT_STEPS: AutopilotStep[] = [
     category: "05 // UNIX SHELL ENGAGED",
     title: "Switch to CLI Terminal & Run: cat contact-info.md",
     subtitle: "Terminal shell active. Executing live CLI command 'cat contact-info.md' to stream real file contents.",
-    durationMs: 5200,
+    durationMs: 4400,
     actionType: "cli-engage",
   },
 ];
@@ -96,6 +96,8 @@ export function AutopilotProvider({ children }: { children: React.ReactNode }) {
     renameNode,
     addToQuickAccess,
     removeFromQuickAccess,
+    resetQuickAccess,
+    setQuickAccessList,
     setExplicitFolderOrder,
   } = useFilesystem();
   const { closePanel, unlock } = useAchievements();
@@ -154,7 +156,7 @@ export function AutopilotProvider({ children }: { children: React.ReactNode }) {
           setMode("gui");
           navigate("/home/husain");
           renameNode("writeups-dir", "");
-          removeFromQuickAccess("writeups-dir");
+          setQuickAccessList(DEFAULT_QUICK_ACCESS_IDS);
           setExplicitFolderOrder("/home/husain", []);
           break;
         }
@@ -163,7 +165,7 @@ export function AutopilotProvider({ children }: { children: React.ReactNode }) {
           setMode("gui");
           navigate("/home/husain");
           renameNode("writeups-dir", "Husain_Writeups");
-          removeFromQuickAccess("writeups-dir");
+          setQuickAccessList(DEFAULT_QUICK_ACCESS_IDS);
           setExplicitFolderOrder("/home/husain", []);
           break;
         }
@@ -172,7 +174,7 @@ export function AutopilotProvider({ children }: { children: React.ReactNode }) {
           setMode("gui");
           navigate("/home/husain");
           renameNode("writeups-dir", "Husain_Writeups");
-          removeFromQuickAccess("writeups-dir");
+          setQuickAccessList(DEFAULT_QUICK_ACCESS_IDS);
           setExplicitFolderOrder("/home/husain", SWAPPED_HOME_ORDER);
           break;
         }
@@ -182,7 +184,7 @@ export function AutopilotProvider({ children }: { children: React.ReactNode }) {
           navigate("/home/husain");
           renameNode("writeups-dir", "Husain_Writeups");
           setExplicitFolderOrder("/home/husain", SWAPPED_HOME_ORDER);
-          addToQuickAccess("writeups-dir");
+          setQuickAccessList([...DEFAULT_QUICK_ACCESS_IDS, "writeups-dir"]);
           break;
         }
         case 4: {
@@ -192,14 +194,14 @@ export function AutopilotProvider({ children }: { children: React.ReactNode }) {
           navigate("/home/husain");
           renameNode("writeups-dir", "Husain_Writeups");
           setExplicitFolderOrder("/home/husain", SWAPPED_HOME_ORDER);
-          removeFromQuickAccess("writeups-dir");
+          setQuickAccessList(DEFAULT_QUICK_ACCESS_IDS);
           break;
         }
         default:
           break;
       }
     },
-    [setMode, navigate, closeFile, closePanel, renameNode, removeFromQuickAccess, addToQuickAccess, setExplicitFolderOrder]
+    [setMode, navigate, closeFile, closePanel, renameNode, setQuickAccessList, setExplicitFolderOrder]
   );
 
   const stopAutopilot = useCallback(
@@ -219,9 +221,8 @@ export function AutopilotProvider({ children }: { children: React.ReactNode }) {
 
       // Clean up any modifications and return user back to pristine GUI workstation
       renameNode("writeups-dir", "");
-      removeFromQuickAccess("writeups-dir");
       renameNode("projects-dir", "");
-      removeFromQuickAccess("projects-dir");
+      setQuickAccessList(DEFAULT_QUICK_ACCESS_IDS);
       setExplicitFolderOrder("/home/husain", []);
       closeFile();
       closePanel();
@@ -236,7 +237,7 @@ export function AutopilotProvider({ children }: { children: React.ReactNode }) {
         showToast("Autopilot exited. Returned to GUI workstation.", 2500);
       }
     },
-    [clearTimers, renameNode, removeFromQuickAccess, setExplicitFolderOrder, closeFile, closePanel, setMode, navigate, unlock, showToast]
+    [clearTimers, renameNode, setQuickAccessList, setExplicitFolderOrder, closeFile, closePanel, setMode, navigate, unlock, showToast]
   );
 
   const advanceToNext = useCallback(() => {

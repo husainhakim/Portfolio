@@ -31,6 +31,12 @@ export interface CommandContext {
   theme: "dark" | "light";
   toggleTheme: () => void;
   setTheme: (theme: "dark" | "light") => void;
+  customNames?: Record<string, string>;
+  renameNode?: (nodeId: string, newName: string) => void;
+  resetModifications?: () => void;
+  deletedNodeIds?: string[];
+  folderOrders?: Record<string, string[]>;
+  showToast?: (message: string, duration?: number) => void;
 }
 
 export const AVAILABLE_COMMANDS = [
@@ -40,6 +46,9 @@ export const AVAILABLE_COMMANDS = [
   "cd",
   "pwd",
   "cat",
+  "mv",
+  "rename",
+  "reset",
   "download",
   "clear",
   "whoami",
@@ -122,6 +131,8 @@ Available Navigation & System Commands:
   cd <dir>         Change working directory (e.g. cd projects, cd .., cd ~)
   pwd              Print name of current working directory
   cat <file>       Display file content, project details, or writeups
+  mv / rename      Rename file or directory (e.g. mv about.md about-me.md)
+  reset            Reset workspace to default state (restore original names)
   download <path>  Download virtual file (.md/.pdf) or folder (.zip)
   tree             Display hierarchical tree structure of filesystem
   whoami           Display operator identity and offensive & defensive security focus
@@ -166,7 +177,7 @@ Contact: ${PROFILE_DATA.email}`,
         ? normalizePath(targetDir)
         : normalizePath(`${context.currentPath}/${targetDir}`);
 
-      const node = findNodeByPath(targetPath);
+      const node = findNodeByPath(targetPath, VIRTUAL_FS, context.customNames);
       if (!node) {
         return {
           text: `ls: cannot access '${targetDir}': No such file or directory`,
@@ -175,28 +186,44 @@ Contact: ${PROFILE_DATA.email}`,
       }
 
       if (node.type === "file") {
+        const displayName = context.customNames?.[node.id] || node.name;
         return {
           text: isLong
-            ? `${node.permissions} 1 ${node.owner} ${node.group} ${String(node.size).padStart(6, " ")} ${node.updatedAt} ${node.name}`
-            : node.name,
+            ? `${node.permissions} 1 ${node.owner} ${node.group} ${String(node.size).padStart(6, " ")} ${node.updatedAt} ${displayName}`
+            : displayName,
         };
       }
 
-      if (node.children.length === 0) {
+      let children = node.children.filter((child) => !context.deletedNodeIds?.includes(child.id));
+      if (context.folderOrders && context.folderOrders[node.id]) {
+        const order = context.folderOrders[node.id];
+        children = [...children].sort((a, b) => {
+          const idxA = order.indexOf(a.id);
+          const idxB = order.indexOf(b.id);
+          if (idxA !== -1 && idxB !== -1) return idxA - idxB;
+          if (idxA !== -1) return -1;
+          if (idxB !== -1) return 1;
+          return 0;
+        });
+      }
+
+      if (children.length === 0) {
         return { text: "(directory is empty)" };
       }
 
       if (isLong) {
-        const header = "total " + node.children.length;
-        const rows = node.children.map((child) => {
+        const header = "total " + children.length;
+        const rows = children.map((child) => {
+          const displayName = context.customNames?.[child.id] || child.name;
           const size = child.type === "file" ? child.size : 4096;
           const suffix = child.type === "directory" ? "/" : "";
-          return `${child.permissions} 1 ${child.owner} ${child.group} ${String(size).padStart(6, " ")} ${child.updatedAt} ${child.name}${suffix}`;
+          return `${child.permissions} 1 ${child.owner} ${child.group} ${String(size).padStart(6, " ")} ${child.updatedAt} ${displayName}${suffix}`;
         });
         return { text: [header, ...rows].join("\n") };
       } else {
-        const items = node.children.map((child) => {
-          return child.type === "directory" ? `${child.name}/` : child.name;
+        const items = children.map((child) => {
+          const displayName = context.customNames?.[child.id] || child.name;
+          return child.type === "directory" ? `${displayName}/` : displayName;
         });
         return { text: items.join("    ") };
       }
@@ -227,7 +254,7 @@ Contact: ${PROFILE_DATA.email}`,
         targetPath = normalizePath(`${context.currentPath}/${target}`);
       }
 
-      const node = findNodeByPath(targetPath);
+      const node = findNodeByPath(targetPath, VIRTUAL_FS, context.customNames);
       if (!node) {
         return {
           text: `cd: no such file or directory: ${target}`,
@@ -259,7 +286,7 @@ Contact: ${PROFILE_DATA.email}`,
         ? normalizePath(targetFile)
         : normalizePath(`${context.currentPath}/${targetFile}`);
 
-      const node = findNodeByPath(targetPath);
+      const node = findNodeByPath(targetPath, VIRTUAL_FS, context.customNames);
       if (!node) {
         return {
           text: `cat: ${targetFile}: No such file or directory`,
@@ -450,7 +477,7 @@ Tip: Type 'contact' to view all direct channels.`,
         targetPath = normalizePath(`${context.currentPath}/${target}`);
       }
 
-      const node = findNodeByPath(targetPath);
+      const node = findNodeByPath(targetPath, VIRTUAL_FS, context.customNames);
       if (!node) {
         return {
           text: `download: cannot access '${target}': No such file or directory`,
@@ -459,9 +486,10 @@ Tip: Type 'contact' to view all direct channels.`,
       }
 
       const isDir = node.type === "directory";
+      const displayName = context.customNames?.[node.id] || node.name;
       const downloadLabel = isDir
-        ? `${node.name.startsWith("HusainHakim_") ? node.name : `HusainHakim_${node.name}`}.zip`
-        : node.name;
+        ? `${displayName.startsWith("HusainHakim_") ? displayName : `HusainHakim_${displayName}`}.zip`
+        : displayName;
 
       return {
         text: isDir
@@ -476,7 +504,7 @@ Tip: Type 'contact' to view all direct channels.`,
     }
 
     case "tree": {
-      const treeLines = generateTree(VIRTUAL_FS);
+      const treeLines = generateTree(VIRTUAL_FS, "", context.customNames, context.deletedNodeIds);
       return {
         text: `/home/husain\n` + treeLines.join("\n"),
       };
@@ -583,6 +611,69 @@ Portfolio: ${PROFILE_DATA.portfolio}`,
       };
     }
 
+    case "mv":
+    case "rename": {
+      if (args.length < 2) {
+        return {
+          text: `Usage: ${command} <source_file_or_dir> <new_name>\nExample: ${command} about.md about-me.md`,
+          isError: true,
+        };
+      }
+
+      const sourceTarget = args[0];
+      const newName = args.slice(1).join(" ").trim();
+      if (!newName) {
+        return {
+          text: `${command}: missing destination file operand after '${sourceTarget}'`,
+          isError: true,
+        };
+      }
+
+      if (newName.includes("/")) {
+        return {
+          text: `${command}: cannot move across directories. Rename within current directory only (destination name cannot contain '/').`,
+          isError: true,
+        };
+      }
+
+      const sourcePath = sourceTarget.startsWith("/")
+        ? normalizePath(sourceTarget)
+        : normalizePath(`${context.currentPath}/${sourceTarget}`);
+
+      const node = findNodeByPath(sourcePath, VIRTUAL_FS, context.customNames);
+      if (!node) {
+        return {
+          text: `${command}: cannot stat '${sourceTarget}': No such file or directory`,
+          isError: true,
+        };
+      }
+
+      if (node.id === "root" || node.path === "/home/husain") {
+        return {
+          text: `${command}: cannot rename the root workspace directory`,
+          isError: true,
+        };
+      }
+
+      const oldDisplayName = context.customNames?.[node.id] || node.name;
+      if (context.renameNode) {
+        context.renameNode(node.id, newName);
+      }
+
+      return {
+        text: `Renamed '${oldDisplayName}' -> '${newName}' (canonical session name updated).`,
+      };
+    }
+
+    case "reset": {
+      if (context.resetModifications) {
+        context.resetModifications();
+      }
+      return {
+        text: "Workspace filesystem restored to original default state (all renames, folder orders, and deleted items cleared).",
+      };
+    }
+
     case "gui":
     case "exit": {
       context.setMode("gui");
@@ -600,7 +691,9 @@ Portfolio: ${PROFILE_DATA.portfolio}`,
 // Autocomplete Handler for TAB Key
 export function getAutocompleteSuggestion(
   input: string,
-  currentPath: string
+  currentPath: string,
+  customNames?: Record<string, string>,
+  deletedNodeIds?: string[]
 ): string | null {
   const parts = input.split(" ");
   const isFirstWord = parts.length === 1;
@@ -614,12 +707,14 @@ export function getAutocompleteSuggestion(
   // Completing arguments (files / directories)
   const lastArg = parts[parts.length - 1];
 
-  const node = findNodeByPath(currentPath);
+  const node = findNodeByPath(currentPath, VIRTUAL_FS, customNames);
   if (!node || node.type !== "directory") return null;
 
-  const candidateNames = node.children.map((c) =>
-    c.type === "directory" ? `${c.name}/` : c.name
-  );
+  const validChildren = node.children.filter((c) => !deletedNodeIds?.includes(c.id));
+  const candidateNames = validChildren.map((c) => {
+    const displayName = customNames?.[c.id] || c.name;
+    return c.type === "directory" ? `${displayName}/` : displayName;
+  });
 
   const match = candidateNames.find((name) => name.startsWith(lastArg) && name !== lastArg);
   if (match) {

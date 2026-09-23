@@ -1,4 +1,4 @@
-import { ROOT_PATH } from "@/data/filesystemData";
+import { ROOT_PATH, VIRTUAL_FS, findNodeByPath } from "@/data/filesystemData";
 
 export interface BreadcrumbSegment {
   name: string;
@@ -6,7 +6,10 @@ export interface BreadcrumbSegment {
   isLast: boolean;
 }
 
-export function buildBreadcrumbs(currentPath: string): BreadcrumbSegment[] {
+export function buildBreadcrumbs(
+  currentPath: string,
+  customNames?: Record<string, string>
+): BreadcrumbSegment[] {
   if (currentPath === ROOT_PATH) {
     return [{ name: "Home", path: ROOT_PATH, isLast: true }];
   }
@@ -21,8 +24,10 @@ export function buildBreadcrumbs(currentPath: string): BreadcrumbSegment[] {
   let accumulated = ROOT_PATH;
   segments.forEach((seg, idx) => {
     accumulated += `/${seg}`;
+    const node = findNodeByPath(accumulated, VIRTUAL_FS, customNames);
+    const displayName = (node && customNames && customNames[node.id]) || seg;
     result.push({
-      name: seg,
+      name: displayName,
       path: accumulated,
       isLast: idx === segments.length - 1,
     });

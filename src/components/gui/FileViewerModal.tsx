@@ -31,7 +31,7 @@ import {
 import styles from "./Gui.module.css";
 
 export function FileViewerModal() {
-  const { openedFile, closeFile, currentPath } = useFilesystem();
+  const { openedFile, closeFile, currentPath, customNames } = useFilesystem();
 
   // Close on ESC key
   useEffect(() => {
@@ -46,6 +46,8 @@ export function FileViewerModal() {
   }, [closeFile, openedFile]);
 
   if (!openedFile) return null;
+
+  const displayName = customNames[openedFile.id] || openedFile.name;
 
   // Resolve matching view
   const renderContent = () => {
@@ -113,7 +115,7 @@ export function FileViewerModal() {
     return (
       <div className={styles.genericFileViewer}>
         <div className={styles.genericFileHeader}>
-          <h2>{openedFile.name}</h2>
+          <h2>{displayName}</h2>
           <span className={styles.genericFileMeta}>
             {openedFile.permissions} • {formatFileSize(openedFile.size)}
           </span>
@@ -132,7 +134,7 @@ export function FileViewerModal() {
         onClick={(e) => e.stopPropagation()}
         role="dialog"
         aria-modal="true"
-        aria-label={`File Viewer: ${openedFile.name}`}
+        aria-label={`File Viewer: ${displayName}`}
       >
         {/* Modal Top Header Bar */}
         <div className={styles.modalHeader}>
@@ -146,7 +148,7 @@ export function FileViewerModal() {
               <span>Back</span>
             </button>
             <div className={styles.modalFileMeta}>
-              <span className={styles.modalFileName}>{openedFile.name}</span>
+              <span className={styles.modalFileName}>{displayName}</span>
               <span className={styles.modalFilePath}>{openedFile.path}</span>
             </div>
           </div>

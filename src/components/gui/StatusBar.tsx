@@ -10,7 +10,7 @@ import { useAutopilot } from "@/context/AutopilotContext";
 import styles from "./Gui.module.css";
 
 export function StatusBar() {
-  const { currentPath, currentNode, selectedNode, mode } = useFilesystem();
+  const { currentPath, currentNode, selectedNode, mode, customNames } = useFilesystem();
   const { openHelpModal } = useTour();
   const { startAutopilot } = useAutopilot();
 
@@ -29,7 +29,9 @@ export function StatusBar() {
         </div>
         {selectedNode && (
           <div className={styles.statusSection}>
-            <span className={styles.statusHighlight}>Selected: {selectedNode.name}</span>
+            <span className={styles.statusHighlight}>
+              Selected: {customNames[selectedNode.id] || selectedNode.name}
+            </span>
             <span className={styles.statusText}>
               ({selectedNode.type === "file" ? formatFileSize((selectedNode as FSFile).size) : "folder"})
             </span>

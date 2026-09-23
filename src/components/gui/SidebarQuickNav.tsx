@@ -13,7 +13,7 @@ import {
 import { GithubIcon, LinkedinIcon, MediumIcon } from "@/components/ui/Icons";
 import { PROFILE_DATA } from "@/data/profileData";
 import { Win11Folder, Win11Pdf } from "./Win11Icons";
-import { findNodeByPath, FSFile } from "@/data/filesystemData";
+import { findNodeByPath, FSFile, VIRTUAL_FS } from "@/data/filesystemData";
 import styles from "./Gui.module.css";
 
 interface NavShortcut {
@@ -39,7 +39,7 @@ interface SidebarQuickNavProps {
 }
 
 export function SidebarQuickNav({ isOpen, onClose }: SidebarQuickNavProps) {
-  const { currentPath, navigate, openFile } = useFilesystem();
+  const { currentPath, navigate, openFile, customNames } = useFilesystem();
 
   const handleNavigate = (path: string) => {
     navigate(path);
@@ -67,7 +67,7 @@ export function SidebarQuickNav({ isOpen, onClose }: SidebarQuickNavProps) {
 
           <button
             onClick={() => {
-              const vaultFile = findNodeByPath("/home/husain/vault/personal_vault.md");
+              const vaultFile = findNodeByPath("/home/husain/vault/personal_vault.md", VIRTUAL_FS, customNames);
               if (vaultFile && vaultFile.type === "file") {
                 openFile(vaultFile as FSFile);
               }
@@ -106,6 +106,8 @@ export function SidebarQuickNav({ isOpen, onClose }: SidebarQuickNavProps) {
         <div className={styles.sidebarNavList}>
           {SHORTCUTS.map((item) => {
             const isActive = item.path !== "/home/husain" && currentPath.startsWith(item.path);
+            const node = findNodeByPath(item.path, VIRTUAL_FS, customNames);
+            const label = (node && customNames[node.id]) || item.label;
 
             return (
               <button
@@ -122,7 +124,7 @@ export function SidebarQuickNav({ isOpen, onClose }: SidebarQuickNavProps) {
                   ) : (
                     <FileText size={16} color="var(--accent-primary)" className={styles.sidebarNavIcon} />
                   )}
-                  <span className={styles.sidebarNavLabel}>{item.label}</span>
+                  <span className={styles.sidebarNavLabel}>{label}</span>
                 </div>
                 <Pin size={12} className={styles.pinIconHover} />
               </button>

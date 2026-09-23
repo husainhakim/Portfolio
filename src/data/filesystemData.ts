@@ -681,7 +681,22 @@ export function normalizePath(path: string): string {
   return resolved;
 }
 
-export function findNodeByPath(path: string, root: FSDirectory = VIRTUAL_FS): FSNode | null {
+export function getNodeDisplayName(
+  node: FSNode | null | undefined,
+  customNames?: Record<string, string>
+): string {
+  if (!node) return "";
+  if (customNames && customNames[node.id]) {
+    return customNames[node.id];
+  }
+  return node.name;
+}
+
+export function findNodeByPath(
+  path: string,
+  root: FSDirectory = VIRTUAL_FS,
+  customNames?: Record<string, string>
+): FSNode | null {
   const norm = normalizePath(path);
   if (norm === root.path) return root;
 
@@ -695,12 +710,22 @@ export function findNodeByPath(path: string, root: FSDirectory = VIRTUAL_FS): FS
     const isLast = i === relative.length - 1;
     if (current.type !== "directory") return null;
 
-    // Look for exact match or match with .md / .pdf appended
-    let found: FSNode | undefined = current.children.find((child) => child.name === segment);
+    // Look for match by customName, original name, or node id
+    let found: FSNode | undefined = current.children.find((child) => {
+      const currentName = customNames && customNames[child.id] ? customNames[child.id] : child.name;
+      return currentName === segment || child.name === segment || child.id === segment;
+    });
+
     if (!found && isLast) {
-      found = current.children.find(
-        (child) => child.name === `${segment}.md` || child.name === `${segment}.pdf`
-      );
+      found = current.children.find((child) => {
+        const currentName = customNames && customNames[child.id] ? customNames[child.id] : child.name;
+        return (
+          currentName === `${segment}.md` ||
+          currentName === `${segment}.pdf` ||
+          child.name === `${segment}.md` ||
+          child.name === `${segment}.pdf`
+        );
+      });
     }
     if (!found) return null;
     current = found;
@@ -718,22 +743,28 @@ export function getParentPath(path: string): string {
   return parent;
 }
 
-export function listDirectory(path: string): FSNode[] {
-  const node = findNodeByPath(path);
+export function listDirectory(path: string, customNames?: Record<string, string>): FSNode[] {
+  const node = findNodeByPath(path, VIRTUAL_FS, customNames);
   if (!node || node.type !== "directory") return [];
   return node.children;
 }
 
-export function generateTree(node: FSDirectory = VIRTUAL_FS, prefix: string = ""): string[] {
+export function generateTree(
+  node: FSDirectory = VIRTUAL_FS,
+  prefix: string = "",
+  customNames?: Record<string, string>,
+  deletedNodeIds?: string[]
+): string[] {
   const lines: string[] = [];
-  const children = node.children;
+  const children = node.children.filter((child) => !deletedNodeIds?.includes(child.id));
   children.forEach((child, index) => {
     const isLast = index === children.length - 1;
     const connector = isLast ? "└── " : "├── ";
-    lines.push(`${prefix}${connector}${child.name}${child.type === "directory" ? "/" : ""}`);
+    const displayName = customNames && customNames[child.id] ? customNames[child.id] : child.name;
+    lines.push(`${prefix}${connector}${displayName}${child.type === "directory" ? "/" : ""}`);
     if (child.type === "directory") {
       const extension = isLast ? "    " : "│   ";
-      lines.push(...generateTree(child, prefix + extension));
+      lines.push(...generateTree(child as FSDirectory, prefix + extension, customNames, deletedNodeIds));
     }
   });
   return lines;
