@@ -6,6 +6,7 @@ import {
   FSFile,
   ROOT_PATH,
   VIRTUAL_FS,
+  findNodeById,
   findNodeByPath,
   getParentPath,
   normalizePath,
@@ -360,12 +361,27 @@ export function FilesystemProvider({ children }: { children: React.ReactNode }) 
 
   const addToQuickAccess = useCallback(
     (nodeId: string) => {
+      if (quickAccessIdsRef.current.includes(nodeId)) {
+        showToast("Item is already pinned to Quick Access", 3000);
+        return;
+      }
+
+      if (quickAccessIdsRef.current.length >= 5) {
+        showToast("⚠️ Quick Access is full (maximum 5 items). Remove one to add a new one.", 4000);
+        return;
+      }
+
+      const targetNode = findNodeById(nodeId);
+      const name = targetNode ? (customNames[nodeId] || targetNode.name) : "Item";
+
       setQuickAccessIds((prev) => {
         if (prev.includes(nodeId) || prev.length >= 5) return prev;
         const next = [...prev, nodeId];
         quickAccessIdsRef.current = next;
         return next;
       });
+
+      showToast(`📌 Pinned '${name}' to Quick Access`, 3000);
 
       if (quickAccessIdsRef.current.length >= 5) {
         unlock("hoarder");
@@ -376,7 +392,7 @@ export function FilesystemProvider({ children }: { children: React.ReactNode }) 
         setJustPinnedNodeIds((prev) => prev.filter((id) => id !== nodeId));
       }, 800);
     },
-    [unlock]
+    [customNames, showToast, unlock]
   );
 
   const removeFromQuickAccess = useCallback((nodeId: string) => {

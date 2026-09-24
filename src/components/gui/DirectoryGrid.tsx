@@ -987,6 +987,7 @@ export function DirectoryGrid({ nodes }: DirectoryGridProps) {
             data-action="unpin"
             onClick={() => {
               removeFromQuickAccess(node.id);
+              showToast(`📌 Unpinned '${getNodeDisplayName(node)}' from Quick Access`, 3000);
               setContextMenu((prev) => ({ ...prev, isOpen: false }));
             }}
           >

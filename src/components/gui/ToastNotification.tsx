@@ -2,7 +2,7 @@
 
 import React from "react";
 import { useFilesystem } from "@/context/FilesystemContext";
-import { Check, Trash2, Zap, Pin, Sparkles } from "lucide-react";
+import { Check, Trash2, Zap, Pin, Sparkles, AlertCircle } from "lucide-react";
 import styles from "./Gui.module.css";
 
 export function ToastNotification() {
@@ -10,6 +10,14 @@ export function ToastNotification() {
   if (!toastMessage) return null;
 
   const msg = toastMessage.toLowerCase();
+
+  const isWarningOrFull =
+    toastMessage.includes("⚠️") ||
+    msg.includes("full") ||
+    msg.includes("failed") ||
+    msg.includes("error") ||
+    msg.includes("cannot");
+
   const isDelete =
     msg.includes("deleted") ||
     msg.includes("recycle") ||
@@ -19,27 +27,31 @@ export function ToastNotification() {
     msg.includes("gone") ||
     msg.includes("permanently");
 
-  const isZap = toastMessage.includes("⚡") || msg.includes("autopilot");
-  const isPin = toastMessage.includes("📌") || msg.includes("quick access");
+  const isDanger = isDelete || isWarningOrFull;
+
+  const isZap = !isDanger && (toastMessage.includes("⚡") || msg.includes("autopilot"));
+  const isPin = !isDanger && (toastMessage.includes("📌") || msg.includes("quick access"));
   const isSpecial =
-    toastMessage.includes("📁") ||
-    toastMessage.includes("☕") ||
-    toastMessage.includes("🐛") ||
-    toastMessage.includes("🚀") ||
-    toastMessage.includes("🛡️") ||
-    toastMessage.includes("🧙") ||
-    toastMessage.includes("💾") ||
-    toastMessage.includes("⚠️") ||
-    toastMessage.includes("🔒");
+    !isDanger &&
+    (toastMessage.includes("📁") ||
+      toastMessage.includes("☕") ||
+      toastMessage.includes("🐛") ||
+      toastMessage.includes("🚀") ||
+      toastMessage.includes("🛡️") ||
+      toastMessage.includes("🧙") ||
+      toastMessage.includes("💾") ||
+      toastMessage.includes("🔒"));
 
   return (
     <div
-      className={`${styles.guiToast} ${isDelete ? styles.guiToastDanger : styles.guiToastSuccess}`}
+      className={`${styles.guiToast} ${isDanger ? styles.guiToastDanger : styles.guiToastSuccess}`}
       role="status"
       aria-live="polite"
     >
       {isDelete ? (
         <Trash2 size={20} strokeWidth={2.4} className={styles.guiToastIcon} />
+      ) : isWarningOrFull ? (
+        <AlertCircle size={20} strokeWidth={2.4} className={styles.guiToastIcon} />
       ) : isZap ? (
         <Zap size={20} strokeWidth={2.4} className={styles.guiToastIcon} />
       ) : isPin ? (
