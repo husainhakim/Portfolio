@@ -9,7 +9,8 @@ export type FileType =
   | "pdf"
   | "json"
   | "script"
-  | "vault";
+  | "vault"
+  | "image";
 
 export interface BaseFSNode {
   id: string;
@@ -536,8 +537,8 @@ That is why I keep following the loop: **LEARN → BUILD → TEST → DOCUMENT**
       permissions: "drwxr-xr-x",
       owner: "husain",
       group: "staff",
-      updatedAt: "2026-09-23",
-      description: "Professional software engineering and community leadership",
+      updatedAt: "2026-09-24",
+      description: "Professional software engineering, 10-month continuous tenure, and engineering impact",
       children: [
         {
           id: "exp-backend",
@@ -549,19 +550,25 @@ That is why I keep following the loop: **LEARN → BUILD → TEST → DOCUMENT**
           permissions: "-rw-r--r--",
           owner: "husain",
           group: "staff",
-          size: 2980,
-          updatedAt: "2026-09-23",
-          description: "Backend Engineer at LetsUpgrade (Sept 2025 – July 2026)",
+          size: 3450,
+          updatedAt: "2026-09-24",
+          description: "Backend Engineer at LetsUpgrade (Sept 2025 – July 2026 • 10 Months • 3 Contracts)",
           content: `# Backend Developer - LetsUpgrade Edtech Pvt Ltd
 
 - **Role:** Backend Developer
 - **Organization:** LetsUpgrade Edtech Pvt Ltd
 - **Engagement Type:** Full-Time / Internship
-- **Period:** Sept 2025 - July 2026 (10 Months)
+- **Period:** Sept 2025 – July 2026 (10 Months Continuous Tenancy)
 - **Location:** Mumbai, India (Hybrid)
+- **Verified Contracts:** 3 Consecutive Completed Terms (Sept–Dec 2025, Jan–Apr 2026, Apr–July 2026)
 
 ## Executive Summary
-Core backend developer responsible for architecting scalable microservices, re-engineering database trigger infrastructure into resilient event-driven workers, and maintaining production services supporting high-throughput educational workflows.
+Core backend developer for 10 continuous months across three consecutive contracts. Responsible for architecting scalable microservices, re-engineering database trigger infrastructure into resilient event-driven workers, reducing compute overhead by 95%, and maintaining production services supporting 300+ REST APIs and 10M+ MongoDB documents.
+
+## Contract Timeline & Verified Terms
+1. **Contract Term 1 (Sept 2025 – Dec 2025 • 4 Months)**: Initial engagement architecting backend services, initiating MongoDB Atlas trigger migrations, and constructing high-throughput REST APIs. Proof: \`HusainLU_Sept-Dec25.jpeg\`.
+2. **Contract Term 2 (Jan 2026 – Apr 2026 • 4 Months)**: Contract renewed following exceptional performance; focused on scaling event-driven microservices, reducing compute expenses by up to 95%, and handling large-scale database operations. Proof: \`HusainLU_Jan-Apr26.jpeg\`.
+3. **Contract Term 3 (Apr 2026 – July 2026 • 3-4 Months)**: Extended for third consecutive term; led client architecture discussions, refined production service resilience, and delivered comprehensive API specifications. Proof: \`HusainLU_Apr-Jul26.jpeg\`.
 
 ## Technologies & Stack
 - Node.js
@@ -574,6 +581,7 @@ Core backend developer responsible for architecting scalable microservices, re-e
 - Postman
 
 ## Key Responsibilities
+- Completed 10 continuous months of production backend engineering spanning 3 consecutive contract renewals and extensions.
 - Migrated 30+ MongoDB Atlas Triggers to Node.js event-driven services, reducing infrastructure costs by up to 95% while improving scalability and maintainability.
 - Developed and maintained backend services for a platform with 300+ REST APIs and 10M+ MongoDB documents, delivering production features and working with large-scale data systems.
 - Collaborated cross-functionally with product managers and frontend teams to translate technical requirements into robust database schemas and high-performance API endpoints.
@@ -581,6 +589,9 @@ Core backend developer responsible for architecting scalable microservices, re-e
 - Authored comprehensive API documentation and Postman collections to ensure smooth client and mobile client integration.
 
 ## Technical Impact & Metrics
+### 10-Month Continuous Tenancy
+Successfully retained and renewed across 3 consecutive contract terms: Sept–Dec 2025 (Contract 1), Jan–Apr 2026 (Contract 2), and Apr–July 2026 (Contract 3).
+
 ### ~95% Cost Reduction
 Successfully migrated 30+ MongoDB Atlas triggers into decoupled Node.js event listeners, mitigating cloud trigger execution overhead and reducing infrastructure compute expenses.
 
@@ -593,7 +604,8 @@ Actively participated in core client meetings to capture technical requirements,
 ## Key Engineering Takeaways
 - Deep understanding of distributed backend systems, event loops, and asynchronous I/O at production scale.
 - Practical experience in defensive API design, ensuring authorization checks and payload validation are strictly enforced at the service tier.
-- Experience optimizing high-concurrency database queries against large datasets.`,
+- Experience optimizing high-concurrency database queries against large datasets.
+- Proven reliability and value delivery demonstrated through 3 consecutive contract cycles over 10 continuous months.`,
         },
       ],
     },

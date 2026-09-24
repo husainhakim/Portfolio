@@ -2,7 +2,7 @@
 
 import React from "react";
 import Image from "next/image";
-import { useFilesystem } from "@/context/FilesystemContext";
+import { useFilesystem, MAX_QUICK_ACCESS_ITEMS } from "@/context/FilesystemContext";
 import { FSNode, FSDirectory, FSFile, ROOT_PATH, VIRTUAL_FS, findNodeById } from "@/data/filesystemData";
 import { formatFileSize, getFileBadgeVariant } from "@/lib/fileHelpers";
 import { downloadNode } from "@/lib/downloadHelper";
@@ -44,6 +44,7 @@ import {
   FolderOpen,
   X,
   Zap,
+  ImageIcon,
 } from "lucide-react";
 import styles from "./Gui.module.css";
 import { Win11Folder, Win11Pdf } from "./Win11Icons";
@@ -67,6 +68,10 @@ const ITEM_PURPOSE_TAGS: Record<string, string> = {
   "contact-info.md": "GET IN TOUCH",
   "personal_vault.md": "ENCRYPTED VAULT",
   vault: "PERSONAL VAULT",
+  "letsupgrade-backend-engineer.md": "EXPERIENCE DOC",
+  "HusainLU_Sept-Dec25.jpeg": "CONTRACT PROOF 1",
+  "HusainLU_Jan-Apr26.jpeg": "CONTRACT PROOF 2",
+  "HusainLU_Apr-Jul26.jpeg": "CONTRACT PROOF 3",
   "file-sign-identifier": "FORENSICS TOOL",
   "network-device-scanner": "NETWORK SCANNER",
   "password-strength-checker": "SECURITY TOOL",
@@ -94,6 +99,8 @@ function getItemTag(node: FSNode): string {
       return "BLOG POST";
     case "pdf":
       return "RESUME / CV";
+    case "image":
+      return "VERIFIED PROOF";
     case "markdown":
       return "MARKDOWN DOC";
     default:
@@ -655,6 +662,9 @@ export function DirectoryGrid({ nodes }: DirectoryGridProps) {
     if (file.fileType === "pdf" || node.name.endsWith(".pdf")) {
       return <Win11Pdf size={size} className={className} />;
     }
+    if (file.fileType === "image" || /\.(jpeg|jpg|png|webp|svg)$/i.test(node.name)) {
+      return <ImageIcon size={size} className={className} color="#10b981" />;
+    }
 
     return <FileText size={size} className={className} color="var(--accent-primary)" />;
   };
@@ -1114,7 +1124,7 @@ export function DirectoryGrid({ nodes }: DirectoryGridProps) {
             >
               {isQuickAccessOpen ? <ChevronDown size={14} /> : <ChevronRight size={14} />}
               <span className={styles.sectionTitle}>Quick Access</span>
-              <span className={styles.sectionCount}>({quickAccessNodes.length}/5)</span>
+              <span className={styles.sectionCount}>({quickAccessNodes.length}/{MAX_QUICK_ACCESS_ITEMS})</span>
             </div>
             {isQuickAccessOpen && (
               <div
@@ -1368,7 +1378,7 @@ export function DirectoryGrid({ nodes }: DirectoryGridProps) {
           >
             {isQuickAccessOpen ? <ChevronDown size={14} /> : <ChevronRight size={14} />}
             <span className={styles.sectionTitle}>Quick Access</span>
-            <span className={styles.sectionCount}>({quickAccessNodes.length}/5)</span>
+            <span className={styles.sectionCount}>({quickAccessNodes.length}/{MAX_QUICK_ACCESS_ITEMS})</span>
           </div>
           {isQuickAccessOpen && (
             <div

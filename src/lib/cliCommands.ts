@@ -561,13 +561,23 @@ ${list.join("\n\n")}`,
 
     case "experience": {
       const list = EXPERIENCE_DATA.map((exp) => {
+        const contractsStr = exp.contracts
+          ? `\nVerified Contracts (3 Consecutive Completed Terms • 10 Months Total):
+${exp.contracts.map((c) => `  [Term 0${c.termNumber}] ${c.period} (${c.duration}): ${c.termTitle}\n    -> Proof Document: ${c.fileName} (${c.fileSize}) • Verified Authentic`).join("\n")}`
+          : "";
+
         return `[${exp.role}] @ ${exp.organization} (${exp.period} • ${exp.duration})
-Summary: ${exp.summary}
-Metrics: ${exp.technicalImpact.map((m) => `${m.metric}: ${m.description}`).join(" | ")}`;
+Summary: ${exp.summary}${contractsStr}
+
+Key Responsibilities:
+${exp.responsibilities.map((r) => `  * ${r}`).join("\n")}
+
+Metrics & Impact:
+${exp.technicalImpact.map((m) => `  * ${m.metric}: ${m.description}`).join("\n")}`;
       });
       return {
         text: `Professional Experience & Technical Leadership:
---------------------------------------------------------------------------------
+================================================================================
 ${list.join("\n\n")}`,
       };
     }

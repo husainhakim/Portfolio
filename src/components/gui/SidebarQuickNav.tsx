@@ -24,12 +24,12 @@ interface NavShortcut {
 
 const SHORTCUTS: NavShortcut[] = [
   { label: "About.md", path: "/home/husain/about.md", type: "document" },
+  { label: "Experience", path: "/home/husain/experience", type: "folder" },
   { label: "Projects", path: "/home/husain/projects", type: "folder" },
+  { label: "Contact-info.md", path: "/home/husain/contact-info.md", type: "document" },
   { label: "Writeups", path: "/home/husain/writeups", type: "folder" },
   { label: "Blogs", path: "/home/husain/blogs", type: "folder" },
   { label: "Skills.md", path: "/home/husain/skills.md", type: "document" },
-  { label: "Experience", path: "/home/husain/experience", type: "folder" },
-  { label: "Contact-info.md", path: "/home/husain/contact-info.md", type: "document" },
   { label: "Resume.pdf", path: "/home/husain/resume.pdf", type: "pdf" },
 ];
 

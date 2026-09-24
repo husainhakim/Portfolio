@@ -187,11 +187,18 @@ function triggerBrowserDownload(blobOrUrl: Blob | string, filename: string) {
 
 /**
  * Resolves the internal filename for files (used inside folder .zip archives).
- * All non-resume files strictly get the .md extension.
+ * All non-resume, non-image files strictly get the .md extension.
  */
 export function getInternalFilename(node: FSFile): string {
   if (node.name.toLowerCase().includes("resume") || node.fileType === "pdf") {
     return "HusainHakim_Resume.pdf";
+  }
+
+  if (
+    node.fileType === "image" ||
+    /\.(jpeg|jpg|png|webp|svg)$/i.test(node.name)
+  ) {
+    return node.name;
   }
 
   if (node.name.toLowerCase().endsWith(".md")) {
@@ -206,11 +213,18 @@ export function getInternalFilename(node: FSFile): string {
 /**
  * Resolves the standalone download filename for a single file.
  * Prefixes with HusainHakim_ (e.g. HusainHakim_about.md),
- * except for the resume which is already HusainHakim_Resume.pdf.
+ * except for the resume or images which keep their descriptive names.
  */
 export function getStandaloneDownloadFilename(node: FSFile): string {
   if (node.name.toLowerCase().includes("resume") || node.fileType === "pdf") {
     return "HusainHakim_Resume.pdf";
+  }
+
+  if (
+    node.fileType === "image" ||
+    /\.(jpeg|jpg|png|webp|svg)$/i.test(node.name)
+  ) {
+    return node.name.startsWith("Husain") ? node.name : `HusainHakim_${node.name}`;
   }
 
   const internalName = getInternalFilename(node);
@@ -223,8 +237,6 @@ export function getStandaloneDownloadFilename(node: FSFile): string {
 
 /**
  * Downloads a single file from the virtual filesystem.
- * Standalone files are named HusainHakim_<filename>.md,
- * and resume is HusainHakim_Resume.pdf.
  */
 export async function downloadSingleFile(node: FSFile): Promise<void> {
   const filename = getStandaloneDownloadFilename(node);
@@ -232,6 +244,21 @@ export async function downloadSingleFile(node: FSFile): Promise<void> {
   // If this is the resume PDF file
   if (node.name.toLowerCase().includes("resume") || node.fileType === "pdf") {
     triggerBrowserDownload("/resume.pdf", filename);
+    return;
+  }
+
+  // If this is an image file (e.g. Experience proof)
+  if (
+    node.fileType === "image" ||
+    Boolean(node.externalUrl) ||
+    /\.(jpeg|jpg|png|webp|svg)$/i.test(node.name)
+  ) {
+    const imgUrl =
+      node.externalUrl ||
+      (node.name.startsWith("HusainLU_")
+        ? `/Experience/${node.name}`
+        : node.path);
+    triggerBrowserDownload(imgUrl, filename);
     return;
   }
 
@@ -257,6 +284,23 @@ async function addFolderToZip(zipFolder: JSZip, directory: FSDirectory): Promise
         } catch {
           // fallback text placeholder if fetch fails
           zipFolder.file("HusainHakim_Resume.pdf", "Resume binary available at /resume.pdf");
+        }
+      } else if (
+        child.fileType === "image" ||
+        Boolean(child.externalUrl) ||
+        /\.(jpeg|jpg|png|webp|svg)$/i.test(child.name)
+      ) {
+        try {
+          const imgUrl =
+            child.externalUrl ||
+            (child.name.startsWith("HusainLU_")
+              ? `/Experience/${child.name}`
+              : child.path);
+          const res = await fetch(imgUrl);
+          const arrayBuffer = await res.arrayBuffer();
+          zipFolder.file(filename, arrayBuffer);
+        } catch {
+          zipFolder.file(`${filename}.txt`, `Image available at ${child.externalUrl || child.path}`);
         }
       } else {
         const textContent = getNodeContent(child);

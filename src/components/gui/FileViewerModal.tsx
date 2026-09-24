@@ -111,6 +111,112 @@ export function FileViewerModal() {
       return <PersonalVaultView />;
     }
 
+    // Image File View (Contract proofs, certificates, screenshots)
+    if (
+      openedFile.fileType === "image" ||
+      Boolean(openedFile.externalUrl) ||
+      /\.(jpeg|jpg|png|webp|svg)$/i.test(openedFile.name)
+    ) {
+      const imgUrl =
+        openedFile.externalUrl ||
+        (openedFile.name.startsWith("HusainLU_")
+          ? `/Experience/${openedFile.name}`
+          : openedFile.path);
+      return (
+        <div
+          className={styles.genericFileViewer}
+          style={{
+            display: "flex",
+            flexDirection: "column",
+            alignItems: "center",
+            padding: "24px",
+            gap: "16px",
+          }}
+        >
+          <div
+            style={{
+              maxWidth: "100%",
+              maxHeight: "68vh",
+              display: "flex",
+              justifyContent: "center",
+              alignItems: "center",
+              background: "#080c14",
+              border: "1px solid var(--border-default)",
+              padding: "16px",
+              borderRadius: "4px",
+              boxShadow: "0 8px 30px rgba(0,0,0,0.4)",
+            }}
+          >
+            <img
+              src={imgUrl}
+              alt={displayName}
+              style={{
+                maxWidth: "100%",
+                maxHeight: "62vh",
+                objectFit: "contain",
+              }}
+            />
+          </div>
+          <div
+            style={{
+              textAlign: "center",
+              color: "var(--text-secondary)",
+              fontSize: "13px",
+              display: "flex",
+              flexDirection: "column",
+              gap: "8px",
+              alignItems: "center",
+            }}
+          >
+            {openedFile.description && (
+              <p style={{ margin: 0, fontWeight: 500, color: "var(--text-primary)" }}>
+                {openedFile.description}
+              </p>
+            )}
+            <div style={{ display: "flex", gap: "12px", alignItems: "center" }}>
+              <a
+                href={imgUrl}
+                download={openedFile.name}
+                style={{
+                  display: "inline-flex",
+                  alignItems: "center",
+                  gap: "6px",
+                  color: "var(--accent-text)",
+                  textDecoration: "none",
+                  fontSize: "12px",
+                  fontFamily: "var(--font-mono)",
+                  padding: "4px 8px",
+                  background: "var(--accent-surface)",
+                  border: "1px solid var(--accent-primary)",
+                  borderRadius: "3px",
+                }}
+              >
+                <Download size={13} />
+                <span>Download Proof ({formatFileSize(openedFile.size)})</span>
+              </a>
+              <a
+                href={imgUrl}
+                target="_blank"
+                rel="noopener noreferrer"
+                style={{
+                  display: "inline-flex",
+                  alignItems: "center",
+                  gap: "6px",
+                  color: "var(--text-secondary)",
+                  textDecoration: "none",
+                  fontSize: "12px",
+                  fontFamily: "var(--font-mono)",
+                }}
+              >
+                <ExternalLink size={13} />
+                <span>Open in Tab</span>
+              </a>
+            </div>
+          </div>
+        </div>
+      );
+    }
+
     // Standalone Markdown or generic file
     return (
       <div className={styles.genericFileViewer}>

@@ -73,11 +73,13 @@ interface FilesystemContextType {
   completeBoot: () => void;
 }
 
+export const MAX_QUICK_ACCESS_ITEMS = 5;
+
 export const DEFAULT_QUICK_ACCESS_IDS = [
   "about-file",
-  "contact-file",
+  "experience-dir",
   "projects-dir",
-  "resume-pdf",
+  "contact-file",
 ];
 
 const PUNCHLINE_MESSAGES: Record<string, string> = {
@@ -366,8 +368,8 @@ export function FilesystemProvider({ children }: { children: React.ReactNode }) 
         return;
       }
 
-      if (quickAccessIdsRef.current.length >= 5) {
-        showToast("⚠️ Quick Access is full (maximum 5 items). Remove one to add a new one.", 4000);
+      if (quickAccessIdsRef.current.length >= MAX_QUICK_ACCESS_ITEMS) {
+        showToast(`⚠️ Quick Access is full (maximum ${MAX_QUICK_ACCESS_ITEMS} items). Remove one to add a new one.`, 4000);
         return;
       }
 
@@ -375,7 +377,7 @@ export function FilesystemProvider({ children }: { children: React.ReactNode }) 
       const name = targetNode ? (customNames[nodeId] || targetNode.name) : "Item";
 
       setQuickAccessIds((prev) => {
-        if (prev.includes(nodeId) || prev.length >= 5) return prev;
+        if (prev.includes(nodeId) || prev.length >= MAX_QUICK_ACCESS_ITEMS) return prev;
         const next = [...prev, nodeId];
         quickAccessIdsRef.current = next;
         return next;
@@ -383,7 +385,7 @@ export function FilesystemProvider({ children }: { children: React.ReactNode }) 
 
       showToast(`📌 Pinned '${name}' to Quick Access`, 3000);
 
-      if (quickAccessIdsRef.current.length >= 5) {
+      if (quickAccessIdsRef.current.length >= MAX_QUICK_ACCESS_ITEMS) {
         unlock("hoarder");
       }
 
