@@ -5,6 +5,7 @@
   flex-direction: column;
   height: 100%;
   width: 100%;
+  min-height: 0;
   overflow: hidden;
   background: var(--bg-app);
 }
@@ -277,6 +278,8 @@
 .mainLayout {
   display: flex;
   flex: 1;
+  min-height: 0;
+  min-width: 0;
   overflow: hidden;
   height: 100%;
   position: relative;
@@ -717,10 +720,12 @@
 /* Content Area - Spacious and immersive */
 .contentArea {
   flex: 1;
+  min-height: 0;
   padding: 16px 20px 24px 20px;
-  /* Fixed small bottom padding */
   overflow-y: auto;
   overflow-x: hidden;
+  -webkit-overflow-scrolling: touch;
+  overscroll-behavior-y: contain;
   background: var(--bg-app);
 }
 
@@ -2071,7 +2076,9 @@
 
   /* Content Area */
   .contentArea {
-    padding: 8px 10px 36px 10px;
+    padding: 8px 10px calc(90px + env(safe-area-inset-bottom, 20px)) 10px;
+    -webkit-overflow-scrolling: touch;
+    overscroll-behavior-y: contain;
   }
 
   .sectionHeader {
