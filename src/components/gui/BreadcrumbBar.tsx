@@ -60,7 +60,7 @@ export function BreadcrumbBar({ onToggleSidebar }: BreadcrumbBarProps) {
         <button
           onClick={goForward}
           disabled={!canGoForward}
-          className={styles.navBtn}
+          className={`${styles.navBtn} ${styles.navBtnDesktopOnly}`}
           title="Forward (Alt+Right)"
           aria-label="Navigate forward"
         >
@@ -77,7 +77,7 @@ export function BreadcrumbBar({ onToggleSidebar }: BreadcrumbBarProps) {
         </button>
         <button
           onClick={() => {}}
-          className={styles.navBtn}
+          className={`${styles.navBtn} ${styles.navBtnDesktopOnly}`}
           title="Refresh"
           aria-label="Refresh"
         >

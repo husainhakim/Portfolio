@@ -1941,12 +1941,102 @@
 }
 
 @media (max-width: 768px) {
-  .mobileMenuBtn {
-    display: inline-flex;
-    min-width: 44px;
-    min-height: 44px;
+  /* Ribbon Toolbar on Mobile */
+  .ribbonToolbar {
+    height: 38px;
+    padding: 0 8px;
+    gap: 4px;
+    overflow-x: auto;
+    -webkit-overflow-scrolling: touch;
+    scrollbar-width: none;
   }
 
+  .ribbonToolbar::-webkit-scrollbar {
+    display: none;
+  }
+
+  .ribbonBtn:disabled,
+  .ribbonBtnWithLabel:disabled {
+    display: none;
+  }
+
+  .ribbonDivider {
+    margin: 0 3px;
+    height: 16px;
+  }
+
+  .ribbonBtn {
+    width: 28px;
+    height: 28px;
+  }
+
+  .ribbonBtnWithLabel {
+    height: 28px;
+    padding: 0 8px;
+    font-size: 11px;
+    gap: 4px;
+  }
+
+  /* Breadcrumb & Navigation Bar on Mobile */
+  .breadcrumbBar {
+    height: 38px;
+    padding: 0 8px;
+    gap: 6px;
+  }
+
+  .navControls {
+    gap: 2px;
+    flex-shrink: 0;
+  }
+
+  .navBtn {
+    width: 28px;
+    height: 28px;
+    min-width: 28px;
+    min-height: 28px;
+    border-radius: var(--radius-sm);
+  }
+
+  .mobileMenuBtn {
+    display: inline-flex;
+    min-width: 28px;
+    min-height: 28px;
+  }
+
+  .navBtnDesktopOnly {
+    display: none;
+  }
+
+  .breadcrumbPath {
+    flex: 1;
+    min-width: 65px;
+    padding: 2px 6px;
+    font-size: 11px;
+    height: 28px;
+    border-radius: var(--radius-sm);
+  }
+
+  .searchContainer {
+    flex: 1;
+    width: auto;
+    min-width: 90px;
+    max-width: 140px;
+  }
+
+  .searchInput {
+    height: 28px;
+    padding: 2px 24px 2px 8px;
+    font-size: 10.5px;
+    border-radius: var(--radius-sm);
+  }
+
+  .searchIcon {
+    right: 7px;
+    width: 12px;
+    height: 12px;
+  }
+
+  /* Sidebar Mobile Drawer */
   .mobileSidebarOverlay {
     display: block;
     position: fixed;
@@ -1954,8 +2044,8 @@
     left: 0;
     right: 0;
     bottom: 0;
-    background: rgba(0, 0, 0, 0.5);
-    backdrop-filter: blur(2px);
+    background: rgba(0, 0, 0, 0.55);
+    backdrop-filter: blur(3px);
     z-index: 999;
   }
 
@@ -1964,10 +2054,11 @@
     top: 0;
     left: 0;
     height: 100%;
+    width: 260px;
     z-index: 1000;
     transform: translateX(-100%);
     transition: transform 0.25s cubic-bezier(0.16, 1, 0.3, 1);
-    box-shadow: 4px 0 16px rgba(0, 0, 0, 0.2);
+    box-shadow: 4px 0 20px rgba(0, 0, 0, 0.35);
   }
 
   .mainLayout .sidebarOpen {
@@ -1975,28 +2066,102 @@
   }
 
   .sidebarNavItem {
-    min-height: 44px;
+    min-height: 38px;
   }
 
-  .navBtn {
-    min-width: 44px;
-    min-height: 44px;
+  /* Content Area */
+  .contentArea {
+    padding: 8px 10px 36px 10px;
   }
 
-  .qaTile {
-    flex: 1 1 100%;
+  .sectionHeader {
+    padding-bottom: 4px;
+    margin-bottom: 2px;
+  }
+
+  .sectionTitle {
+    font-size: 12px;
+  }
+
+  /* 2-Column Responsive Card Grid for Quick Access & Directory Listing */
+  .qaGrid,
+  .fileGrid {
+    grid-template-columns: repeat(2, 1fr) !important;
+    gap: 8px !important;
+  }
+
+  .gridItemCard {
+    min-height: 84px;
+    padding: 8px 10px;
+    gap: 4px;
+    border-radius: var(--radius-md);
+  }
+
+  .gridItemTop {
+    margin-bottom: 0;
+  }
+
+  .gridItemIcon {
+    width: 28px;
+    height: 28px;
+  }
+
+  .gridItemIcon svg {
+    width: 26px !important;
+    height: 26px !important;
+  }
+
+  .qaCardPinBadge {
+    width: 18px;
+    height: 18px;
+    top: 6px;
+    right: 6px;
+    border-radius: 4px;
+  }
+
+  .qaCardPinBadge svg {
+    width: 10px !important;
+    height: 10px !important;
+  }
+
+  .gridItemName {
+    font-size: 12px;
+    line-height: 1.25;
+    word-break: break-word;
+  }
+
+  .gridItemFooter {
+    margin-top: auto;
+    gap: 2px;
+  }
+
+  .gridItemSize {
+    font-size: 9.5px;
+  }
+
+  .readmeStartBadge {
+    top: 4px;
+    right: 4px;
+    font-size: 8px;
+    padding: 1px 4px;
+  }
+
+  .readmeFooterBadge {
+    font-size: 8.5px;
+    padding: 1px 4px;
+  }
+
+  /* Tabs and List Rows */
+  .qaTabs {
+    gap: 4px;
+    margin-bottom: 6px;
   }
 
   .qaTabBtn {
-    min-height: 44px;
-  }
-
-  .contentArea {
-    padding: 10px;
-  }
-
-  .fileGrid {
-    grid-template-columns: 1fr;
+    min-height: 30px;
+    padding: 4px 10px;
+    font-size: 11px;
+    border-radius: 14px;
   }
 
   .fileListHeader {
@@ -2006,17 +2171,43 @@
   .fileListRow {
     grid-template-columns: 1fr auto;
     gap: 6px;
-    min-height: 44px;
+    min-height: 38px;
+    padding: 6px 10px;
+  }
+
+  .recentListHeader {
+    grid-template-columns: 1fr auto;
+    padding: 6px 10px;
+    font-size: 10px;
+  }
+
+  .recentListHeader .colDate {
+    display: none;
+  }
+
+  .recentListHeader .colPath {
+    padding: 0;
+    text-align: right;
   }
 
   .recentListRow {
-    min-height: 44px;
+    grid-template-columns: 1fr auto;
+    padding: 8px 10px;
+    min-height: 38px;
+    font-size: 11.5px;
+    gap: 6px;
   }
 
   .colPerms,
   .colOwner,
   .colDate {
     display: none;
+  }
+
+  .recentListRow .colPath {
+    padding: 0;
+    font-size: 10.5px;
+    text-align: right;
   }
 
   .modalContainer {
@@ -2047,8 +2238,8 @@
   }
 
   .previewCloseBtn {
-    min-width: 44px;
-    min-height: 44px;
+    min-width: 38px;
+    min-height: 38px;
     top: 8px;
     right: 8px;
   }
