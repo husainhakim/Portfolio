@@ -2,41 +2,48 @@ import { PROFILE_DATA } from "@/data/profileData";
 
 export const SITE_URL =
   process.env.NEXT_PUBLIC_SITE_URL?.replace(/\/$/, "") ||
-  "https://husainhakim.me";
+  "https://portfolio.husainhakim.workers.dev";
 
-export const FALLBACK_URL = "https://husainhakim.vercel.app";
+export const FALLBACK_URL = "https://portfolio.husainhakim.workers.dev";
 
 export const SITE_CONFIG = {
-  name: PROFILE_DATA.name,
+  name: "Husain Hakim",
+  jobTitle: "Computer Science Student",
+  alumniOf: "ITM Skills University",
   handle: PROFILE_DATA.handle,
-  title: "Portfolio - Husain Hakim",
-  shortTitle: "Portfolio - Husain Hakim",
+  title: "Husain Hakim | Computer Science Student & Cybersecurity Portfolio",
+  shortTitle: "Husain Hakim Portfolio",
   description:
-    "Interactive cybersecurity workspace & offensive and defensive security portfolio of Husain Hakim. Featuring penetration testing research, SUID privilege escalation, system defense, custom reconnaissance utilities, and backend engineering.",
+    "Portfolio of Husain Hakim, Computer Science Student at ITM Skills University focused on cybersecurity, offensive security, and network telemetry.",
   url: SITE_URL,
   ogImage: `${SITE_URL}/opengraph-image`,
   keywords: [
     "Husain Hakim",
+    "Computer Science Student",
+    "ITM Skills University",
     "Cybersecurity Portfolio",
     "Offensive Security",
     "Defensive Security",
+    "Network Telemetry",
     "Ethical Hacking",
     "Penetration Testing",
     "SUID Privilege Escalation",
     "Network Reconnaissance",
+    "CYBER SONAR",
     "Security Automation",
     "File Signature Detector",
     "Password Entropy Audit",
     "Backend Developer Mumbai",
-    "ITM Skills University",
     "Linux Security",
   ],
   author: {
-    name: PROFILE_DATA.name,
+    name: "Husain Hakim",
+    jobTitle: "Computer Science Student",
+    alumniOf: "ITM Skills University",
     url: SITE_URL,
     email: PROFILE_DATA.email,
-    github: PROFILE_DATA.github,
-    linkedin: PROFILE_DATA.linkedin,
+    github: "https://github.com/husainhakim",
+    linkedin: "https://www.linkedin.com/in/husainhakim/",
     medium: PROFILE_DATA.medium,
     x: PROFILE_DATA.x,
   },

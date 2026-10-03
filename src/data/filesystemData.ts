@@ -689,8 +689,47 @@ export function normalizePath(path: string): string {
   if (resolved === "/home/husain/contact") return "/home/husain/contact-info.md";
   if (resolved === "/home/husain/contact-info") return "/home/husain/contact-info.md";
   if (resolved === "/home/husain/resume") return "/home/husain/resume.pdf";
+  if (resolved === "/home/husain/vault") return "/home/husain/vault/personal_vault.md";
+  if (resolved === "/home/husain/projects/cyber-sonar") return "/home/husain/projects/network-device-scanner";
 
   return resolved;
+}
+
+export function getNodePublicUrl(node: FSNode | null | undefined): string {
+  if (!node) return "/";
+  if (node.type === "directory") {
+    if (node.path === ROOT_PATH) return "/";
+    return node.path.replace(/^\/home\/husain/, "") || "/";
+  }
+  const file = node as FSFile;
+  if (file.fileType === "project" && file.dataRef) {
+    return `/projects/${file.dataRef}`;
+  }
+  if (file.fileType === "writeup" && file.dataRef) {
+    return `/writeups/${file.name.replace(/\.md$/, "")}`;
+  }
+  if (file.fileType === "blog" && file.dataRef) {
+    return `/blogs/${file.dataRef}`;
+  }
+  if (file.fileType === "skills" || file.id === "skills-file") {
+    return "/skills";
+  }
+  if (file.fileType === "experience" || file.id === "exp-backend") {
+    return "/experience";
+  }
+  if (file.fileType === "contact" || file.id === "contact-file") {
+    return "/contact";
+  }
+  if (file.fileType === "vault" || file.id === "vault-file") {
+    return "/vault";
+  }
+  if (file.id === "about-file" || file.name === "about.md") {
+    return "/about";
+  }
+  if (file.id === "resume-pdf" || file.name === "resume.pdf") {
+    return "/resume.pdf";
+  }
+  return file.path.replace(/^\/home\/husain/, "") || "/";
 }
 
 export function getNodeDisplayName(
@@ -722,10 +761,24 @@ export function findNodeByPath(
     const isLast = i === relative.length - 1;
     if (current.type !== "directory") return null;
 
-    // Look for match by customName, original name, or node id
+    // Look for match by customName, original name, node id, dataRef, or known alias
     let found: FSNode | undefined = current.children.find((child) => {
       const currentName = customNames && customNames[child.id] ? customNames[child.id] : child.name;
-      return currentName === segment || child.name === segment || child.id === segment;
+      if (currentName === segment || child.name === segment || child.id === segment) {
+        return true;
+      }
+      if (child.type === "file") {
+        const f = child as FSFile;
+        if (f.dataRef && f.dataRef === segment) return true;
+        // Project aliases
+        if (f.fileType === "project") {
+          if (segment === "cyber-sonar" && (f.dataRef === "network-device-scanner" || child.name === "network-device-scanner")) return true;
+          if (segment === "file-identifier" && (f.dataRef === "file-identifier" || child.name === "file-sign-identifier")) return true;
+          if (segment === "passguard" && (f.dataRef === "passguard" || child.name === "password-strength-checker")) return true;
+          if (segment === "ids" && (f.dataRef === "intrusion-detection-system" || child.name === "intrusion-detection-system")) return true;
+        }
+      }
+      return false;
     });
 
     if (!found && isLast) {

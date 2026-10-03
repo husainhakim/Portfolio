@@ -10,6 +10,7 @@ import {
   findNodeByPath,
   getParentPath,
   normalizePath,
+  getNodePublicUrl,
 } from "@/data/filesystemData";
 import { useRouter, usePathname } from "next/navigation";
 import { useAchievements } from "@/context/AchievementContext";
@@ -237,7 +238,8 @@ export function FilesystemProvider({ children }: { children: React.ReactNode }) 
   const handleCopyNode = useCallback(
     (node: FSNode) => {
       if (typeof window === "undefined") return;
-      const url = `${window.location.origin}${node.path}`;
+      const publicPath = getNodePublicUrl(node);
+      const url = `${window.location.origin}${publicPath}`;
       if (navigator.clipboard?.writeText) {
         navigator.clipboard.writeText(url).catch(() => { });
       }
@@ -489,10 +491,8 @@ export function FilesystemProvider({ children }: { children: React.ReactNode }) 
         return true;
       }
 
-      // If they are navigating to ROOT_PATH in GUI mode, map it back to "/" to keep URL clean
-      const canonicalPath = node.type === "file" ? node.path : (normalized === ROOT_PATH ? "/" : normalized);
-      const urlPath = canonicalPath === ROOT_PATH ? "/" : canonicalPath;
-      router.push(urlPath);
+      const publicUrl = getNodePublicUrl(node);
+      router.push(publicUrl);
 
       return true;
     },
@@ -542,7 +542,8 @@ export function FilesystemProvider({ children }: { children: React.ReactNode }) 
   }, [currentPath, navigate]);
 
   const openFile = useCallback((file: FSFile) => {
-    navigate(file.path);
+    const publicUrl = getNodePublicUrl(file);
+    navigate(publicUrl);
   }, [navigate]);
 
   const closeFile = useCallback(() => {
@@ -552,11 +553,11 @@ export function FilesystemProvider({ children }: { children: React.ReactNode }) 
       const parent = getParentPath(openedFile.path);
       const target =
         parent === "/home/husain/vault" || parent === ROOT_PATH || parent === "/vault"
-          ? ROOT_PATH
-          : parent;
+          ? "/"
+          : parent.replace(/^\/home\/husain/, "") || "/";
       navigate(target);
     } else {
-      navigate(ROOT_PATH);
+      navigate("/");
     }
   }, [navigate, openedFile]);
 

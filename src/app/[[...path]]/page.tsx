@@ -12,11 +12,24 @@ interface PageProps {
   params: Promise<{ path?: string[] }>;
 }
 
+function findProjectBySlug(slug: string) {
+  return (
+    PROJECTS_DATA.find((p) => p.slug === slug || p.id === slug) ||
+    (slug === "cyber-sonar" ? PROJECTS_DATA.find((p) => p.slug === "network-device-scanner") : undefined) ||
+    (slug === "file-sign-identifier" ? PROJECTS_DATA.find((p) => p.slug === "file-identifier") : undefined) ||
+    (slug === "password-strength-checker" ? PROJECTS_DATA.find((p) => p.slug === "passguard") : undefined) ||
+    (slug === "ids" ? PROJECTS_DATA.find((p) => p.slug === "intrusion-detection-system") : undefined)
+  );
+}
+
 export function generateStaticParams() {
   const staticPaths: { path?: string[] }[] = [
     { path: [] },
     { path: ["about"] },
     { path: ["projects"] },
+    { path: ["projects", "cyber-sonar"] },
+    { path: ["projects", "file-sign-identifier"] },
+    { path: ["projects", "password-strength-checker"] },
     { path: ["writeups"] },
     { path: ["blogs"] },
     { path: ["skills"] },
@@ -60,13 +73,13 @@ export async function generateMetadata({
   // 1. Root Homepage
   if (pathArray.length === 0) {
     return {
-      title: "Portfolio - Husain Hakim",
+      title: "Husain Hakim | Computer Science Student & Cybersecurity Portfolio",
       description: SITE_CONFIG.description,
       alternates: {
         canonical: canonicalUrl,
       },
       openGraph: {
-        title: "Portfolio - Husain Hakim",
+        title: "Husain Hakim | Computer Science Student & Cybersecurity Portfolio",
         description: SITE_CONFIG.description,
         url: canonicalUrl,
         type: "profile",
@@ -78,9 +91,9 @@ export async function generateMetadata({
 
   // 2. About
   if (segment0 === "about") {
-    const title = "About Husain Hakim | Cybersecurity & Systems Mindset";
+    const title = "About Husain Hakim | Computer Science & Cybersecurity Mindset";
     const description =
-      "Background, education at ITM Skills University, offensive and defensive security philosophy, and technical methodologies of Husain Hakim.";
+      "Background, education at ITM Skills University, offensive and defensive security philosophy, and systems engineering methodologies of Husain Hakim.";
     return {
       title,
       description,
@@ -93,13 +106,20 @@ export async function generateMetadata({
   if (segment0 === "projects") {
     if (pathArray.length > 1) {
       const slug = pathArray[1];
-      const project = PROJECTS_DATA.find((p) => p.slug === slug);
+      const project = findProjectBySlug(slug);
       if (project) {
-        const title = `${project.name} | Security Tooling`;
-        const description = project.summary;
+        const title = `${project.name} | Security Tool by Husain Hakim`;
+        const description = `${project.name}: ${project.summary} Built with ${project.technologies.join(", ")}.`;
         return {
           title,
           description,
+          keywords: [
+            ...SITE_CONFIG.keywords,
+            project.name,
+            project.category,
+            ...project.technologies,
+            ...project.securityConcepts,
+          ],
           alternates: { canonical: canonicalUrl },
           openGraph: {
             title,
@@ -113,7 +133,7 @@ export async function generateMetadata({
 
     const title = "Security Projects & Tools | Husain Hakim";
     const description =
-      "Bespoke cybersecurity and network reconnaissance utilities engineered by Husain Hakim, including CYBER // SONAR and File Signature Detector.";
+      "Bespoke cybersecurity, network reconnaissance, and forensics utilities engineered by Husain Hakim, including CYBER // SONAR and File Signature Detector.";
     return {
       title,
       description,
@@ -244,7 +264,7 @@ export async function generateMetadata({
 
   // Fallback
   return {
-    title: "Portfolio - Husain Hakim",
+    title: "Husain Hakim | Computer Science Student & Cybersecurity Portfolio",
     description: SITE_CONFIG.description,
     alternates: { canonical: canonicalUrl },
   };
@@ -262,7 +282,7 @@ function isValidPath(pathArray: string[]): boolean {
   }
   if (seg0 === "projects") {
     if (pathArray.length === 1) return true;
-    if (pathArray.length === 2) return PROJECTS_DATA.some((p) => p.slug === pathArray[1]);
+    if (pathArray.length === 2) return findProjectBySlug(pathArray[1]) !== undefined;
     return false;
   }
   if (seg0 === "writeups") {
@@ -324,7 +344,7 @@ export default async function Page({ params }: PageProps) {
   let projectSchema = null;
   let activeProject = null;
   if (pathArray[0] === "projects" && pathArray[1]) {
-    activeProject = PROJECTS_DATA.find((p) => p.slug === pathArray[1]);
+    activeProject = findProjectBySlug(pathArray[1]);
     if (activeProject) {
       projectSchema = {
         "@context": "https://schema.org",
@@ -335,10 +355,12 @@ export default async function Page({ params }: PageProps) {
         operatingSystem: "Linux, macOS, Windows",
         author: {
           "@type": "Person",
-          name: PROFILE_DATA.name,
-          url: SITE_CONFIG.url,
+          name: "Husain Hakim",
+          jobTitle: "Computer Science Student",
+          alumniOf: "ITM Skills University",
+          url: "https://portfolio.husainhakim.workers.dev/",
         },
-        codeRepository: activeProject.githubUrl || PROFILE_DATA.github,
+        codeRepository: activeProject.githubUrl || "https://github.com/husainhakim",
       };
     }
   }
@@ -358,8 +380,8 @@ export default async function Page({ params }: PageProps) {
         description: activeWriteup.summary,
         author: {
           "@type": "Person",
-          name: PROFILE_DATA.name,
-          url: SITE_CONFIG.url,
+          name: "Husain Hakim",
+          url: "https://portfolio.husainhakim.workers.dev/",
         },
         datePublished: activeWriteup.date || "2026-08-25",
         mainEntityOfPage: canonicalUrl,
@@ -372,23 +394,23 @@ export default async function Page({ params }: PageProps) {
   let semanticDescription = PROFILE_DATA.summary;
 
   if (activeProject) {
-    semanticHeading = `${activeProject.name} | Security Tool`;
+    semanticHeading = `${activeProject.name} | Security Tool by Husain Hakim`;
     semanticDescription = activeProject.summary;
   } else if (activeWriteup) {
-    semanticHeading = `${activeWriteup.title} | Security Writeup`;
+    semanticHeading = `${activeWriteup.title} | Security Writeup by Husain Hakim`;
     semanticDescription = activeWriteup.summary;
   } else if (pathArray[0] === "about") {
-    semanticHeading = `About ${PROFILE_DATA.name} | Offensive & Defensive Security`;
+    semanticHeading = `About Husain Hakim | Computer Science Student & Cybersecurity Researcher`;
     semanticDescription = PROFILE_DATA.summary;
   } else if (pathArray[0] === "projects") {
-    semanticHeading = `Offensive & Defensive Security Projects`;
-    semanticDescription = "Directory of security utilities and network tools.";
+    semanticHeading = `Offensive & Defensive Security Projects | Husain Hakim`;
+    semanticDescription = "Directory of bespoke security utilities, network scanners, and forensics tools.";
   } else if (pathArray[0] === "writeups") {
-    semanticHeading = `Cybersecurity Research & Penetration Testing Writeups`;
-    semanticDescription = "Vulnerability research and lab postmortems.";
+    semanticHeading = `Cybersecurity Research & Penetration Testing Writeups | Husain Hakim`;
+    semanticDescription = "Technical security research, SUID privilege escalation, and lab postmortems.";
   } else if (pathArray[0] === "contact") {
-    semanticHeading = `Contact ${PROFILE_DATA.name}`;
-    semanticDescription = `Get in touch for security research and engineering collaborations.`;
+    semanticHeading = `Contact Husain Hakim`;
+    semanticDescription = `Get in touch for cybersecurity research and software engineering collaborations.`;
   }
 
   return (
@@ -418,7 +440,7 @@ export default async function Page({ params }: PageProps) {
       {/* Client Interactive Workspace */}
       <ClientWorkspace />
 
-      {/* Crawlable Semantic Layer with single distinct H1 */}
+      {/* Crawlable Semantic Layer with Full Server-Rendered Content for AI & Search Engines */}
       <section
         style={{
           position: "absolute",
@@ -428,35 +450,122 @@ export default async function Page({ params }: PageProps) {
           margin: "-1px",
           overflow: "hidden",
           clip: "rect(0, 0, 0, 0)",
-          whiteSpace: "nowrap",
+          whiteSpace: "normal",
           border: 0,
         }}
         aria-hidden="true"
       >
-        <h1>{semanticHeading}</h1>
-        <p>{semanticDescription}</p>
-        <nav aria-label="Internal Workspace Sitemap">
-          <ul>
-            <li><Link href="/">/home/husain (Root)</Link></li>
-            <li><Link href="/about">/home/husain/about.md</Link></li>
-            <li><Link href="/projects">/home/husain/projects</Link></li>
-            {PROJECTS_DATA.map((p) => (
-              <li key={p.id}>
-                <Link href={`/projects/${p.slug}`}>{p.name}</Link>
-              </li>
-            ))}
-            <li><Link href="/writeups">/home/husain/writeups</Link></li>
-            {WRITEUPS_DATA.map((w) => (
-              <li key={w.id}>
-                <Link href={`/writeups/${w.category}/${w.slug}`}>{w.title}</Link>
-              </li>
-            ))}
-            <li><Link href="/blogs">/home/husain/blogs</Link></li>
-            <li><Link href="/skills">/home/husain/skills</Link></li>
-            <li><Link href="/experience">/home/husain/experience</Link></li>
-            <li><Link href="/contact">/home/husain/contact</Link></li>
-          </ul>
-        </nav>
+        <article>
+          <h1>{semanticHeading}</h1>
+          <p>{semanticDescription}</p>
+
+          {activeProject && (
+            <section>
+              <h2>Project Overview & Threat Context</h2>
+              <p>{activeProject.summary}</p>
+              <h3>Problem Statement & Objective</h3>
+              <p>{activeProject.problemStatement}</p>
+
+              <h3>Security Concepts & Principles</h3>
+              <ul>
+                {activeProject.securityConcepts.map((sc, i) => (
+                  <li key={i}>{sc}</li>
+                ))}
+              </ul>
+
+              <h3>Technologies & Tools</h3>
+              <ul>
+                {activeProject.technologies.map((tech, i) => (
+                  <li key={i}>{tech}</li>
+                ))}
+              </ul>
+
+              <h3>Technical Architecture & Mechanics</h3>
+              <ul>
+                {activeProject.architectureDetails.map((arch, i) => (
+                  <li key={i}>{arch}</li>
+                ))}
+              </ul>
+
+              <h3>Key Capabilities & Features</h3>
+              <ul>
+                {activeProject.keyFeatures.map((feat, i) => (
+                  <li key={i}>{feat}</li>
+                ))}
+              </ul>
+
+              {activeProject.cliUsageExample && (
+                <div>
+                  <h3>CLI Usage Demonstration</h3>
+                  <pre>
+                    <code>{activeProject.cliUsageExample}</code>
+                  </pre>
+                </div>
+              )}
+
+              <h3>Lessons Learned</h3>
+              <ul>
+                {activeProject.lessonsLearned.map((ll, i) => (
+                  <li key={i}>{ll}</li>
+                ))}
+              </ul>
+
+              <h3>Future Roadmap</h3>
+              <ul>
+                {activeProject.futureRoadmap.map((fr, i) => (
+                  <li key={i}>{fr}</li>
+                ))}
+              </ul>
+
+              <div>
+                <h3>Source Code & Live Links</h3>
+                {activeProject.githubUrl && (
+                  <a href={activeProject.githubUrl} target="_blank" rel="noopener noreferrer">
+                    View on GitHub: {activeProject.githubUrl}
+                  </a>
+                )}
+                {activeProject.demoUrl && (
+                  <a href={activeProject.demoUrl} target="_blank" rel="noopener noreferrer">
+                    Live Demo: {activeProject.demoUrl}
+                  </a>
+                )}
+              </div>
+            </section>
+          )}
+
+          {activeWriteup && (
+            <section>
+              <h2>{activeWriteup.title}</h2>
+              <p>{activeWriteup.summary}</p>
+              {activeWriteup.markdownContent && (
+                <div>{activeWriteup.markdownContent}</div>
+              )}
+            </section>
+          )}
+
+          <nav aria-label="Internal Workspace Sitemap">
+            <ul>
+              <li><Link href="/">/home/husain (Root)</Link></li>
+              <li><Link href="/about">/home/husain/about.md</Link></li>
+              <li><Link href="/projects">/home/husain/projects</Link></li>
+              {PROJECTS_DATA.map((p) => (
+                <li key={p.id}>
+                  <Link href={`/projects/${p.slug}`}>{p.name}</Link>
+                </li>
+              ))}
+              <li><Link href="/writeups">/home/husain/writeups</Link></li>
+              {WRITEUPS_DATA.map((w) => (
+                <li key={w.id}>
+                  <Link href={`/writeups/${w.category}/${w.slug}`}>{w.title}</Link>
+                </li>
+              ))}
+              <li><Link href="/blogs">/home/husain/blogs</Link></li>
+              <li><Link href="/skills">/home/husain/skills</Link></li>
+              <li><Link href="/experience">/home/husain/experience</Link></li>
+              <li><Link href="/contact">/home/husain/contact</Link></li>
+            </ul>
+          </nav>
+        </article>
       </section>
     </>
   );
