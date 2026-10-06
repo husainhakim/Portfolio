@@ -20,6 +20,7 @@ import {
   SunMoon,
   Download,
   RotateCcw,
+  Save,
   Folder,
   FileText,
   Shield,
@@ -52,6 +53,8 @@ export function CommandPalette({ isOpen, onClose }: CommandPaletteProps) {
     navigate,
     openFile,
     currentNode,
+    saveState,
+    resetSavedState,
     resetModifications,
   } = useFilesystem();
   const { startTour, openHelpModal, openWelcome } = useTour();
@@ -187,13 +190,24 @@ export function CommandPalette({ isOpen, onClose }: CommandPaletteProps) {
         },
       },
       {
+        id: "act-save",
+        title: "Save Filesystem State",
+        subtitle: "Persist your customized folder names, positions, and layout in browser storage",
+        category: "Quick Actions",
+        icon: <Save size={15} className={styles.iconAction} />,
+        action: () => {
+          saveState();
+          onClose();
+        },
+      },
+      {
         id: "act-reset",
         title: "Reset Filesystem Customizations",
-        subtitle: "Undo all file renames, soft-deletions, and card reorders",
+        subtitle: "Undo all file renames, positions, and clear saved snapshot",
         category: "Quick Actions",
         icon: <RotateCcw size={15} className={styles.iconAction} />,
         action: () => {
-          resetModifications();
+          resetSavedState(false);
           onClose();
         },
       },

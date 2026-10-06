@@ -19,6 +19,7 @@ import {
   RotateCcw,
   Sparkles,
   Play,
+  Save,
 } from "lucide-react";
 import { useTour } from "@/context/TourContext";
 import { useAutopilot } from "@/context/AutopilotContext";
@@ -48,7 +49,10 @@ export function RibbonToolbar() {
     sortOption,
     setSortOption,
     isModified,
-    resetModifications,
+    hasSavedState,
+    hasUnsavedChanges,
+    saveState,
+    resetSavedState,
     selectedNode,
     customNames,
     handleCopyNode,
@@ -139,7 +143,7 @@ export function RibbonToolbar() {
 
       <div className={styles.ribbonDivider} />
 
-      {/* Sort and View */}
+      {/* Sort, View, Save & Reset */}
       <div className={styles.ribbonGroup}>
         <button className={styles.ribbonBtnWithLabel} title="Sort" onClick={handleSortCycle}>
           <ArrowDownUp size={ICON_SIZE} strokeWidth={STROKE_WIDTH} />
@@ -161,14 +165,33 @@ export function RibbonToolbar() {
           <ChevronDown size={CHEVRON_SIZE} strokeWidth={STROKE_WIDTH} style={{ marginLeft: -2 }} />
         </button>
         <button
-          className={`${styles.ribbonBtnWithLabel} ${isModified ? styles.ribbonResetActive : ""}`}
-          title={isModified ? "Reset all customizations (undo renames, deletions, reorders)" : "Reset workspace (no modifications)"}
-          disabled={!isModified}
-          onClick={resetModifications}
+          className={`${styles.ribbonBtnWithLabel} ${hasUnsavedChanges ? styles.ribbonSaveActive : ""}`}
+          title={
+            hasUnsavedChanges
+              ? "Save State (persist customized names & positions across visits)"
+              : hasSavedState
+              ? "Filesystem state is currently saved"
+              : "Save current filesystem state"
+          }
+          onClick={saveState}
+        >
+          <Save size={ICON_SIZE} strokeWidth={STROKE_WIDTH} />
+          <span>Save State</span>
+          {hasUnsavedChanges && <span className={styles.ribbonSaveBadge} />}
+        </button>
+        <button
+          className={`${styles.ribbonBtnWithLabel} ${isModified || hasSavedState ? styles.ribbonResetActive : ""}`}
+          title={
+            isModified || hasSavedState
+              ? "Reset all customizations (undo renames, deletions, positions and delete saved snapshot)"
+              : "Reset workspace (no modifications)"
+          }
+          disabled={!isModified && !hasSavedState}
+          onClick={() => resetSavedState(false)}
         >
           <RotateCcw size={ICON_SIZE} strokeWidth={STROKE_WIDTH} />
           <span>Reset</span>
-          {isModified && <span className={styles.ribbonResetBadge} />}
+          {(isModified || hasSavedState) && <span className={styles.ribbonResetBadge} />}
         </button>
       </div>
 

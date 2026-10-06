@@ -14,6 +14,13 @@ import {
 } from "@/data/filesystemData";
 import { useRouter, usePathname } from "next/navigation";
 import { useAchievements } from "@/context/AchievementContext";
+import {
+  loadSavedState,
+  persistSavedState,
+  clearSavedState,
+  areFilesystemStatesEqual,
+  SavedFilesystemData,
+} from "@/lib/savedStateHelper";
 
 type WorkspaceMode = "gui" | "cli";
 type ViewLayout = "grid" | "list";
@@ -49,6 +56,10 @@ interface FilesystemContextType {
   deletedNodeIds: string[];
   folderOrders: Record<string, string[]>;
   isModified: boolean;
+  hasSavedState: boolean;
+  hasUnsavedChanges: boolean;
+  saveState: () => void;
+  resetSavedState: (skipConfirm?: boolean) => void;
   getNodeDisplayName: (node: FSNode | null | undefined) => string;
   renameNode: (nodeId: string, newName: string) => void;
   deleteNode: (nodeId: string) => void;
@@ -144,29 +155,32 @@ export function FilesystemProvider({ children }: { children: React.ReactNode }) 
     setIsBooted(true);
   }, []);
 
-  // GUI & CLI interactive customization state (persisted per session, reset on command)
+  // GUI & CLI interactive customization state
   const [customNames, setCustomNames] = useState<Record<string, string>>({});
   const [deletedNodeIds, setDeletedNodeIds] = useState<string[]>([]);
   const [folderOrders, setFolderOrders] = useState<Record<string, string[]>>({});
   const [quickAccessIds, setQuickAccessIds] = useState<string[]>(DEFAULT_QUICK_ACCESS_IDS);
   const [justPinnedNodeIds, setJustPinnedNodeIds] = useState<string[]>([]);
   const [justRestoredNodeIds, setJustRestoredNodeIds] = useState<string[]>([]);
+  const [savedSnapshot, setSavedSnapshot] = useState<SavedFilesystemData | null>(null);
+  const [hasSavedState, setHasSavedState] = useState<boolean>(false);
 
-  // Restore session-level customNames and folderOrders on mount
+  // Restore explicit saved state from localStorage on mount
   useEffect(() => {
     try {
-      const savedNames = sessionStorage.getItem("vfs_custom_names");
-      if (savedNames) {
-        const parsed = JSON.parse(savedNames);
-        if (parsed && typeof parsed === "object") {
-          setCustomNames(parsed);
+      const loaded = loadSavedState();
+      if (loaded) {
+        setSavedSnapshot(loaded);
+        setHasSavedState(true);
+        if (loaded.customNames && typeof loaded.customNames === "object") {
+          setCustomNames(loaded.customNames);
         }
-      }
-      const savedOrders = sessionStorage.getItem("vfs_folder_orders");
-      if (savedOrders) {
-        const parsed = JSON.parse(savedOrders);
-        if (parsed && typeof parsed === "object") {
-          setFolderOrders(parsed);
+        if (loaded.folderOrders && typeof loaded.folderOrders === "object") {
+          setFolderOrders(loaded.folderOrders);
+        }
+        if (loaded.quickAccessIds && Array.isArray(loaded.quickAccessIds) && loaded.quickAccessIds.length > 0) {
+          setQuickAccessIds(loaded.quickAccessIds);
+          quickAccessIdsRef.current = loaded.quickAccessIds;
         }
       }
     } catch (_) {}
@@ -177,11 +191,28 @@ export function FilesystemProvider({ children }: { children: React.ReactNode }) 
   const toastTimerRef = React.useRef<NodeJS.Timeout | null>(null);
   const restoreTimersRef = React.useRef<Map<string, NodeJS.Timeout>>(new Map());
 
-  const isModified =
-    Object.keys(customNames).length > 0 ||
-    deletedNodeIds.length > 0 ||
-    Object.keys(folderOrders).length > 0 ||
-    restoreTimersRef.current.size > 0;
+  const currentFilesystemData: SavedFilesystemData = React.useMemo(() => ({
+    customNames,
+    folderOrders,
+    quickAccessIds,
+  }), [customNames, folderOrders, quickAccessIds]);
+
+  const hasUnsavedChanges = React.useMemo(() => {
+    return !areFilesystemStatesEqual(currentFilesystemData, savedSnapshot, DEFAULT_QUICK_ACCESS_IDS);
+  }, [currentFilesystemData, savedSnapshot]);
+
+  const isModified = React.useMemo(() => {
+    const isQAChanged =
+      quickAccessIds.length !== DEFAULT_QUICK_ACCESS_IDS.length ||
+      quickAccessIds.some((id, idx) => id !== DEFAULT_QUICK_ACCESS_IDS[idx]);
+    return (
+      Object.keys(customNames).length > 0 ||
+      deletedNodeIds.length > 0 ||
+      Object.keys(folderOrders).length > 0 ||
+      isQAChanged ||
+      restoreTimersRef.current.size > 0
+    );
+  }, [customNames, deletedNodeIds, folderOrders, quickAccessIds]);
 
   const showToast = useCallback((message: string, duration = 5000) => {
     if (toastTimerRef.current) clearTimeout(toastTimerRef.current);
@@ -213,13 +244,6 @@ export function FilesystemProvider({ children }: { children: React.ReactNode }) 
         } else {
           next = { ...prev, [nodeId]: trimmed };
         }
-        try {
-          if (Object.keys(next).length > 0) {
-            sessionStorage.setItem("vfs_custom_names", JSON.stringify(next));
-          } else {
-            sessionStorage.removeItem("vfs_custom_names");
-          }
-        } catch (_) {}
         return next;
       });
     },
@@ -337,13 +361,6 @@ export function FilesystemProvider({ children }: { children: React.ReactNode }) 
         } else {
           next = { ...prev, [folderKey]: newOrderedIds };
         }
-        try {
-          if (Object.keys(next).length > 0) {
-            sessionStorage.setItem("vfs_folder_orders", JSON.stringify(next));
-          } else {
-            sessionStorage.removeItem("vfs_folder_orders");
-          }
-        } catch (_) {}
         return next;
       });
       if (newOrderedIds && newOrderedIds.length > 0) {
@@ -407,20 +424,52 @@ export function FilesystemProvider({ children }: { children: React.ReactNode }) 
     });
   }, []);
 
+  const saveState = useCallback(() => {
+    const snapshot: SavedFilesystemData = {
+      customNames: { ...customNames },
+      folderOrders: { ...folderOrders },
+      quickAccessIds: [...quickAccessIds],
+    };
+    const success = persistSavedState(snapshot);
+    if (success) {
+      setSavedSnapshot(snapshot);
+      setHasSavedState(true);
+      showToast("State saved", 3000);
+    } else {
+      showToast("Failed to save state to local storage", 3000);
+    }
+  }, [customNames, folderOrders, quickAccessIds, showToast]);
+
+  const resetSavedState = useCallback(
+    (skipConfirm = false) => {
+      if (!skipConfirm && typeof window !== "undefined") {
+        const confirmed = window.confirm(
+          "Reset all filesystem customizations and delete saved state? This will restore the original default filesystem."
+        );
+        if (!confirmed) return;
+      }
+
+      restoreTimersRef.current.forEach((timer) => clearTimeout(timer));
+      restoreTimersRef.current.clear();
+
+      clearSavedState();
+
+      setCustomNames({});
+      setDeletedNodeIds([]);
+      setFolderOrders({});
+      setQuickAccessIds(DEFAULT_QUICK_ACCESS_IDS);
+      quickAccessIdsRef.current = DEFAULT_QUICK_ACCESS_IDS;
+      setSavedSnapshot(null);
+      setHasSavedState(false);
+
+      showToast("Workspace reset to default state. All names & layouts restored.", 3500);
+    },
+    [showToast]
+  );
+
   const resetModifications = useCallback(() => {
-    restoreTimersRef.current.forEach((timer) => clearTimeout(timer));
-    restoreTimersRef.current.clear();
-    try {
-      sessionStorage.removeItem("vfs_custom_names");
-      sessionStorage.removeItem("vfs_folder_orders");
-      sessionStorage.removeItem("vfs_deleted_nodes");
-    } catch (_) {}
-    setCustomNames({});
-    setDeletedNodeIds([]);
-    setFolderOrders({});
-    setQuickAccessIds(DEFAULT_QUICK_ACCESS_IDS);
-    showToast("Workspace reset to default state. All names & layouts restored.", 3500);
-  }, [showToast]);
+    resetSavedState(false);
+  }, [resetSavedState]);
 
   // Synchronize restore timers when deletedNodeIds changes (e.g. manual Reset button clicked)
   useEffect(() => {
@@ -599,6 +648,10 @@ export function FilesystemProvider({ children }: { children: React.ReactNode }) 
         deletedNodeIds,
         folderOrders,
         isModified,
+        hasSavedState,
+        hasUnsavedChanges,
+        saveState,
+        resetSavedState,
         getNodeDisplayName,
         renameNode,
         deleteNode,

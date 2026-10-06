@@ -2934,6 +2934,34 @@
 }
 
 /* ==========================================================================
+   RIBBON SAVE BUTTON ACTIVE STATE
+   ========================================================================== */
+
+.ribbonSaveActive {
+  color: #10b981 !important;
+  border-color: rgba(16, 185, 129, 0.45) !important;
+  background: rgba(16, 185, 129, 0.08) !important;
+  position: relative;
+}
+
+.ribbonSaveActive:hover {
+  background: rgba(16, 185, 129, 0.16) !important;
+  box-shadow: 0 0 10px rgba(16, 185, 129, 0.25);
+}
+
+.ribbonSaveBadge {
+  position: absolute;
+  top: 4px;
+  right: 4px;
+  width: 6px;
+  height: 6px;
+  border-radius: 50%;
+  background-color: #10b981;
+  box-shadow: 0 0 6px #10b981;
+  animation: pulseReset 1.5s infinite ease-in-out;
+}
+
+/* ==========================================================================
    RIGHT-CLICK CONTEXT MENU
    ========================================================================== */
 

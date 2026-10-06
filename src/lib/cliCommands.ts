@@ -33,6 +33,8 @@ export interface CommandContext {
   setTheme: (theme: "dark" | "light") => void;
   customNames?: Record<string, string>;
   renameNode?: (nodeId: string, newName: string) => void;
+  saveState?: () => void;
+  resetSavedState?: (skipConfirm?: boolean) => void;
   resetModifications?: () => void;
   deletedNodeIds?: string[];
   folderOrders?: Record<string, string[]>;
@@ -48,6 +50,8 @@ export const AVAILABLE_COMMANDS = [
   "cat",
   "mv",
   "rename",
+  "save",
+  "savestate",
   "reset",
   "download",
   "clear",
@@ -132,7 +136,8 @@ Available Navigation & System Commands:
   pwd              Print name of current working directory
   cat <file>       Display file content, project details, or writeups
   mv / rename      Rename file or directory (e.g. mv about.md about-me.md)
-  reset            Reset workspace to default state (restore original names)
+  save / savestate Persist customized filesystem names & positions across visits
+  reset            Reset workspace to default state (clear names, orders, saved state)
   download <path>  Download virtual file (.md/.pdf) or folder (.zip)
   tree             Display hierarchical tree structure of filesystem
   whoami           Display operator identity and offensive & defensive security focus
@@ -675,12 +680,28 @@ Portfolio: ${PROFILE_DATA.portfolio}`,
       };
     }
 
+    case "save":
+    case "savestate": {
+      if (context.saveState) {
+        context.saveState();
+        return {
+          text: "[OK] Current filesystem customization saved to browser storage (persisted across visits).",
+        };
+      }
+      return {
+        text: "Save state feature unavailable in current context.",
+        isError: true,
+      };
+    }
+
     case "reset": {
-      if (context.resetModifications) {
+      if (context.resetSavedState) {
+        context.resetSavedState(true);
+      } else if (context.resetModifications) {
         context.resetModifications();
       }
       return {
-        text: "Workspace filesystem restored to original default state (all renames, folder orders, and deleted items cleared).",
+        text: "Workspace filesystem restored to original default state (all renames, positions, and saved snapshots cleared).",
       };
     }
 
