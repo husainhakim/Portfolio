@@ -36,6 +36,7 @@ export function generateStaticParams() {
     { path: ["experience"] },
     { path: ["contact"] },
     { path: ["vault"] },
+    { path: ["manual"] },
   ];
 
   function collectVfsPaths(node: import("@/data/filesystemData").FSNode) {
@@ -94,6 +95,19 @@ export async function generateMetadata({
     const title = "About Husain Hakim | Computer Science & Cybersecurity Mindset";
     const description =
       "Background, education at ITM Skills University, offensive and defensive security philosophy, and systems engineering methodologies of Husain Hakim.";
+    return {
+      title,
+      description,
+      alternates: { canonical: canonicalUrl },
+      openGraph: { title, description, url: canonicalUrl, type: "profile" },
+    };
+  }
+
+  // Workstation Manual
+  if (segment0 === "manual") {
+    const title = "Workstation Manual & Guide | Husain Hakim";
+    const description =
+      "Workstation Superpowers, CLI Hotkeys, CTF Vault, and Achievements Guide.";
     return {
       title,
       description,
@@ -277,7 +291,7 @@ function isValidPath(pathArray: string[]): boolean {
   if (pathArray.length === 0) return true;
   const seg0 = pathArray[0].toLowerCase();
 
-  if (seg0 === "about" || seg0 === "skills" || seg0 === "experience" || seg0 === "contact" || seg0 === "vault") {
+  if (seg0 === "about" || seg0 === "skills" || seg0 === "experience" || seg0 === "contact" || seg0 === "vault" || seg0 === "manual") {
     return pathArray.length === 1;
   }
   if (seg0 === "projects") {

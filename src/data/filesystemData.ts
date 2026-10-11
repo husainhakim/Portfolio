@@ -542,8 +542,8 @@ That is why I keep following the loop: **LEARN → BUILD → TEST → DOCUMENT**
       children: [
         {
           id: "exp-backend",
-          name: "letsupgrade-backend-engineer.md",
-          path: "/home/husain/experience/letsupgrade-backend-engineer.md",
+          name: "letsupgrade-backend-engineer",
+          path: "/home/husain/experience/letsupgrade-backend-engineer",
           type: "file",
           fileType: "experience",
           dataRef: "letsupgrade-backend",
@@ -684,6 +684,7 @@ export function normalizePath(path: string): string {
   }
 
   // Common alias mappings 
+  if (resolved === "/home/husain/manual" || resolved.toLowerCase() === "/home/husain/manual.md") return "/home/husain/MANUAL.md";
   if (resolved === "/home/husain/about") return "/home/husain/about.md";
   if (resolved === "/home/husain/skills") return "/home/husain/skills.md";
   if (resolved === "/home/husain/contact") return "/home/husain/contact-info.md";
@@ -725,7 +726,7 @@ export function getNodePublicUrl(node: FSNode | null | undefined): string {
   }
   // Alias for the workstation guide manual (uppercase filename)
   if (file.id === "readme-file" || file.name.toLowerCase() === "manual.md") {
-    return "/manual"; // friendly public URL
+    return "/home/husain/MANUAL.md";
   }
   if (file.id === "about-file" || file.name === "about.md") {
     return "/about";
@@ -793,11 +794,16 @@ export function findNodeByPath(
     if (!found && isLast) {
       found = current.children.find((child) => {
         const currentName = customNames && customNames[child.id] ? customNames[child.id] : child.name;
+        const cLower = currentName.toLowerCase();
+        const childLower = child.name.toLowerCase();
+        const segLower = segment.toLowerCase();
         return (
-          currentName === `${segment}.md` ||
-          currentName === `${segment}.pdf` ||
-          child.name === `${segment}.md` ||
-          child.name === `${segment}.pdf`
+          cLower === `${segLower}.md` ||
+          cLower === `${segLower}.pdf` ||
+          childLower === `${segLower}.md` ||
+          childLower === `${segLower}.pdf` ||
+          childLower === segLower.replace(/\.md$/, "") ||
+          cLower === segLower.replace(/\.md$/, "")
         );
       });
     }

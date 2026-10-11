@@ -69,6 +69,7 @@ const ITEM_PURPOSE_TAGS: Record<string, string> = {
   "personal_vault.md": "ENCRYPTED VAULT",
   vault: "PERSONAL VAULT",
   "letsupgrade-backend-engineer.md": "EXPERIENCE DOC",
+  "letsupgrade-backend-engineer": "EXPERIENCE DOC",
   "HusainLU_Sept-Dec25.jpeg": "CONTRACT PROOF 1",
   "HusainLU_Jan-Apr26.jpeg": "CONTRACT PROOF 2",
   "HusainLU_Apr-Jul26.jpeg": "CONTRACT PROOF 3",
@@ -790,7 +791,14 @@ export function DirectoryGrid({ nodes }: DirectoryGridProps) {
         aria-label={`${node.type === "directory" ? "Directory" : "File"}: ${node.name}`}
       >
         {isReadmeCard && (
-          <div className={styles.readmeStartBadge} title="Workstation Feature Matrix & Cheat Sheet">
+          <div
+            className={styles.readmeStartBadge}
+            title="Workstation Feature Matrix & Cheat Sheet"
+            onClick={(e) => {
+              e.stopPropagation();
+              openFile(node as FSFile);
+            }}
+          >
             <Sparkles size={11.5} className={styles.readmeSparkleIcon} />
             <span>START HERE</span>
           </div>
@@ -832,7 +840,17 @@ export function DirectoryGrid({ nodes }: DirectoryGridProps) {
 
         <div className={styles.gridItemFooter}>
           <span className={styles.gridItemSize}>{getItemTag(node)}</span>
-          <span className={isReadmeCard ? styles.readmeFooterBadge : styles.gridItemSize}>
+          <span
+            className={isReadmeCard ? styles.readmeFooterBadge : styles.gridItemSize}
+            onClick={
+              isReadmeCard
+                ? (e) => {
+                    e.stopPropagation();
+                    openFile(node as FSFile);
+                  }
+                : undefined
+            }
+          >
             {isReadmeCard ? (
               <>
                 <Zap size={10} className={styles.readmeZapIcon} />
@@ -1298,7 +1316,14 @@ export function DirectoryGrid({ nodes }: DirectoryGridProps) {
                 aria-label={`${node.type === "directory" ? "Directory" : "File"}: ${node.name}`}
               >
                 {isReadmeCard && (
-                  <div className={styles.readmeStartBadge} title="Workstation Feature Matrix & Cheat Sheet">
+                  <div
+                    className={styles.readmeStartBadge}
+                    title="Workstation Feature Matrix & Cheat Sheet"
+                    onClick={(e) => {
+                      e.stopPropagation();
+                      openFile(node as FSFile);
+                    }}
+                  >
                     <Sparkles size={11.5} className={styles.readmeSparkleIcon} />
                     <span>START HERE</span>
                   </div>
@@ -1337,7 +1362,17 @@ export function DirectoryGrid({ nodes }: DirectoryGridProps) {
 
                 <div className={styles.gridItemFooter}>
                   <span className={styles.gridItemSize}>{getItemTag(node)}</span>
-                  <span className={isReadmeCard ? styles.readmeFooterBadge : styles.gridItemSize}>
+                  <span
+                    className={isReadmeCard ? styles.readmeFooterBadge : styles.gridItemSize}
+                    onClick={
+                      isReadmeCard
+                        ? (e) => {
+                            e.stopPropagation();
+                            openFile(node as FSFile);
+                          }
+                        : undefined
+                    }
+                  >
                     {isReadmeCard ? (
                       <>
                         <Zap size={10} className={styles.readmeZapIcon} />

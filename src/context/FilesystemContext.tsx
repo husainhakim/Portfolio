@@ -501,7 +501,12 @@ export function FilesystemProvider({ children }: { children: React.ReactNode }) 
   }, [mode]);
 
   // Derive virtual path from URL pathname for GUI mode
-  const guiVirtualPath = pathname === "/" ? ROOT_PATH : normalizePath(pathname);
+  const guiVirtualPath =
+    pathname === "/"
+      ? ROOT_PATH
+      : pathname === "/experience"
+      ? "/home/husain/experience/letsupgrade-backend-engineer"
+      : normalizePath(pathname);
   const guiResolvedNode = findNodeByPath(guiVirtualPath, VIRTUAL_FS, customNames);
   const guiCurrentPath = guiResolvedNode?.type === "file" ? getParentPath(guiVirtualPath) : guiVirtualPath;
 
@@ -526,7 +531,10 @@ export function FilesystemProvider({ children }: { children: React.ReactNode }) 
 
   const navigate = useCallback(
     (targetPath: string): boolean => {
-      const normalized = normalizePath(targetPath);
+      const normalized =
+        targetPath === "/experience"
+          ? "/home/husain/experience/letsupgrade-backend-engineer"
+          : normalizePath(targetPath);
       const node = findNodeByPath(normalized, VIRTUAL_FS, customNames);
 
       if (!node) {
