@@ -723,6 +723,10 @@ export function getNodePublicUrl(node: FSNode | null | undefined): string {
   if (file.fileType === "vault" || file.id === "vault-file") {
     return "/vault";
   }
+  // Alias for the workstation guide manual (uppercase filename)
+  if (file.id === "readme-file" || file.name.toLowerCase() === "manual.md") {
+    return "/manual"; // friendly public URL
+  }
   if (file.id === "about-file" || file.name === "about.md") {
     return "/about";
   }
@@ -763,19 +767,24 @@ export function findNodeByPath(
 
     // Look for match by customName, original name, node id, dataRef, or known alias
     let found: FSNode | undefined = current.children.find((child) => {
-      const currentName = customNames && customNames[child.id] ? customNames[child.id] : child.name;
-      if (currentName === segment || child.name === segment || child.id === segment) {
+      // Resolve name using custom names if provided, otherwise use the node's name
+      const currentName = (customNames && customNames[child.id]) ? customNames[child.id] : child.name;
+      // Perform case‑insensitive comparison for segment and names/ids
+      const seg = segment.toLowerCase();
+      const name = currentName.toLowerCase();
+      const id = child.id.toLowerCase();
+      if (name === seg || child.name.toLowerCase() === seg || id === seg) {
         return true;
       }
       if (child.type === "file") {
         const f = child as FSFile;
-        if (f.dataRef && f.dataRef === segment) return true;
-        // Project aliases
+        if (f.dataRef && f.dataRef.toLowerCase() === seg) return true;
+        // Project aliases (case‑insensitive)
         if (f.fileType === "project") {
-          if (segment === "cyber-sonar" && (f.dataRef === "network-device-scanner" || child.name === "network-device-scanner")) return true;
-          if (segment === "file-identifier" && (f.dataRef === "file-identifier" || child.name === "file-sign-identifier")) return true;
-          if (segment === "passguard" && (f.dataRef === "passguard" || child.name === "password-strength-checker")) return true;
-          if (segment === "ids" && (f.dataRef === "intrusion-detection-system" || child.name === "intrusion-detection-system")) return true;
+          if (seg === "cyber-sonar" && (f.dataRef?.toLowerCase() === "network-device-scanner" || child.name.toLowerCase() === "network-device-scanner")) return true;
+          if (seg === "file-identifier" && (f.dataRef?.toLowerCase() === "file-identifier" || child.name.toLowerCase() === "file-sign-identifier")) return true;
+          if (seg === "passguard" && (f.dataRef?.toLowerCase() === "passguard" || child.name.toLowerCase() === "password-strength-checker")) return true;
+          if (seg === "ids" && (f.dataRef?.toLowerCase() === "intrusion-detection-system" || child.name.toLowerCase() === "intrusion-detection-system")) return true;
         }
       }
       return false;

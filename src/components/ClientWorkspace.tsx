@@ -1,5 +1,5 @@
 "use client";
- 
+
 import React from "react";
 import { useFilesystem } from "@/context/FilesystemContext";
 import { GuiWorkspace } from "@/components/gui/GuiWorkspace";
